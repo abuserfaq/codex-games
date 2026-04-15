@@ -232,6 +232,7 @@ canvas.play-panel {
 }
 .mines-board {
   width: min(100%, calc(100svh - 205px), 420px);
+  aspect-ratio: 1;
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   gap: 4px;
@@ -311,6 +312,8 @@ canvas.play-panel {
 
 .mines-board .cell {
   min-height: 0;
+  aspect-ratio: 1;
+  font-size: min(18px, 4vw);
 }
 
 .cell:hover,
