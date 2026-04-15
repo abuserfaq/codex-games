@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Whac-A-Mole</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Games navigation">
+      <a class="brand" href="../../index.html">&#1050;&#1072;&#1090;&#1072;&#1083;&#1086;&#1075; &#1080;&#1075;&#1088;</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">&#1050;&#1088;&#1077;&#1089;&#1090;&#1080;&#1082;&#1080;-&#1085;&#1086;&#1083;&#1080;&#1082;&#1080;</a>
+        <a href="../snake/index.html">&#1047;&#1084;&#1077;&#1081;&#1082;&#1072;</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">&#1057;&#1072;&#1087;&#1077;&#1088;</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html" aria-current="page">Whac-A-Mole</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Whac-A-Mole</h1>
+      <p>Hit the mole before it ducks back underground.</p>
+    </header>
+
+    <div class="play-panel square-board mole-board" id="board" aria-label="Whac-A-Mole game board"></div>
+    <div class="statusbar" role="status">
+      <span>Score: <strong id="score">0</strong></span>
+      <span>Time: <strong id="time">30</strong></span>
+      <button class="button" id="restart" type="button">Restart</button>
+    </div>
+    <p class="hint" id="message">Click or tap the active mole.</p>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const scoreEl = document.querySelector("#score");
+    const timeEl = document.querySelector("#time");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+
+    let cells = [];
+    let active = -1;
+    let score = 0;
+    let timeLeft = 30;
+    let moleTimer;
+    let clockTimer;
+    let running = false;
+
+    function drawBoard() {
+      boardEl.innerHTML = "";
+      cells = Array.from({ length: 9 }, (_, index) => {
+        const button = document.createElement("button");
+        button.className = "mole-cell";
+        button.type = "button";
+        button.setAttribute("aria-label", `Hole ${index + 1}`);
+        button.addEventListener("click", () => hit(index));
+        boardEl.appendChild(button);
+        return button;
+      });
+    }
+
+    function showMole() {
+      if (!running) return;
+      if (active >= 0) cells[active].classList.remove("active");
+      active = Math.floor(Math.random() * cells.length);
+      cells[active].classList.add("active");
+    }
+
+    function hit(index) {
+      if (!running || index !== active) return;
+      score += 1;
+      scoreEl.textContent = score;
+      cells[active].classList.remove("active");
+      active = -1;
+      showMole();
+    }
+
+    function finish() {
+      running = false;
+      window.clearInterval(moleTimer);
+      window.clearInterval(clockTimer);
+      if (active >= 0) cells[active].classList.remove("active");
+      active = -1;
+      messageEl.textContent = `Time up. Score: ${score}.`;
+    }
+
+    function reset() {
+      window.clearInterval(moleTimer);
+      window.clearInterval(clockTimer);
+      score = 0;
+      timeLeft = 30;
+      active = -1;
+      running = true;
+      scoreEl.textContent = score;
+      timeEl.textContent = timeLeft;
+      messageEl.textContent = "Click or tap the active mole.";
+      cells.forEach((cell) => cell.classList.remove("active"));
+      showMole();
+      moleTimer = window.setInterval(showMole, 760);
+      clockTimer = window.setInterval(() => {
+        timeLeft -= 1;
+        timeEl.textContent = timeLeft;
+        if (timeLeft <= 0) finish();
+      }, 1000);
+    }
+
+    drawBoard();
+    restartButton.addEventListener("click", reset);
+    reset();
+  </script>
+</body>
+</html>
