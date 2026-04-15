@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pong</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="&#1053;&#1072;&#1074;&#1080;&#1075;&#1072;&#1094;&#1080;&#1103; &#1087;&#1086; &#1080;&#1075;&#1088;&#1072;&#1084;">
+      <a class="brand" href="../../index.html">&#1050;&#1072;&#1090;&#1072;&#1083;&#1086;&#1075; &#1080;&#1075;&#1088;</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">&#1050;&#1088;&#1077;&#1089;&#1090;&#1080;&#1082;&#1080;-&#1085;&#1086;&#1083;&#1080;&#1082;&#1080;</a>
+        <a href="../snake/index.html">&#1047;&#1084;&#1077;&#1081;&#1082;&#1072;</a>
+        <a href="../pong/index.html" aria-current="page">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">&#1057;&#1072;&#1087;&#1077;&#1088;</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Pong</h1>
+      <p>Keep the ball in play with two classic paddles.</p>
+    </header>
+
+    <canvas class="play-panel wide-board" id="board" width="640" height="480" aria-label="Pong game board"></canvas>
+    <div class="statusbar">
+      <span><strong id="leftScore">0</strong> : <strong id="rightScore">0</strong></span>
+      <button class="button" id="restart" type="button">Restart</button>
+    </div>
+    <p class="hint">W/S moves the left paddle. Up/Down moves the right paddle.</p>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#board");
+    const ctx = canvas.getContext("2d");
+    const leftScoreEl = document.querySelector("#leftScore");
+    const rightScoreEl = document.querySelector("#rightScore");
+    const restartButton = document.querySelector("#restart");
+    const keys = new Set();
+
+    const paddleWidth = 12;
+    const paddleHeight = 82;
+    const ballSize = 14;
+    const paddleSpeed = 5;
+
+    let leftPaddle;
+    let rightPaddle;
+    let ball;
+    let leftScore;
+    let rightScore;
+
+    function resetBall(direction) {
+      ball = {
+        x: canvas.width / 2 - ballSize / 2,
+        y: canvas.height / 2 - ballSize / 2,
+        vx: direction * 4,
+        vy: Math.random() > 0.5 ? 3 : -3
+      };
+    }
+
+    function resetGame() {
+      leftPaddle = { x: 24, y: canvas.height / 2 - paddleHeight / 2 };
+      rightPaddle = { x: canvas.width - 36, y: canvas.height / 2 - paddleHeight / 2 };
+      leftScore = 0;
+      rightScore = 0;
+      leftScoreEl.textContent = leftScore;
+      rightScoreEl.textContent = rightScore;
+      resetBall(Math.random() > 0.5 ? 1 : -1);
+    }
+
+    function movePaddles() {
+      if (keys.has("w")) leftPaddle.y -= paddleSpeed;
+      if (keys.has("s")) leftPaddle.y += paddleSpeed;
+      if (keys.has("arrowup")) rightPaddle.y -= paddleSpeed;
+      if (keys.has("arrowdown")) rightPaddle.y += paddleSpeed;
+      leftPaddle.y = Math.max(0, Math.min(canvas.height - paddleHeight, leftPaddle.y));
+      rightPaddle.y = Math.max(0, Math.min(canvas.height - paddleHeight, rightPaddle.y));
+    }
+
+    function hitsPaddle(paddle) {
+      return (
+        ball.x < paddle.x + paddleWidth &&
+        ball.x + ballSize > paddle.x &&
+        ball.y < paddle.y + paddleHeight &&
+        ball.y + ballSize > paddle.y
+      );
+    }
+
+    function step() {
+      movePaddles();
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+
+      if (ball.y <= 0 || ball.y + ballSize >= canvas.height) {
+        ball.vy *= -1;
+      }
+
+      if (hitsPaddle(leftPaddle) && ball.vx < 0) {
+        ball.vx *= -1;
+        ball.x = leftPaddle.x + paddleWidth;
+      }
+
+      if (hitsPaddle(rightPaddle) && ball.vx > 0) {
+        ball.vx *= -1;
+        ball.x = rightPaddle.x - ballSize;
+      }
+
+      if (ball.x + ballSize < 0) {
+        rightScore += 1;
+        rightScoreEl.textContent = rightScore;
+        resetBall(-1);
+      }
+
+      if (ball.x > canvas.width) {
+        leftScore += 1;
+        leftScoreEl.textContent = leftScore;
+        resetBall(1);
+      }
+    }
+
+    function drawNet() {
+      ctx.strokeStyle = "#b7ccc1";
+      ctx.setLineDash([10, 12]);
+      ctx.beginPath();
+      ctx.moveTo(canvas.width / 2, 0);
+      ctx.lineTo(canvas.width / 2, canvas.height);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawNet();
+      ctx.fillStyle = "#1d6b4d";
+      ctx.fillRect(leftPaddle.x, leftPaddle.y, paddleWidth, paddleHeight);
+      ctx.fillRect(rightPaddle.x, rightPaddle.y, paddleWidth, paddleHeight);
+      ctx.fillStyle = "#202020";
+      ctx.fillRect(ball.x, ball.y, ballSize, ballSize);
+    }
+
+    function loop() {
+      step();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      const key = event.key.toLowerCase();
+      keys.add(key);
+      if (["w", "s", "arrowup", "arrowdown"].includes(key)) event.preventDefault();
+    });
+
+    document.addEventListener("keyup", (event) => {
+      keys.delete(event.key.toLowerCase());
+    });
+
+    restartButton.addEventListener("click", resetGame);
+
+    resetGame();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
+
+
+
+
+
+

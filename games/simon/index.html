@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simon</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="&#1053;&#1072;&#1074;&#1080;&#1075;&#1072;&#1094;&#1080;&#1103; &#1087;&#1086; &#1080;&#1075;&#1088;&#1072;&#1084;">
+      <a class="brand" href="../../index.html">&#1050;&#1072;&#1090;&#1072;&#1083;&#1086;&#1075; &#1080;&#1075;&#1088;</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">&#1050;&#1088;&#1077;&#1089;&#1090;&#1080;&#1082;&#1080;-&#1085;&#1086;&#1083;&#1080;&#1082;&#1080;</a>
+        <a href="../snake/index.html">&#1047;&#1084;&#1077;&#1081;&#1082;&#1072;</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">&#1057;&#1072;&#1087;&#1077;&#1088;</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html" aria-current="page">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Simon</h1>
+      <p>Repeat the growing light pattern without a mistake.</p>
+    </header>
+
+    <div class="statusbar" role="status">
+      <span>Round: <strong id="round">0</strong></span>
+      <span id="message">Press Start.</span>
+    </div>
+    <div class="simon-board" id="board" aria-label="Simon board">
+      <button class="simon-pad" data-tone="0" type="button">Green</button>
+      <button class="simon-pad" data-tone="1" type="button">Red</button>
+      <button class="simon-pad" data-tone="2" type="button">Yellow</button>
+      <button class="simon-pad" data-tone="3" type="button">Blue</button>
+    </div>
+    <div class="statusbar">
+      <span class="hint">Watch the flash order, then click the same pads.</span>
+      <button class="button" id="start" type="button">Start</button>
+    </div>
+  </main>
+
+  <script>
+    const pads = [...document.querySelectorAll(".simon-pad")];
+    const roundEl = document.querySelector("#round");
+    const messageEl = document.querySelector("#message");
+    const startButton = document.querySelector("#start");
+
+    let pattern = [];
+    let inputIndex = 0;
+    let showing = false;
+    let active = false;
+
+    function wait(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    async function flash(index) {
+      pads[index].classList.add("active");
+      await wait(360);
+      pads[index].classList.remove("active");
+      await wait(160);
+    }
+
+    async function showPattern() {
+      showing = true;
+      messageEl.textContent = "Watch.";
+      for (const index of pattern) {
+        await flash(index);
+      }
+      inputIndex = 0;
+      showing = false;
+      messageEl.textContent = "Repeat it.";
+    }
+
+    function addStep() {
+      pattern.push(Math.floor(Math.random() * pads.length));
+      roundEl.textContent = pattern.length;
+      showPattern();
+    }
+
+    function startGame() {
+      pattern = [];
+      inputIndex = 0;
+      active = true;
+      messageEl.textContent = "Watch.";
+      addStep();
+    }
+
+    function pressPad(index) {
+      if (!active || showing) return;
+      flash(index);
+      if (index !== pattern[inputIndex]) {
+        active = false;
+        messageEl.textContent = "Missed. Press Start.";
+        return;
+      }
+
+      inputIndex += 1;
+      if (inputIndex === pattern.length) {
+        messageEl.textContent = "Correct.";
+        setTimeout(addStep, 650);
+      }
+    }
+
+    pads.forEach((pad, index) => {
+      pad.addEventListener("click", () => pressPad(index));
+    });
+    startButton.addEventListener("click", startGame);
+  </script>
+</body>
+</html>
+
+
+
+
+
+

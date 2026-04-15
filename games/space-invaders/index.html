@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Space Invaders</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="&#1053;&#1072;&#1074;&#1080;&#1075;&#1072;&#1094;&#1080;&#1103; &#1087;&#1086; &#1080;&#1075;&#1088;&#1072;&#1084;">
+      <a class="brand" href="../../index.html">&#1050;&#1072;&#1090;&#1072;&#1083;&#1086;&#1075; &#1080;&#1075;&#1088;</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">&#1050;&#1088;&#1077;&#1089;&#1090;&#1080;&#1082;&#1080;-&#1085;&#1086;&#1083;&#1080;&#1082;&#1080;</a>
+        <a href="../snake/index.html">&#1047;&#1084;&#1077;&#1081;&#1082;&#1072;</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">&#1057;&#1072;&#1087;&#1077;&#1088;</a>
+        <a href="../space-invaders/index.html" aria-current="page">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Space Invaders</h1>
+      <p>Move the cannon, fire one shot, and clear the invaders.</p>
+    </header>
+
+    <div class="statusbar" role="status">
+      <span>Score: <strong id="score">0</strong></span>
+      <span id="message">Clear the invaders.</span>
+    </div>
+    <canvas class="play-panel wide-board" id="board" width="520" height="390" aria-label="Space Invaders game board"></canvas>
+    <div class="statusbar">
+      <span class="hint">Move with Left/Right. Shoot with Space.</span>
+      <button class="button" id="restart" type="button">Restart</button>
+    </div>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#board");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.querySelector("#score");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+
+    const player = { x: 236, y: 350, width: 48, height: 18, speed: 5 };
+    const keys = { left: false, right: false };
+    const invaders = [];
+    const invaderRows = 3;
+    const invaderCols = 8;
+    const invader = { width: 28, height: 18, gap: 22, top: 42, left: 48 };
+
+    let shot;
+    let score;
+    let direction;
+    let running;
+
+    function resetInvaders() {
+      invaders.length = 0;
+      for (let row = 0; row < invaderRows; row += 1) {
+        for (let col = 0; col < invaderCols; col += 1) {
+          invaders.push({
+            x: invader.left + col * (invader.width + invader.gap),
+            y: invader.top + row * (invader.height + invader.gap),
+            alive: true
+          });
+        }
+      }
+    }
+
+    function reset() {
+      player.x = (canvas.width - player.width) / 2;
+      shot = null;
+      score = 0;
+      direction = 1;
+      running = true;
+      scoreEl.textContent = score;
+      messageEl.textContent = "Clear the invaders.";
+      resetInvaders();
+      draw();
+    }
+
+    function drawPlayer() {
+      ctx.fillStyle = "#1f2937";
+      ctx.fillRect(player.x, player.y + 8, player.width, 10);
+      ctx.fillRect(player.x + 18, player.y, 12, 10);
+    }
+
+    function drawInvader(item) {
+      ctx.fillStyle = "#2f8d68";
+      ctx.fillRect(item.x + 4, item.y, 20, 6);
+      ctx.fillRect(item.x, item.y + 6, 28, 8);
+      ctx.fillRect(item.x + 4, item.y + 14, 6, 4);
+      ctx.fillRect(item.x + 18, item.y + 14, 6, 4);
+      ctx.fillStyle = "#fbfdfb";
+      ctx.fillRect(item.x + 7, item.y + 8, 4, 4);
+      ctx.fillRect(item.x + 17, item.y + 8, 4, 4);
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      invaders.forEach((item) => {
+        if (item.alive) drawInvader(item);
+      });
+      drawPlayer();
+      if (shot) {
+        ctx.fillStyle = "#d34f3f";
+        ctx.fillRect(shot.x, shot.y, shot.width, shot.height);
+      }
+    }
+
+    function moveInvaders() {
+      const alive = invaders.filter((item) => item.alive);
+      if (alive.length === 0) return;
+
+      const minX = Math.min(...alive.map((item) => item.x));
+      const maxX = Math.max(...alive.map((item) => item.x + invader.width));
+      let drop = false;
+
+      if ((direction > 0 && maxX >= canvas.width - 20) || (direction < 0 && minX <= 20)) {
+        direction *= -1;
+        drop = true;
+      }
+
+      alive.forEach((item) => {
+        item.x += direction * 1.2;
+        if (drop) item.y += 16;
+      });
+    }
+
+    function hitInvader(item) {
+      return item.alive &&
+        shot &&
+        shot.x < item.x + invader.width &&
+        shot.x + shot.width > item.x &&
+        shot.y < item.y + invader.height &&
+        shot.y + shot.height > item.y;
+    }
+
+    function step() {
+      if (!running) return;
+
+      if (keys.left) player.x -= player.speed;
+      if (keys.right) player.x += player.speed;
+      player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
+
+      moveInvaders();
+
+      if (shot) {
+        shot.y -= shot.speed;
+        const struck = invaders.find(hitInvader);
+        if (struck) {
+          struck.alive = false;
+          shot = null;
+          score += 10;
+          scoreEl.textContent = score;
+        } else if (shot.y + shot.height < 0) {
+          shot = null;
+        }
+      }
+
+      if (invaders.every((item) => !item.alive)) {
+        running = false;
+        messageEl.textContent = "Cleared. Restart for a new round.";
+      }
+
+      if (invaders.some((item) => item.alive && item.y + invader.height >= player.y)) {
+        running = false;
+        messageEl.textContent = "Invaders landed. Restart to try again.";
+      }
+
+      draw();
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") keys.left = true;
+      if (event.key === "ArrowRight") keys.right = true;
+      if (event.code === "Space" && !shot && running) {
+        shot = {
+          x: player.x + player.width / 2 - 2,
+          y: player.y - 12,
+          width: 4,
+          height: 12,
+          speed: 6
+        };
+      }
+      if (["ArrowLeft", "ArrowRight", "Space"].includes(event.code) || event.key === " ") {
+        event.preventDefault();
+      }
+    });
+
+    document.addEventListener("keyup", (event) => {
+      if (event.key === "ArrowLeft") keys.left = false;
+      if (event.key === "ArrowRight") keys.right = false;
+    });
+
+    restartButton.addEventListener("click", reset);
+
+    function loop() {
+      step();
+      requestAnimationFrame(loop);
+    }
+
+    reset();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>15 Puzzle</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="&#1053;&#1072;&#1074;&#1080;&#1075;&#1072;&#1094;&#1080;&#1103; &#1087;&#1086; &#1080;&#1075;&#1088;&#1072;&#1084;">
+      <a class="brand" href="../../index.html">&#1050;&#1072;&#1090;&#1072;&#1083;&#1086;&#1075; &#1080;&#1075;&#1088;</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">&#1050;&#1088;&#1077;&#1089;&#1090;&#1080;&#1082;&#1080;-&#1085;&#1086;&#1083;&#1080;&#1082;&#1080;</a>
+        <a href="../snake/index.html">&#1047;&#1084;&#1077;&#1081;&#1082;&#1072;</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">&#1057;&#1072;&#1087;&#1077;&#1088;</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html" aria-current="page">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>15 Puzzle</h1>
+      <p>Slide numbered tiles into order using the empty space.</p>
+    </header>
+
+    <div class="statusbar" role="status">
+      <span>Moves: <strong id="moves">0</strong></span>
+      <span id="message">Order 1-15.</span>
+    </div>
+    <div class="puzzle-board" id="board" aria-label="15 Puzzle board"></div>
+    <div class="statusbar">
+      <span class="hint">Click a tile next to the empty square.</span>
+      <button class="button" id="restart" type="button">Shuffle</button>
+    </div>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const movesEl = document.querySelector("#moves");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+
+    const size = 4;
+    const solved = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0];
+    let tiles = [...solved];
+    let moves = 0;
+
+    function isSolved() {
+      return tiles.every((tile, index) => tile === solved[index]);
+    }
+
+    function canMove(index) {
+      const emptyIndex = tiles.indexOf(0);
+      const x = index % size;
+      const y = Math.floor(index / size);
+      const emptyX = emptyIndex % size;
+      const emptyY = Math.floor(emptyIndex / size);
+      return Math.abs(x - emptyX) + Math.abs(y - emptyY) === 1;
+    }
+
+    function render() {
+      boardEl.textContent = "";
+      tiles.forEach((tile, index) => {
+        const button = document.createElement("button");
+        button.className = tile === 0 ? "tile empty" : "tile";
+        button.type = "button";
+        button.textContent = tile === 0 ? "" : tile;
+        button.disabled = tile === 0;
+        button.setAttribute("aria-label", tile === 0 ? "Empty square" : `Tile ${tile}`);
+        button.addEventListener("click", () => move(index));
+        boardEl.append(button);
+      });
+      movesEl.textContent = moves;
+      messageEl.textContent = isSolved() ? "Solved. Shuffle again." : "Order 1-15.";
+    }
+
+    function move(index) {
+      if (!canMove(index) || isSolved()) return;
+      const emptyIndex = tiles.indexOf(0);
+      [tiles[index], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[index]];
+      moves += 1;
+      render();
+    }
+
+    function shuffle() {
+      tiles = [...solved];
+      moves = 0;
+      let previousEmpty = -1;
+
+      for (let step = 0; step < 140; step += 1) {
+        const emptyIndex = tiles.indexOf(0);
+        const candidates = tiles
+          .map((_, index) => index)
+          .filter((index) => canMove(index) && index !== previousEmpty);
+        const nextIndex = candidates[Math.floor(Math.random() * candidates.length)];
+        previousEmpty = emptyIndex;
+        [tiles[nextIndex], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[nextIndex]];
+      }
+
+      render();
+    }
+
+    restartButton.addEventListener("click", shuffle);
+    shuffle();
+  </script>
+</body>
+</html>
+
+
+
+
+
+
