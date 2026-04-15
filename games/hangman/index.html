@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hangman</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="&#1053;&#1072;&#1074;&#1080;&#1075;&#1072;&#1094;&#1080;&#1103; &#1087;&#1086; &#1080;&#1075;&#1088;&#1072;&#1084;">
+      <a class="brand" href="../../index.html">&#1050;&#1072;&#1090;&#1072;&#1083;&#1086;&#1075; &#1080;&#1075;&#1088;</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">&#1050;&#1088;&#1077;&#1089;&#1090;&#1080;&#1082;&#1080;-&#1085;&#1086;&#1083;&#1080;&#1082;&#1080;</a>
+        <a href="../snake/index.html">&#1047;&#1084;&#1077;&#1081;&#1082;&#1072;</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">&#1057;&#1072;&#1087;&#1077;&#1088;</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html" aria-current="page">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Hangman</h1>
+      <p>Guess the hidden word before six misses.</p>
+    </header>
+
+    <section class="play-panel" aria-label="Hangman board">
+      <div class="word-line" id="word" aria-label="Hidden word"></div>
+      <div class="hangman-board" id="letters" aria-label="Letter choices"></div>
+    </section>
+    <div class="statusbar" role="status">
+      <span>Misses: <strong id="misses">0</strong>/6</span>
+      <span id="message">Pick a letter.</span>
+      <button class="button" id="restart" type="button">New word</button>
+    </div>
+    <p class="hint">Use the buttons or press letter keys.</p>
+  </main>
+
+  <script>
+    const words = ["ARCADE", "PADDLE", "PIXEL", "TOKEN", "JOYSTICK", "PLAYER"];
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    const wordEl = document.querySelector("#word");
+    const lettersEl = document.querySelector("#letters");
+    const missesEl = document.querySelector("#misses");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+
+    let answer = "";
+    let guessed = new Set();
+    let misses = 0;
+    let over = false;
+
+    function pickWord() {
+      answer = words[Math.floor(Math.random() * words.length)];
+    }
+
+    function renderWord() {
+      wordEl.innerHTML = "";
+      answer.split("").forEach((letter) => {
+        const slot = document.createElement("span");
+        slot.textContent = guessed.has(letter) ? letter : "";
+        wordEl.appendChild(slot);
+      });
+    }
+
+    function renderLetters() {
+      lettersEl.innerHTML = "";
+      alphabet.forEach((letter) => {
+        const button = document.createElement("button");
+        button.className = "letter-key";
+        button.type = "button";
+        button.textContent = letter;
+        button.disabled = guessed.has(letter) || over;
+        button.addEventListener("click", () => guess(letter));
+        lettersEl.appendChild(button);
+      });
+    }
+
+    function updateStatus() {
+      missesEl.textContent = misses;
+      renderWord();
+      renderLetters();
+    }
+
+    function guess(letter) {
+      if (over || guessed.has(letter)) return;
+      guessed.add(letter);
+
+      if (answer.includes(letter)) {
+        messageEl.textContent = "Hit.";
+      } else {
+        misses += 1;
+        messageEl.textContent = "Miss.";
+      }
+
+      const won = answer.split("").every((char) => guessed.has(char));
+      if (won) {
+        over = true;
+        messageEl.textContent = "Solved. Start a new word.";
+      } else if (misses >= 6) {
+        over = true;
+        messageEl.textContent = "Lost. Word was " + answer + ".";
+        answer.split("").forEach((char) => guessed.add(char));
+      }
+
+      updateStatus();
+    }
+
+    function resetGame() {
+      pickWord();
+      guessed = new Set();
+      misses = 0;
+      over = false;
+      messageEl.textContent = "Pick a letter.";
+      updateStatus();
+    }
+
+    document.addEventListener("keydown", (event) => {
+      const letter = event.key.toUpperCase();
+      if (alphabet.includes(letter)) guess(letter);
+    });
+    restartButton.addEventListener("click", resetGame);
+    resetGame();
+  </script>
+</body>
+</html>
+
+
+
+
+

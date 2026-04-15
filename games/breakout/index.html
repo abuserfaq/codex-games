@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Breakout</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="&#1053;&#1072;&#1074;&#1080;&#1075;&#1072;&#1094;&#1080;&#1103; &#1087;&#1086; &#1080;&#1075;&#1088;&#1072;&#1084;">
+      <a class="brand" href="../../index.html">&#1050;&#1072;&#1090;&#1072;&#1083;&#1086;&#1075; &#1080;&#1075;&#1088;</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">&#1050;&#1088;&#1077;&#1089;&#1090;&#1080;&#1082;&#1080;-&#1085;&#1086;&#1083;&#1080;&#1082;&#1080;</a>
+        <a href="../snake/index.html">&#1047;&#1084;&#1077;&#1081;&#1082;&#1072;</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html" aria-current="page">Breakout</a>
+        <a href="../minesweeper/index.html">&#1057;&#1072;&#1087;&#1077;&#1088;</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Breakout</h1>
+      <p>Keep the ball in play and clear the bricks.</p>
+    </header>
+
+    <canvas class="play-panel wide-board" id="board" width="520" height="390" aria-label="Breakout game board"></canvas>
+    <div class="statusbar">
+      <span>Score: <strong id="score">0</strong></span>
+      <button class="button" id="restart" type="button">Restart</button>
+    </div>
+    <p class="hint" id="message">Use arrow keys or move the pointer.</p>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#board");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.querySelector("#score");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+
+    const paddle = { width: 92, height: 12, x: 214, y: 360, speed: 7 };
+    const ballStart = { x: 260, y: 250, dx: 3, dy: -3, radius: 8 };
+    const keys = { left: false, right: false };
+    const bricks = [];
+    const brickRows = 4;
+    const brickCols = 8;
+    const brick = { width: 52, height: 18, gap: 8, top: 48, left: 26 };
+
+    let ball;
+    let score;
+    let running;
+
+    function resetBricks() {
+      bricks.length = 0;
+      for (let row = 0; row < brickRows; row += 1) {
+        for (let col = 0; col < brickCols; col += 1) {
+          bricks.push({
+            x: brick.left + col * (brick.width + brick.gap),
+            y: brick.top + row * (brick.height + brick.gap),
+            alive: true
+          });
+        }
+      }
+    }
+
+    function reset() {
+      paddle.x = (canvas.width - paddle.width) / 2;
+      ball = { ...ballStart };
+      score = 0;
+      running = true;
+      scoreEl.textContent = score;
+      messageEl.textContent = "Use arrow keys or move the pointer.";
+      resetBricks();
+      draw();
+    }
+
+    function drawBricks() {
+      bricks.forEach((item, index) => {
+        if (!item.alive) return;
+        ctx.fillStyle = index % 2 === 0 ? "#2f8d68" : "#d34f3f";
+        ctx.fillRect(item.x, item.y, brick.width, brick.height);
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBricks();
+      ctx.fillStyle = "#1f2937";
+      ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+      ctx.fillStyle = "#f0b429";
+      ctx.fill();
+    }
+
+    function hitBrick(item) {
+      return item.alive &&
+        ball.x + ball.radius > item.x &&
+        ball.x - ball.radius < item.x + brick.width &&
+        ball.y + ball.radius > item.y &&
+        ball.y - ball.radius < item.y + brick.height;
+    }
+
+    function step() {
+      if (!running) return;
+
+      if (keys.left) paddle.x -= paddle.speed;
+      if (keys.right) paddle.x += paddle.speed;
+      paddle.x = Math.max(0, Math.min(canvas.width - paddle.width, paddle.x));
+
+      ball.x += ball.dx;
+      ball.y += ball.dy;
+
+      if (ball.x <= ball.radius || ball.x >= canvas.width - ball.radius) ball.dx *= -1;
+      if (ball.y <= ball.radius) ball.dy *= -1;
+
+      if (
+        ball.y + ball.radius >= paddle.y &&
+        ball.y - ball.radius <= paddle.y + paddle.height &&
+        ball.x >= paddle.x &&
+        ball.x <= paddle.x + paddle.width
+      ) {
+        ball.dy = -Math.abs(ball.dy);
+        ball.dx += (ball.x - (paddle.x + paddle.width / 2)) / 38;
+      }
+
+      const struck = bricks.find(hitBrick);
+      if (struck) {
+        struck.alive = false;
+        ball.dy *= -1;
+        score += 1;
+        scoreEl.textContent = score;
+      }
+
+      if (bricks.every((item) => !item.alive)) {
+        running = false;
+        messageEl.textContent = "Win. Press Restart for a new round.";
+      }
+
+      if (ball.y > canvas.height + ball.radius) {
+        running = false;
+        messageEl.textContent = "Ball lost. Press Restart for a new round.";
+      }
+
+      draw();
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") keys.left = true;
+      if (event.key === "ArrowRight") keys.right = true;
+    });
+
+    document.addEventListener("keyup", (event) => {
+      if (event.key === "ArrowLeft") keys.left = false;
+      if (event.key === "ArrowRight") keys.right = false;
+    });
+
+    canvas.addEventListener("pointermove", (event) => {
+      const rect = canvas.getBoundingClientRect();
+      const scale = canvas.width / rect.width;
+      paddle.x = (event.clientX - rect.left) * scale - paddle.width / 2;
+      paddle.x = Math.max(0, Math.min(canvas.width - paddle.width, paddle.x));
+    });
+
+    restartButton.addEventListener("click", reset);
+
+    function loop() {
+      step();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    reset();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Frogger</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="&#1053;&#1072;&#1074;&#1080;&#1075;&#1072;&#1094;&#1080;&#1103; &#1087;&#1086; &#1080;&#1075;&#1088;&#1072;&#1084;">
+      <a class="brand" href="../../index.html">&#1050;&#1072;&#1090;&#1072;&#1083;&#1086;&#1075; &#1080;&#1075;&#1088;</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">&#1050;&#1088;&#1077;&#1089;&#1090;&#1080;&#1082;&#1080;-&#1085;&#1086;&#1083;&#1080;&#1082;&#1080;</a>
+        <a href="../snake/index.html">&#1047;&#1084;&#1077;&#1081;&#1082;&#1072;</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">&#1057;&#1072;&#1087;&#1077;&#1088;</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html" aria-current="page">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Frogger</h1>
+      <p>Cross the road without getting hit.</p>
+    </header>
+
+    <canvas class="play-panel square-board" id="board" width="400" height="400" aria-label="Frogger game board"></canvas>
+    <div class="statusbar" role="status">
+      <span>Lives: <strong id="lives">3</strong></span>
+      <span id="message">Reach the top.</span>
+      <button class="button" id="restart" type="button">Restart</button>
+    </div>
+    <p class="hint">Use arrow keys or WASD. Tap the board edges on touch screens.</p>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#board");
+    const ctx = canvas.getContext("2d");
+    const livesEl = document.querySelector("#lives");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+
+    const laneHeight = 50;
+    const frogSize = 28;
+    const lanes = [
+      { y: 300, speed: 1.8, cars: [{ x: 30 }, { x: 210 }], width: 70 },
+      { y: 250, speed: -2.2, cars: [{ x: 80 }, { x: 280 }], width: 62 },
+      { y: 200, speed: 2.6, cars: [{ x: 0 }, { x: 180 }], width: 82 },
+      { y: 150, speed: -1.6, cars: [{ x: 120 }, { x: 310 }], width: 74 },
+      { y: 100, speed: 2.1, cars: [{ x: 45 }, { x: 245 }], width: 66 }
+    ];
+
+    let frog;
+    let lives;
+    let won;
+    let over;
+
+    function resetFrog() {
+      frog = { x: 185, y: 360 };
+    }
+
+    function resetGame() {
+      lives = 3;
+      won = false;
+      over = false;
+      livesEl.textContent = lives;
+      messageEl.textContent = "Reach the top.";
+      resetFrog();
+    }
+
+    function rectsTouch(a, b) {
+      return (
+        a.x < b.x + b.w &&
+        a.x + a.w > b.x &&
+        a.y < b.y + b.h &&
+        a.y + a.h > b.y
+      );
+    }
+
+    function loseLife() {
+      lives -= 1;
+      livesEl.textContent = lives;
+      if (lives === 0) {
+        over = true;
+        messageEl.textContent = "Game over. Restart to play again.";
+        return;
+      }
+
+      messageEl.textContent = "Hit. Try again.";
+      resetFrog();
+    }
+
+    function moveFrog(dx, dy) {
+      if (over || won) return;
+      frog.x = Math.max(0, Math.min(canvas.width - frogSize, frog.x + dx));
+      frog.y = Math.max(0, Math.min(canvas.height - frogSize, frog.y + dy));
+      if (frog.y < laneHeight) {
+        won = true;
+        messageEl.textContent = "Safe. Restart for another run.";
+      }
+    }
+
+    function step() {
+      if (over || won) return;
+
+      lanes.forEach((lane) => {
+        lane.cars.forEach((car) => {
+          car.x += lane.speed;
+          if (lane.speed > 0 && car.x > canvas.width + lane.width) car.x = -lane.width;
+          if (lane.speed < 0 && car.x < -lane.width) car.x = canvas.width + lane.width;
+
+          const carBox = { x: car.x, y: lane.y + 10, w: lane.width, h: 30 };
+          const frogBox = { x: frog.x, y: frog.y, w: frogSize, h: frogSize };
+          if (rectsTouch(frogBox, carBox)) loseLife();
+        });
+      });
+    }
+
+    function drawBackground() {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#d9f0e4";
+      ctx.fillRect(0, 0, canvas.width, laneHeight);
+      ctx.fillRect(0, 350, canvas.width, laneHeight);
+      ctx.fillStyle = "#eef5f1";
+      ctx.fillRect(0, laneHeight, canvas.width, 300);
+      ctx.strokeStyle = "#cfd9d3";
+      for (let y = laneHeight; y < 350; y += laneHeight) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+    }
+
+    function draw() {
+      drawBackground();
+      lanes.forEach((lane, index) => {
+        ctx.fillStyle = index % 2 === 0 ? "#c94f3d" : "#d59c2a";
+        lane.cars.forEach((car) => {
+          ctx.fillRect(car.x, lane.y + 10, lane.width, 30);
+        });
+      });
+
+      ctx.fillStyle = "#1f7a55";
+      ctx.fillRect(frog.x, frog.y, frogSize, frogSize);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(frog.x + 6, frog.y + 6, 5, 5);
+      ctx.fillRect(frog.x + 17, frog.y + 6, 5, 5);
+    }
+
+    function loop() {
+      step();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      const key = event.key.toLowerCase();
+      if (key === "arrowup" || key === "w") moveFrog(0, -laneHeight);
+      else if (key === "arrowdown" || key === "s") moveFrog(0, laneHeight);
+      else if (key === "arrowleft" || key === "a") moveFrog(-laneHeight, 0);
+      else if (key === "arrowright" || key === "d") moveFrog(laneHeight, 0);
+      else return;
+      event.preventDefault();
+    });
+
+    canvas.addEventListener("pointerdown", (event) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left - rect.width / 2;
+      const y = event.clientY - rect.top - rect.height / 2;
+      if (Math.abs(x) > Math.abs(y)) moveFrog(Math.sign(x) * laneHeight, 0);
+      else moveFrog(0, Math.sign(y) * laneHeight);
+    });
+
+    restartButton.addEventListener("click", resetGame);
+    resetGame();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
+
+
+
+
+
+

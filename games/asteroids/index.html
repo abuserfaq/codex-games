@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asteroids</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="&#1053;&#1072;&#1074;&#1080;&#1075;&#1072;&#1094;&#1080;&#1103; &#1087;&#1086; &#1080;&#1075;&#1088;&#1072;&#1084;">
+      <a class="brand" href="../../index.html">&#1050;&#1072;&#1090;&#1072;&#1083;&#1086;&#1075; &#1080;&#1075;&#1088;</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">&#1050;&#1088;&#1077;&#1089;&#1090;&#1080;&#1082;&#1080;-&#1085;&#1086;&#1083;&#1080;&#1082;&#1080;</a>
+        <a href="../snake/index.html">&#1047;&#1084;&#1077;&#1081;&#1082;&#1072;</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">&#1057;&#1072;&#1087;&#1077;&#1088;</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html" aria-current="page">Asteroids</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Asteroids</h1>
+      <p>Break the asteroids and keep the ship alive.</p>
+    </header>
+
+    <canvas class="play-panel square-board" id="board" width="420" height="420" aria-label="Asteroids game board"></canvas>
+    <div class="statusbar" role="status">
+      <span>Score: <strong id="score">0</strong></span>
+      <span id="message">Turn, thrust, and shoot.</span>
+      <button class="button" id="restart" type="button">Restart</button>
+    </div>
+    <p class="hint">Use arrow keys or WASD. Space shoots. Tap left, right, top, or center on touch screens.</p>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#board");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.querySelector("#score");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+
+    const keys = new Set();
+    const shipRadius = 12;
+    let ship;
+    let shots;
+    let rocks;
+    let score;
+    let over;
+    let lastShot;
+
+    function wrap(item) {
+      if (item.x < 0) item.x += canvas.width;
+      if (item.x > canvas.width) item.x -= canvas.width;
+      if (item.y < 0) item.y += canvas.height;
+      if (item.y > canvas.height) item.y -= canvas.height;
+    }
+
+    function makeRock(x, y, size) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 0.7 + Math.random() * 1.1;
+      return {
+        x,
+        y,
+        size,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        angle: Math.random() * Math.PI * 2,
+        spin: (Math.random() - 0.5) * 0.03
+      };
+    }
+
+    function resetGame() {
+      ship = { x: canvas.width / 2, y: canvas.height / 2, vx: 0, vy: 0, angle: -Math.PI / 2 };
+      shots = [];
+      rocks = [
+        makeRock(70, 80, 34),
+        makeRock(330, 120, 34),
+        makeRock(110, 320, 26),
+        makeRock(340, 330, 26)
+      ];
+      score = 0;
+      over = false;
+      lastShot = 0;
+      scoreEl.textContent = score;
+      messageEl.textContent = "Turn, thrust, and shoot.";
+    }
+
+    function shoot() {
+      const now = performance.now();
+      if (over || now - lastShot < 220) return;
+      lastShot = now;
+      shots.push({
+        x: ship.x + Math.cos(ship.angle) * shipRadius,
+        y: ship.y + Math.sin(ship.angle) * shipRadius,
+        vx: Math.cos(ship.angle) * 5 + ship.vx,
+        vy: Math.sin(ship.angle) * 5 + ship.vy,
+        life: 56
+      });
+    }
+
+    function hit(a, b, radius) {
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      return Math.hypot(dx, dy) < radius;
+    }
+
+    function splitRock(rock) {
+      score += rock.size > 30 ? 20 : 50;
+      scoreEl.textContent = score;
+      if (rock.size > 30) {
+        rocks.push(makeRock(rock.x, rock.y, 18));
+        rocks.push(makeRock(rock.x, rock.y, 18));
+      }
+      if (rocks.length === 0) {
+        over = true;
+        messageEl.textContent = "Cleared. Restart for another field.";
+      }
+    }
+
+    function update() {
+      if (over) return;
+
+      if (keys.has("arrowleft") || keys.has("a")) ship.angle -= 0.08;
+      if (keys.has("arrowright") || keys.has("d")) ship.angle += 0.08;
+      if (keys.has("arrowup") || keys.has("w")) {
+        ship.vx += Math.cos(ship.angle) * 0.08;
+        ship.vy += Math.sin(ship.angle) * 0.08;
+      }
+      if (keys.has(" ") || keys.has("enter")) shoot();
+
+      ship.x += ship.vx;
+      ship.y += ship.vy;
+      ship.vx *= 0.99;
+      ship.vy *= 0.99;
+      wrap(ship);
+
+      shots.forEach((shot) => {
+        shot.x += shot.vx;
+        shot.y += shot.vy;
+        shot.life -= 1;
+        wrap(shot);
+      });
+      shots = shots.filter((shot) => shot.life > 0);
+
+      rocks.forEach((rock) => {
+        rock.x += rock.vx;
+        rock.y += rock.vy;
+        rock.angle += rock.spin;
+        wrap(rock);
+      });
+
+      for (let r = rocks.length - 1; r >= 0; r -= 1) {
+        const rock = rocks[r];
+        if (hit(ship, rock, shipRadius + rock.size)) {
+          over = true;
+          messageEl.textContent = "Crashed. Restart to play again.";
+          return;
+        }
+
+        for (let s = shots.length - 1; s >= 0; s -= 1) {
+          if (hit(shots[s], rock, rock.size)) {
+            shots.splice(s, 1);
+            rocks.splice(r, 1);
+            splitRock(rock);
+            break;
+          }
+        }
+      }
+    }
+
+    function drawShip() {
+      ctx.save();
+      ctx.translate(ship.x, ship.y);
+      ctx.rotate(ship.angle);
+      ctx.beginPath();
+      ctx.moveTo(16, 0);
+      ctx.lineTo(-10, -9);
+      ctx.lineTo(-6, 0);
+      ctx.lineTo(-10, 9);
+      ctx.closePath();
+      ctx.fillStyle = "#1f7a55";
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawRock(rock) {
+      ctx.save();
+      ctx.translate(rock.x, rock.y);
+      ctx.rotate(rock.angle);
+      ctx.beginPath();
+      for (let i = 0; i < 8; i += 1) {
+        const angle = (Math.PI * 2 * i) / 8;
+        const radius = rock.size * (i % 2 === 0 ? 1 : 0.72);
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = "#d59c2a";
+      ctx.fill();
+      ctx.strokeStyle = "#1c2d24";
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#eef5f1";
+      for (let y = 0; y < canvas.height; y += 42) ctx.fillRect(0, y, canvas.width, 1);
+      for (let x = 0; x < canvas.width; x += 42) ctx.fillRect(x, 0, 1, canvas.height);
+
+      rocks.forEach(drawRock);
+      ctx.fillStyle = "#c94f3d";
+      shots.forEach((shot) => {
+        ctx.beginPath();
+        ctx.arc(shot.x, shot.y, 3, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      drawShip();
+    }
+
+    function loop() {
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      const key = event.key.toLowerCase();
+      if (["arrowleft", "arrowright", "arrowup", "a", "d", "w", " ", "enter"].includes(key)) {
+        keys.add(key);
+        event.preventDefault();
+      }
+    });
+
+    document.addEventListener("keyup", (event) => {
+      keys.delete(event.key.toLowerCase());
+    });
+
+    canvas.addEventListener("pointerdown", (event) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      if (y < rect.height * 0.32) keys.add("w");
+      else if (x < rect.width * 0.34) keys.add("a");
+      else if (x > rect.width * 0.66) keys.add("d");
+      else shoot();
+      window.setTimeout(() => {
+        keys.delete("w");
+        keys.delete("a");
+        keys.delete("d");
+      }, 160);
+    });
+
+    restartButton.addEventListener("click", resetGame);
+    resetGame();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
+
+
+
+
+
