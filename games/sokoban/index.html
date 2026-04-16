@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sokoban</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="&#1053;&#1072;&#1074;&#1080;&#1075;&#1072;&#1094;&#1080;&#1103; &#1087;&#1086; &#1080;&#1075;&#1088;&#1072;&#1084;">
+      <a class="brand" href="../../index.html">&#1050;&#1072;&#1090;&#1072;&#1083;&#1086;&#1075; &#1080;&#1075;&#1088;</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">&#1050;&#1088;&#1077;&#1089;&#1090;&#1080;&#1082;&#1080;-&#1085;&#1086;&#1083;&#1080;&#1082;&#1080;</a>
+        <a href="../snake/index.html">&#1047;&#1084;&#1077;&#1081;&#1082;&#1072;</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">&#1057;&#1072;&#1087;&#1077;&#1088;</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html" aria-current="page">Sokoban</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Sokoban</h1>
+      <p>Push every crate onto a marked goal in the tiny warehouse.</p>
+    </header>
+
+    <section class="play-panel sokoban-wrap" aria-label="Sokoban game board">
+      <div class="sokoban-board" id="board"></div>
+    </section>
+
+    <div class="statusbar" role="status">
+      <span>Moves: <strong id="moves">0</strong></span>
+      <span id="message">Push crates onto all targets.</span>
+      <button class="button" id="restart" type="button">Restart</button>
+    </div>
+
+    <div class="sokoban-controls" aria-label="Sokoban controls">
+      <button class="button" type="button" data-move="up">Up</button>
+      <button class="button" type="button" data-move="left">Left</button>
+      <button class="button" type="button" data-move="down">Down</button>
+      <button class="button" type="button" data-move="right">Right</button>
+    </div>
+    <p class="hint">Use arrow keys or WASD. On touch screens, use the direction buttons.</p>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const movesEl = document.querySelector("#moves");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+    const controlButtons = document.querySelectorAll("[data-move]");
+
+    const level = [
+      "########",
+      "#  .   #",
+      "#  $   #",
+      "#      #",
+      "# .$@  #",
+      "#  $   #",
+      "#  .   #",
+      "########"
+    ];
+    const dirs = {
+      up: [0, -1],
+      down: [0, 1],
+      left: [-1, 0],
+      right: [1, 0]
+    };
+    const keyMap = {
+      arrowup: "up",
+      w: "up",
+      arrowdown: "down",
+      s: "down",
+      arrowleft: "left",
+      a: "left",
+      arrowright: "right",
+      d: "right"
+    };
+
+    let walls;
+    let goals;
+    let crates;
+    let player;
+    let moves;
+    let won;
+
+    function key(x, y) {
+      return `${x},${y}`;
+    }
+
+    function parseLevel() {
+      walls = new Set();
+      goals = new Set();
+      crates = new Set();
+      moves = 0;
+      won = false;
+
+      level.forEach((row, y) => {
+        [...row].forEach((tile, x) => {
+          if (tile === "#") walls.add(key(x, y));
+          if (tile === "." || tile === "+") goals.add(key(x, y));
+          if (tile === "$" || tile === "*") crates.add(key(x, y));
+          if (tile === "@" || tile === "+") player = { x, y };
+        });
+      });
+      movesEl.textContent = moves;
+      messageEl.textContent = "Push crates onto all targets.";
+    }
+
+    function render() {
+      boardEl.innerHTML = "";
+      level.forEach((row, y) => {
+        [...row].forEach((_, x) => {
+          const tile = document.createElement("button");
+          const id = key(x, y);
+          tile.type = "button";
+          tile.className = "sokoban-cell";
+          tile.setAttribute("aria-label", `Row ${y + 1}, column ${x + 1}`);
+          if (walls.has(id)) tile.classList.add("wall");
+          if (goals.has(id)) tile.classList.add("goal");
+          if (crates.has(id)) tile.classList.add("crate");
+          if (crates.has(id) && goals.has(id)) tile.classList.add("stored");
+          if (player.x === x && player.y === y) tile.classList.add("player");
+          boardEl.append(tile);
+        });
+      });
+    }
+
+    function isClear(x, y) {
+      const id = key(x, y);
+      return !walls.has(id) && !crates.has(id);
+    }
+
+    function checkWin() {
+      won = [...crates].every((crate) => goals.has(crate));
+      if (won) messageEl.textContent = "Warehouse solved.";
+    }
+
+    function move(direction) {
+      if (won) return;
+      const [dx, dy] = dirs[direction];
+      const next = { x: player.x + dx, y: player.y + dy };
+      const nextId = key(next.x, next.y);
+
+      if (walls.has(nextId)) return;
+
+      if (crates.has(nextId)) {
+        const after = { x: next.x + dx, y: next.y + dy };
+        const afterId = key(after.x, after.y);
+        if (!isClear(after.x, after.y)) return;
+        crates.delete(nextId);
+        crates.add(afterId);
+      }
+
+      player = next;
+      moves += 1;
+      movesEl.textContent = moves;
+      messageEl.textContent = "Keep pushing.";
+      checkWin();
+      render();
+    }
+
+    document.addEventListener("keydown", (event) => {
+      const direction = keyMap[event.key.toLowerCase()];
+      if (!direction) return;
+      event.preventDefault();
+      move(direction);
+    });
+
+    controlButtons.forEach((button) => {
+      button.addEventListener("click", () => move(button.dataset.move));
+    });
+
+    restartButton.addEventListener("click", () => {
+      parseLevel();
+      render();
+    });
+
+    parseLevel();
+    render();
+  </script>
+</body>
+</html>
+
+

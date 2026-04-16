@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Missile Command</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="&#1053;&#1072;&#1074;&#1080;&#1075;&#1072;&#1094;&#1080;&#1103; &#1087;&#1086; &#1080;&#1075;&#1088;&#1072;&#1084;">
+      <a class="brand" href="../../index.html">&#1050;&#1072;&#1090;&#1072;&#1083;&#1086;&#1075; &#1080;&#1075;&#1088;</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">&#1050;&#1088;&#1077;&#1089;&#1090;&#1080;&#1082;&#1080;-&#1085;&#1086;&#1083;&#1080;&#1082;&#1080;</a>
+        <a href="../snake/index.html">&#1047;&#1084;&#1077;&#1081;&#1082;&#1072;</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">&#1057;&#1072;&#1087;&#1077;&#1088;</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../missile-command/index.html" aria-current="page">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Missile Command</h1>
+      <p>Stop the falling warheads before they reach the city line.</p>
+    </header>
+
+    <canvas class="play-panel wide-board" id="board" width="560" height="420" aria-label="Missile Command game board"></canvas>
+    <div class="statusbar" role="status">
+      <span>Score: <strong id="score">0</strong></span>
+      <span>Cities: <strong id="cities">6</strong></span>
+      <span id="message">Tap the sky to intercept.</span>
+      <button class="button" id="restart" type="button">Restart</button>
+    </div>
+    <p class="hint">Click or tap targets in the sky. Each launcher refills slowly after firing.</p>
+    <img id="skyline" src="./assets/skyline.svg" alt="" hidden>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#board");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.querySelector("#score");
+    const citiesEl = document.querySelector("#cities");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+    const skyline = document.querySelector("#skyline");
+
+    const launchers = [{ x: 58, y: 366, ammo: 1 }, { x: 280, y: 366, ammo: 1 }, { x: 502, y: 366, ammo: 1 }];
+    const citySlots = [104, 162, 220, 340, 398, 456];
+    const stars = Array.from({ length: 54 }, () => ({ x: Math.random() * 560, y: Math.random() * 255, r: Math.random() * 1.4 + 0.35 }));
+    let enemyMissiles;
+    let interceptors;
+    let bursts;
+    let cities;
+    let score;
+    let frame;
+    let done;
+
+    function resetGame() {
+      enemyMissiles = [];
+      interceptors = [];
+      bursts = [];
+      cities = citySlots.map((x) => ({ x, alive: true }));
+      launchers.forEach((launcher) => launcher.ammo = 1);
+      score = 0;
+      frame = 0;
+      done = false;
+      scoreEl.textContent = score;
+      citiesEl.textContent = cities.length;
+      messageEl.textContent = "Tap the sky to intercept.";
+    }
+
+    function spawnEnemy() {
+      const targetChoices = cities.filter((city) => city.alive).map((city) => ({ x: city.x, y: 354, city }));
+      launchers.forEach((launcher) => targetChoices.push({ x: launcher.x, y: launcher.y }));
+      if (!targetChoices.length) return;
+      const target = targetChoices[Math.floor(Math.random() * targetChoices.length)];
+      const startX = 24 + Math.random() * 512;
+      const speed = 0.68 + Math.min(score * 0.008, 1.15);
+      const dx = target.x - startX;
+      const dy = target.y - 10;
+      const distance = Math.hypot(dx, dy);
+      enemyMissiles.push({ x: startX, y: 10, sx: startX, sy: 10, vx: dx / distance * speed, vy: dy / distance * speed, target });
+    }
+
+    function fireAt(x, y) {
+      if (done || y > 342) return;
+      const ready = launchers.filter((launcher) => launcher.ammo > 0);
+      if (!ready.length) {
+        messageEl.textContent = "Launchers reloading.";
+        return;
+      }
+      const launcher = ready.reduce((best, current) => Math.abs(current.x - x) < Math.abs(best.x - x) ? current : best);
+      launcher.ammo = 0;
+      const dx = x - launcher.x;
+      const dy = y - launcher.y;
+      const distance = Math.hypot(dx, dy) || 1;
+      interceptors.push({ x: launcher.x, y: launcher.y, sx: launcher.x, sy: launcher.y, tx: x, ty: y, vx: dx / distance * 5.4, vy: dy / distance * 5.4 });
+    }
+
+    function addBurst(x, y, friendly) {
+      bursts.push({ x, y, r: 3, max: friendly ? 34 : 24, life: friendly ? 32 : 22, friendly });
+    }
+
+    function update() {
+      if (done) return;
+      frame += 1;
+      if (frame % Math.max(34, 86 - Math.floor(score / 70)) === 0) spawnEnemy();
+      if (frame % 110 === 0) launchers.forEach((launcher) => launcher.ammo = 1);
+
+      enemyMissiles.forEach((missile) => {
+        missile.x += missile.vx;
+        missile.y += missile.vy;
+      });
+
+      interceptors.forEach((missile) => {
+        missile.x += missile.vx;
+        missile.y += missile.vy;
+        if (Math.hypot(missile.tx - missile.x, missile.ty - missile.y) < 7) {
+          missile.hit = true;
+          addBurst(missile.tx, missile.ty, true);
+        }
+      });
+
+      bursts.forEach((burst) => {
+        burst.r = Math.min(burst.max, burst.r + 1.25);
+        burst.life -= 1;
+      });
+
+      bursts.filter((burst) => burst.friendly).forEach((burst) => {
+        enemyMissiles.forEach((missile) => {
+          if (!missile.dead && Math.hypot(missile.x - burst.x, missile.y - burst.y) < burst.r) {
+            missile.dead = true;
+            score += 25;
+            scoreEl.textContent = score;
+            addBurst(missile.x, missile.y, false);
+          }
+        });
+      });
+
+      enemyMissiles.forEach((missile) => {
+        if (!missile.dead && missile.y >= missile.target.y) {
+          missile.dead = true;
+          addBurst(missile.target.x, missile.target.y, false);
+          if (missile.target.city) missile.target.city.alive = false;
+          citiesEl.textContent = cities.filter((city) => city.alive).length;
+        }
+      });
+
+      enemyMissiles = enemyMissiles.filter((missile) => !missile.dead && missile.y < 390);
+      interceptors = interceptors.filter((missile) => !missile.hit && missile.y > -20 && missile.x > -20 && missile.x < 580);
+      bursts = bursts.filter((burst) => burst.life > 0);
+
+      if (!cities.some((city) => city.alive)) {
+        done = true;
+        messageEl.textContent = "City line lost. Restart to defend again.";
+      }
+    }
+
+    function drawTrail(missile, color) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(missile.sx, missile.sy);
+      ctx.lineTo(missile.x, missile.y);
+      ctx.stroke();
+    }
+
+    function draw() {
+      const sky = ctx.createLinearGradient(0, 0, 0, 420);
+      sky.addColorStop(0, "#0f1b25");
+      sky.addColorStop(0.56, "#2c463e");
+      sky.addColorStop(1, "#e8f0eb");
+      ctx.fillStyle = sky;
+      ctx.fillRect(0, 0, 560, 420);
+
+      ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+      stars.forEach((star) => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      enemyMissiles.forEach((missile) => drawTrail(missile, "#f2d36b"));
+      interceptors.forEach((missile) => drawTrail(missile, "#d8f0dc"));
+
+      bursts.forEach((burst) => {
+        const glow = ctx.createRadialGradient(burst.x, burst.y, 2, burst.x, burst.y, burst.r);
+        glow.addColorStop(0, burst.friendly ? "rgba(216, 240, 220, 0.95)" : "rgba(201, 79, 61, 0.92)");
+        glow.addColorStop(0.62, burst.friendly ? "rgba(23, 106, 74, 0.38)" : "rgba(213, 156, 42, 0.35)");
+        glow.addColorStop(1, "rgba(255, 255, 255, 0)");
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(burst.x, burst.y, burst.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.fillStyle = "#101817";
+      ctx.fillRect(0, 350, 560, 70);
+      if (skyline.complete) ctx.drawImage(skyline, 0, 324, 560, 96);
+
+      cities.forEach((city) => {
+        if (!city.alive) return;
+        ctx.fillStyle = "#d8f0dc";
+        ctx.fillRect(city.x - 18, 334, 36, 28);
+        ctx.fillStyle = "#176a4a";
+        ctx.fillRect(city.x - 10, 342, 5, 6);
+        ctx.fillRect(city.x + 5, 342, 5, 6);
+      });
+
+      launchers.forEach((launcher) => {
+        ctx.fillStyle = launcher.ammo ? "#d8f0dc" : "#53615b";
+        ctx.beginPath();
+        ctx.moveTo(launcher.x, launcher.y - 18);
+        ctx.lineTo(launcher.x - 22, launcher.y + 18);
+        ctx.lineTo(launcher.x + 22, launcher.y + 18);
+        ctx.closePath();
+        ctx.fill();
+      });
+    }
+
+    function loop() {
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    canvas.addEventListener("pointerdown", (event) => {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      fireAt((event.clientX - rect.left) * scaleX, (event.clientY - rect.top) * scaleY);
+    });
+
+    restartButton.addEventListener("click", resetGame);
+    resetGame();
+    loop();
+  </script>
+</body>
+</html>
+
+
+
+
+
+

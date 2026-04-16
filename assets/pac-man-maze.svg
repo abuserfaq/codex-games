@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 420" role="img" aria-label="Pac-Man neon maze asset">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07151f"/>
+      <stop offset="0.55" stop-color="#102523"/>
+      <stop offset="1" stop-color="#160d20"/>
+    </linearGradient>
+    <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1c8a70"/>
+      <stop offset="1" stop-color="#52d2a2"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="420" height="420" fill="url(#bg)"/>
+  <g opacity=".22" stroke="#d59c2a" stroke-width="1">
+    <path d="M0 28H420M0 56H420M0 84H420M0 112H420M0 140H420M0 168H420M0 196H420M0 224H420M0 252H420M0 280H420M0 308H420M0 336H420M0 364H420M0 392H420"/>
+    <path d="M28 0V420M56 0V420M84 0V420M112 0V420M140 0V420M168 0V420M196 0V420M224 0V420M252 0V420M280 0V420M308 0V420M336 0V420M364 0V420M392 0V420"/>
+  </g>
+  <g fill="url(#wall)" stroke="#d8fff0" stroke-width="2" filter="url(#glow)">
+    <rect x="4" y="4" width="412" height="20" rx="5"/>
+    <rect x="4" y="396" width="412" height="20" rx="5"/>
+    <rect x="4" y="4" width="20" height="412" rx="5"/>
+    <rect x="396" y="4" width="20" height="412" rx="5"/>
+    <rect x="88" y="60" width="72" height="20" rx="5"/>
+    <rect x="184" y="60" width="72" height="20" rx="5"/>
+    <rect x="280" y="60" width="72" height="20" rx="5"/>
+    <rect x="60" y="116" width="20" height="76" rx="5"/>
+    <rect x="340" y="116" width="20" height="76" rx="5"/>
+    <rect x="116" y="172" width="76" height="20" rx="5"/>
+    <rect x="228" y="172" width="76" height="20" rx="5"/>
+    <rect x="172" y="228" width="76" height="20" rx="5"/>
+    <rect x="88" y="312" width="72" height="20" rx="5"/>
+    <rect x="184" y="312" width="72" height="20" rx="5"/>
+    <rect x="280" y="312" width="72" height="20" rx="5"/>
+  </g>
+  <circle cx="210" cy="378" r="12" fill="#ffd447"/>
+  <path d="M210 378L222 370A12 12 0 1 1 222 386Z" fill="#07151f"/>
+  <path d="M206 252a14 14 0 0 1 28 0v18l-7-5-7 5-7-5-7 5z" fill="#f25c6b" stroke="#fff" stroke-width="2"/>
+  <g fill="#fff3b0">
+    <circle cx="70" cy="70" r="4"/><circle cx="210" cy="98" r="4"/><circle cx="350" cy="70" r="4"/>
+    <circle cx="98" cy="238" r="4"/><circle cx="322" cy="238" r="4"/><circle cx="210" cy="350" r="4"/>
+  </g>
+</svg>

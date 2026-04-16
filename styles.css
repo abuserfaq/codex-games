@@ -528,3 +528,77 @@ canvas.play-panel {
 }
 
 
+
+.sokoban-wrap {
+  width: min(100%, calc(100svh - 255px), 432px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  padding: 8px;
+  background:
+    linear-gradient(135deg, rgba(23, 106, 74, 0.08), rgba(213, 156, 42, 0.1)),
+    #fbfdfb;
+}
+
+.sokoban-board {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+}
+
+.sokoban-cell {
+  position: relative;
+  min-width: 0;
+  border: 1px solid #cfd9d3;
+  border-radius: 6px;
+  background: #eef5f1;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 82%;
+  cursor: default;
+}
+
+.sokoban-cell.goal {
+  background-image: url("./games/sokoban/assets/goal.svg");
+}
+
+.sokoban-cell.wall {
+  border-color: #1c2d24;
+  background-color: #213127;
+  background-image: url("./games/sokoban/assets/wall.svg");
+  background-size: cover;
+}
+
+.sokoban-cell.crate {
+  background-image: url("./games/sokoban/assets/crate.svg");
+}
+
+.sokoban-cell.stored {
+  box-shadow: inset 0 0 0 3px #176a4a;
+}
+
+.sokoban-cell.player::after {
+  position: absolute;
+  inset: 8%;
+  background: url("./games/sokoban/assets/player.svg") center / contain no-repeat;
+  content: "";
+}
+
+.sokoban-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  width: min(100%, 432px);
+  margin: 0 auto 8px;
+}
+
+@media (max-width: 620px) {
+  .sokoban-wrap {
+    width: min(100%, calc(100svh - 300px), 432px);
+  }
+
+  .sokoban-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

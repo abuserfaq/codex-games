@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pac-Man</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="&#1053;&#1072;&#1074;&#1080;&#1075;&#1072;&#1094;&#1080;&#1103; &#1087;&#1086; &#1080;&#1075;&#1088;&#1072;&#1084;">
+      <a class="brand" href="../../index.html">&#1050;&#1072;&#1090;&#1072;&#1083;&#1086;&#1075; &#1080;&#1075;&#1088;</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">&#1050;&#1088;&#1077;&#1089;&#1090;&#1080;&#1082;&#1080;-&#1085;&#1086;&#1083;&#1080;&#1082;&#1080;</a>
+        <a href="../snake/index.html">&#1047;&#1084;&#1077;&#1081;&#1082;&#1072;</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">&#1057;&#1072;&#1087;&#1077;&#1088;</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Pac-Man</h1>
+      <p>Eat every pellet while the ghost hunts the maze.</p>
+    </header>
+
+    <canvas class="play-panel square-board pac-board" id="board" width="420" height="420" aria-label="Pac-Man game board"></canvas>
+    <div class="statusbar" role="status">
+      <span>Score: <strong id="score">0</strong></span>
+      <span id="message">Clear the maze.</span>
+      <button class="button" id="restart" type="button">Restart</button>
+    </div>
+    <p class="hint">Use arrows or WASD. On touch screens, swipe across the maze.</p>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#board");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.querySelector("#score");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+    const mazeAsset = new Image();
+    mazeAsset.src = "../../assets/pac-man-maze.svg";
+
+    const tile = 28;
+    const maze = [
+      "###############",
+      "#.............#",
+      "#.###.###.###.#",
+      "#o#.......#o#.#",
+      "#.#.##.##.#.#.#",
+      "#.............#",
+      "###.###.###.###",
+      "#.....#.#.....#",
+      "#.###.#.#.###.#",
+      "#o....G....o..#",
+      "#.###.###.###.#",
+      "#.............#",
+      "#.###.###.###.#",
+      "#.....P.......#",
+      "###############"
+    ];
+    const dirs = {
+      left: { x: -1, y: 0 },
+      right: { x: 1, y: 0 },
+      up: { x: 0, y: -1 },
+      down: { x: 0, y: 1 }
+    };
+
+    let pellets;
+    let powers;
+    let player;
+    let ghost;
+    let score;
+    let frightened;
+    let done;
+    let wanted;
+    let lastStep;
+    let mouth;
+    let touchStart;
+
+    function resetGame() {
+      pellets = new Set();
+      powers = new Set();
+      maze.forEach((row, y) => {
+        [...row].forEach((cell, x) => {
+          if (cell === ".") pellets.add(`${x},${y}`);
+          if (cell === "o") powers.add(`${x},${y}`);
+          if (cell === "P") player = { x, y, dir: "left" };
+          if (cell === "G") ghost = { x, y, dir: "left" };
+        });
+      });
+      score = 0;
+      frightened = 0;
+      done = false;
+      wanted = "left";
+      lastStep = 0;
+      mouth = 0;
+      scoreEl.textContent = score;
+      messageEl.textContent = "Clear the maze.";
+    }
+
+    function wall(x, y) {
+      return maze[y]?.[x] === "#";
+    }
+
+    function canMove(actor, dir) {
+      const next = dirs[dir];
+      return next && !wall(actor.x + next.x, actor.y + next.y);
+    }
+
+    function moveActor(actor, dir) {
+      const next = dirs[dir];
+      actor.x += next.x;
+      actor.y += next.y;
+      actor.dir = dir;
+    }
+
+    function chooseGhostDir() {
+      const options = Object.keys(dirs).filter((dir) => canMove(ghost, dir));
+      if (options.length === 0) return ghost.dir;
+      const reverse = { left: "right", right: "left", up: "down", down: "up" }[ghost.dir];
+      const filtered = options.length > 1 ? options.filter((dir) => dir !== reverse) : options;
+      filtered.sort((a, b) => {
+        const da = dirs[a];
+        const db = dirs[b];
+        const ax = ghost.x + da.x - player.x;
+        const ay = ghost.y + da.y - player.y;
+        const bx = ghost.x + db.x - player.x;
+        const by = ghost.y + db.y - player.y;
+        const scoreA = ax * ax + ay * ay;
+        const scoreB = bx * bx + by * by;
+        return frightened > 0 ? scoreB - scoreA : scoreA - scoreB;
+      });
+      return filtered[0];
+    }
+
+    function collect() {
+      const key = `${player.x},${player.y}`;
+      if (pellets.delete(key)) score += 10;
+      if (powers.delete(key)) {
+        score += 50;
+        frightened = 28;
+        messageEl.textContent = "Ghost is vulnerable.";
+      }
+      scoreEl.textContent = score;
+      if (pellets.size === 0 && powers.size === 0) {
+        done = true;
+        messageEl.textContent = "Maze cleared.";
+      }
+    }
+
+    function collide() {
+      if (player.x !== ghost.x || player.y !== ghost.y) return;
+      if (frightened > 0) {
+        score += 200;
+        scoreEl.textContent = score;
+        ghost = { x: 7, y: 9, dir: "left" };
+        frightened = 0;
+        messageEl.textContent = "Ghost eaten.";
+      } else {
+        done = true;
+        messageEl.textContent = "Caught by the ghost.";
+      }
+    }
+
+    function update(time) {
+      if (done || time - lastStep < 135) return;
+      lastStep = time;
+      if (canMove(player, wanted)) player.dir = wanted;
+      if (canMove(player, player.dir)) moveActor(player, player.dir);
+      collect();
+      const ghostDir = chooseGhostDir();
+      if (canMove(ghost, ghostDir)) moveActor(ghost, ghostDir);
+      frightened = Math.max(0, frightened - 1);
+      collide();
+    }
+
+    function drawBackdrop() {
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      gradient.addColorStop(0, "#07151f");
+      gradient.addColorStop(0.5, "#102523");
+      gradient.addColorStop(1, "#160d20");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      if (mazeAsset.complete) {
+        ctx.save();
+        ctx.globalAlpha = 0.16;
+        ctx.drawImage(mazeAsset, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+      }
+      ctx.save();
+      ctx.globalAlpha = 0.28;
+      ctx.strokeStyle = "#d59c2a";
+      ctx.lineWidth = 1;
+      for (let y = 0; y < canvas.height; y += tile) {
+        ctx.beginPath();
+        ctx.moveTo(0, y + 0.5);
+        ctx.lineTo(canvas.width, y + 0.5);
+        ctx.stroke();
+      }
+      for (let x = 0; x < canvas.width; x += tile) {
+        ctx.beginPath();
+        ctx.moveTo(x + 0.5, 0);
+        ctx.lineTo(x + 0.5, canvas.height);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawWalls() {
+      ctx.lineWidth = 3;
+      maze.forEach((row, y) => {
+        [...row].forEach((cell, x) => {
+          if (cell !== "#") return;
+          const px = x * tile;
+          const py = y * tile;
+          const wallGradient = ctx.createLinearGradient(px, py, px + tile, py + tile);
+          wallGradient.addColorStop(0, "#1c8a70");
+          wallGradient.addColorStop(1, "#52d2a2");
+          ctx.fillStyle = wallGradient;
+          ctx.strokeStyle = "#d8fff0";
+          ctx.fillRect(px + 3, py + 3, tile - 6, tile - 6);
+          ctx.strokeRect(px + 4, py + 4, tile - 8, tile - 8);
+        });
+      });
+    }
+
+    function drawPellets() {
+      ctx.fillStyle = "#fff3b0";
+      pellets.forEach((key) => {
+        const [x, y] = key.split(",").map(Number);
+        ctx.beginPath();
+        ctx.arc(x * tile + tile / 2, y * tile + tile / 2, 3.2, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.fillStyle = "#ffffff";
+      powers.forEach((key) => {
+        const [x, y] = key.split(",").map(Number);
+        ctx.beginPath();
+        ctx.arc(x * tile + tile / 2, y * tile + tile / 2, 7, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    function drawPlayer() {
+      const x = player.x * tile + tile / 2;
+      const y = player.y * tile + tile / 2;
+      const facing = {
+        right: 0,
+        down: Math.PI / 2,
+        left: Math.PI,
+        up: Math.PI * 1.5
+      }[player.dir];
+      mouth = (mouth + 0.18) % 1;
+      const open = 0.23 + Math.sin(mouth * Math.PI * 2) * 0.14;
+      ctx.fillStyle = "#ffd447";
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.arc(x, y, 11, facing + open, facing + Math.PI * 2 - open);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function drawGhost() {
+      const x = ghost.x * tile + tile / 2;
+      const y = ghost.y * tile + tile / 2;
+      ctx.fillStyle = frightened > 0 ? "#6da5ff" : "#f25c6b";
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(x, y - 2, 10, Math.PI, 0);
+      ctx.lineTo(x + 10, y + 11);
+      ctx.lineTo(x + 5, y + 7);
+      ctx.lineTo(x, y + 11);
+      ctx.lineTo(x - 5, y + 7);
+      ctx.lineTo(x - 10, y + 11);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(x - 6, y - 4, 4, 5);
+      ctx.fillRect(x + 2, y - 4, 4, 5);
+      ctx.fillStyle = "#1c2d24";
+      ctx.fillRect(x - 5, y - 3, 2, 2);
+      ctx.fillRect(x + 3, y - 3, 2, 2);
+    }
+
+    function draw() {
+      drawBackdrop();
+      drawWalls();
+      drawPellets();
+      drawPlayer();
+      drawGhost();
+    }
+
+    function loop(time) {
+      update(time);
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      const key = event.key.toLowerCase();
+      const map = { arrowleft: "left", a: "left", arrowright: "right", d: "right", arrowup: "up", w: "up", arrowdown: "down", s: "down" };
+      if (map[key]) {
+        wanted = map[key];
+        event.preventDefault();
+      }
+    });
+
+    canvas.addEventListener("pointerdown", (event) => {
+      touchStart = { x: event.clientX, y: event.clientY };
+      canvas.setPointerCapture(event.pointerId);
+    });
+
+    canvas.addEventListener("pointerup", (event) => {
+      if (!touchStart) return;
+      const dx = event.clientX - touchStart.x;
+      const dy = event.clientY - touchStart.y;
+      if (Math.abs(dx) > Math.abs(dy)) wanted = dx < 0 ? "left" : "right";
+      else wanted = dy < 0 ? "up" : "down";
+      touchStart = null;
+    });
+
+    restartButton.addEventListener("click", resetGame);
+    resetGame();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
