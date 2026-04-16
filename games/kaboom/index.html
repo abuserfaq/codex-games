@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kaboom!</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+            <nav class="topbar" aria-label="&#1053;&#1072;&#1074;&#1080;&#1075;&#1072;&#1094;&#1080;&#1103; &#1087;&#1086; &#1080;&#1075;&#1088;&#1072;&#1084;">
+      <a class="brand" href="../../index.html">&#1050;&#1072;&#1090;&#1072;&#1083;&#1086;&#1075; &#1080;&#1075;&#1088;</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">&#1050;&#1088;&#1077;&#1089;&#1090;&#1080;&#1082;&#1080;-&#1085;&#1086;&#1083;&#1080;&#1082;&#1080;</a>
+        <a href="../snake/index.html">&#1047;&#1084;&#1077;&#1081;&#1082;&#1072;</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">&#1057;&#1072;&#1087;&#1077;&#1088;</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html" aria-current="page">Kaboom!</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Kaboom!</h1>
+      <p>Catch the falling bombs before three hit the ground.</p>
+    </header>
+
+    <canvas class="play-panel wide-board" id="board" width="560" height="420" aria-label="Kaboom game board"></canvas>
+    <div class="statusbar" role="status">
+      <span>Score: <strong id="score">0</strong></span>
+      <span>Misses: <strong id="misses">0</strong>/3</span>
+      <span id="message">Move the buckets under each bomb.</span>
+      <button class="button" id="restart" type="button">Restart</button>
+    </div>
+    <p class="hint">Use left/right arrows or A/D. On touch screens, drag across the board.</p>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#board");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.querySelector("#score");
+    const missesEl = document.querySelector("#misses");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+
+    const keys = new Set();
+    const basket = { x: 250, y: 360, w: 86, h: 42, speed: 5.4 };
+    let bombs;
+    let score;
+    let misses;
+    let done;
+    let lastDrop;
+
+    function resetGame() {
+      bombs = [];
+      score = 0;
+      misses = 0;
+      done = false;
+      lastDrop = 0;
+      basket.x = 250;
+      scoreEl.textContent = score;
+      missesEl.textContent = misses;
+      messageEl.textContent = "Move the buckets under each bomb.";
+    }
+
+    function dropBomb() {
+      const speed = 2.1 + Math.min(score * 0.045, 3.2);
+      bombs.push({
+        x: 54 + Math.random() * (canvas.width - 108),
+        y: 52,
+        r: 7,
+        speed
+      });
+    }
+
+    function update() {
+      if (done) return;
+      if (keys.has("arrowleft") || keys.has("a")) basket.x -= basket.speed;
+      if (keys.has("arrowright") || keys.has("d")) basket.x += basket.speed;
+      basket.x = Math.max(8, Math.min(canvas.width - basket.w - 8, basket.x));
+      lastDrop += 1;
+      const delay = Math.max(28, 72 - score * 1.4);
+      if (lastDrop >= delay) {
+        dropBomb();
+        lastDrop = 0;
+      }
+      bombs.forEach((bomb) => {
+        bomb.y += bomb.speed;
+      });
+      bombs = bombs.filter((bomb) => {
+        const caught = bomb.y + bomb.r >= basket.y
+          && bomb.y - bomb.r <= basket.y + basket.h
+          && bomb.x >= basket.x
+          && bomb.x <= basket.x + basket.w;
+        if (caught) {
+          score += 1;
+          scoreEl.textContent = score;
+          messageEl.textContent = score % 10 === 0 ? "Faster now." : "Caught.";
+          return false;
+        }
+        if (bomb.y - bomb.r > canvas.height) {
+          misses += 1;
+          missesEl.textContent = misses;
+          messageEl.textContent = misses >= 3 ? "Three misses. Game over." : "Missed one.";
+          done = misses >= 3;
+          return false;
+        }
+        return true;
+      });
+    }
+
+    function drawBackground() {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#eef5f1";
+      ctx.fillRect(0, 344, canvas.width, 76);
+      ctx.strokeStyle = "#9aa49b";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, 344);
+      ctx.lineTo(canvas.width, 344);
+      ctx.stroke();
+    }
+
+    function drawBomber() {
+      ctx.fillStyle = "#176a4a";
+      ctx.strokeStyle = "#1c2d24";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, 34, 19, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(canvas.width / 2 - 8, 27, 5, 5);
+      ctx.fillRect(canvas.width / 2 + 4, 27, 5, 5);
+      ctx.strokeStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, 39, 8, 0.2, Math.PI - 0.2);
+      ctx.stroke();
+    }
+
+    function drawBasket() {
+      ctx.fillStyle = "#d59c2a";
+      ctx.strokeStyle = "#1c2d24";
+      ctx.lineWidth = 2;
+      ctx.fillRect(basket.x, basket.y, basket.w, basket.h);
+      ctx.strokeRect(basket.x, basket.y, basket.w, basket.h);
+      ctx.beginPath();
+      ctx.moveTo(basket.x + 12, basket.y);
+      ctx.lineTo(basket.x + 22, basket.y + basket.h);
+      ctx.moveTo(basket.x + basket.w / 2, basket.y);
+      ctx.lineTo(basket.x + basket.w / 2, basket.y + basket.h);
+      ctx.moveTo(basket.x + basket.w - 12, basket.y);
+      ctx.lineTo(basket.x + basket.w - 22, basket.y + basket.h);
+      ctx.stroke();
+    }
+
+    function drawBombs() {
+      bombs.forEach((bomb) => {
+        ctx.fillStyle = "#c94f3d";
+        ctx.strokeStyle = "#1c2d24";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(bomb.x, bomb.y, bomb.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.strokeStyle = "#d59c2a";
+        ctx.beginPath();
+        ctx.moveTo(bomb.x, bomb.y - bomb.r);
+        ctx.lineTo(bomb.x + 5, bomb.y - bomb.r - 8);
+        ctx.stroke();
+      });
+    }
+
+    function draw() {
+      drawBackground();
+      drawBomber();
+      drawBombs();
+      drawBasket();
+    }
+
+    function loop() {
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      const key = event.key.toLowerCase();
+      if (["arrowleft", "arrowright", "a", "d"].includes(key)) {
+        keys.add(key);
+        event.preventDefault();
+      }
+    });
+    document.addEventListener("keyup", (event) => {
+      keys.delete(event.key.toLowerCase());
+    });
+    canvas.addEventListener("pointermove", (event) => {
+      if (event.pointerType === "mouse" && event.buttons !== 1) return;
+      const rect = canvas.getBoundingClientRect();
+      const scale = canvas.width / rect.width;
+      basket.x = (event.clientX - rect.left) * scale - basket.w / 2;
+      basket.x = Math.max(8, Math.min(canvas.width - basket.w - 8, basket.x));
+    });
+    canvas.addEventListener("pointerdown", (event) => {
+      canvas.setPointerCapture(event.pointerId);
+    });
+    restartButton.addEventListener("click", resetGame);
+    resetGame();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>

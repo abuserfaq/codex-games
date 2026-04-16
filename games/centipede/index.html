@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Centipede</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+            <nav class="topbar" aria-label="&#1053;&#1072;&#1074;&#1080;&#1075;&#1072;&#1094;&#1080;&#1103; &#1087;&#1086; &#1080;&#1075;&#1088;&#1072;&#1084;">
+      <a class="brand" href="../../index.html">&#1050;&#1072;&#1090;&#1072;&#1083;&#1086;&#1075; &#1080;&#1075;&#1088;</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">&#1050;&#1088;&#1077;&#1089;&#1090;&#1080;&#1082;&#1080;-&#1085;&#1086;&#1083;&#1080;&#1082;&#1080;</a>
+        <a href="../snake/index.html">&#1047;&#1084;&#1077;&#1081;&#1082;&#1072;</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">&#1057;&#1072;&#1087;&#1077;&#1088;</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html" aria-current="page">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Centipede</h1>
+      <p>Stop the centipede before it reaches the shooter.</p>
+    </header>
+
+    <canvas class="play-panel square-board" id="board" width="420" height="420" aria-label="Centipede game board"></canvas>
+    <div class="statusbar" role="status">
+      <span>Score: <strong id="score">0</strong></span>
+      <span id="message">Move and shoot upward.</span>
+      <button class="button" id="restart" type="button">Restart</button>
+    </div>
+    <p class="hint">Use arrows or WASD to move. Space shoots. Drag or tap the board on touch screens.</p>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#board");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.querySelector("#score");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+
+    const cell = 21;
+    const cols = canvas.width / cell;
+    const rows = canvas.height / cell;
+    const keys = new Set();
+
+    let player;
+    let bullet;
+    let segments;
+    let mushrooms;
+    let score;
+    let done;
+    let lastMove;
+    let moveDelay;
+    let lastPlayerMove;
+
+    function resetGame() {
+      player = { x: 10, y: 18 };
+      bullet = null;
+      segments = Array.from({ length: 10 }, (_, index) => ({ x: index, y: 0, dir: 1 }));
+      mushrooms = [
+        { x: 4, y: 4 }, { x: 14, y: 4 }, { x: 8, y: 7 },
+        { x: 2, y: 10 }, { x: 17, y: 10 }, { x: 11, y: 13 }
+      ];
+      score = 0;
+      done = false;
+      lastMove = 0;
+      moveDelay = 210;
+      lastPlayerMove = 0;
+      scoreEl.textContent = score;
+      messageEl.textContent = "Move and shoot upward.";
+    }
+
+    function hasMushroom(x, y) {
+      return mushrooms.some((mushroom) => mushroom.x === x && mushroom.y === y);
+    }
+
+    function blocked(x, y) {
+      return x < 0 || x >= cols || hasMushroom(x, y);
+    }
+
+    function moveSegments(time) {
+      if (time - lastMove < moveDelay) return;
+      lastMove = time;
+
+      segments.forEach((segment) => {
+        const nextX = segment.x + segment.dir;
+        if (blocked(nextX, segment.y)) {
+          segment.dir *= -1;
+          segment.y += 1;
+        } else {
+          segment.x = nextX;
+        }
+        if (segment.y >= rows - 2) {
+          done = true;
+          messageEl.textContent = "The centipede reached you.";
+        }
+      });
+    }
+
+    function movePlayer(time) {
+      if (time - lastPlayerMove < 95) return;
+      let dx = 0;
+      let dy = 0;
+      if (keys.has("arrowleft") || keys.has("a")) dx -= 1;
+      if (keys.has("arrowright") || keys.has("d")) dx += 1;
+      if (keys.has("arrowup") || keys.has("w")) dy -= 1;
+      if (keys.has("arrowdown") || keys.has("s")) dy += 1;
+      if (dx === 0 && dy === 0) return;
+      player.x = Math.max(0, Math.min(cols - 1, player.x + Math.sign(dx)));
+      player.y = Math.max(rows - 5, Math.min(rows - 1, player.y + Math.sign(dy)));
+      lastPlayerMove = time;
+    }
+
+    function shoot() {
+      if (!bullet && !done) bullet = { x: player.x, y: player.y - 1 };
+    }
+
+    function moveBullet() {
+      if (!bullet) return;
+      bullet.y -= 1;
+      if (bullet.y < 0) {
+        bullet = null;
+        return;
+      }
+
+      const mushroomIndex = mushrooms.findIndex((mushroom) => mushroom.x === bullet.x && mushroom.y === bullet.y);
+      if (mushroomIndex !== -1) {
+        mushrooms.splice(mushroomIndex, 1);
+        bullet = null;
+        return;
+      }
+
+      const segmentIndex = segments.findIndex((segment) => segment.x === bullet.x && segment.y === bullet.y);
+      if (segmentIndex !== -1) {
+        const hit = segments.splice(segmentIndex, 1)[0];
+        mushrooms.push({ x: hit.x, y: hit.y });
+        score += 10;
+        scoreEl.textContent = score;
+        bullet = null;
+        moveDelay = Math.max(95, moveDelay - 9);
+        if (segments.length === 0) {
+          done = true;
+          messageEl.textContent = "Centipede cleared.";
+        }
+      }
+    }
+
+    function update(time) {
+      if (done) return;
+      movePlayer(time);
+      if (keys.has(" ") || keys.has("enter")) shoot();
+      moveBullet();
+      moveSegments(time);
+    }
+
+    function drawCell(x, y, fill, stroke = "#1c2d24") {
+      ctx.fillStyle = fill;
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 1;
+      ctx.fillRect(x * cell + 2, y * cell + 2, cell - 4, cell - 4);
+      ctx.strokeRect(x * cell + 2, y * cell + 2, cell - 4, cell - 4);
+    }
+
+    function draw() {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#eef5f1";
+      for (let i = 1; i < cols; i += 1) ctx.fillRect(i * cell, 0, 1, canvas.height);
+      for (let i = 1; i < rows; i += 1) ctx.fillRect(0, i * cell, canvas.width, 1);
+
+      mushrooms.forEach((mushroom) => drawCell(mushroom.x, mushroom.y, "#d59c2a"));
+      segments.forEach((segment, index) => {
+        drawCell(segment.x, segment.y, index === 0 ? "#176a4a" : "#8bc79f");
+      });
+
+      if (bullet) {
+        ctx.fillStyle = "#c94f3d";
+        ctx.fillRect(bullet.x * cell + 9, bullet.y * cell + 2, 3, cell - 4);
+      }
+
+      ctx.fillStyle = "#1c2d24";
+      ctx.beginPath();
+      ctx.moveTo(player.x * cell + cell / 2, player.y * cell + 3);
+      ctx.lineTo(player.x * cell + cell - 3, player.y * cell + cell - 3);
+      ctx.lineTo(player.x * cell + 3, player.y * cell + cell - 3);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function loop(time) {
+      update(time);
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      const key = event.key.toLowerCase();
+      if (["arrowleft", "arrowright", "arrowup", "arrowdown", "a", "d", "w", "s", " ", "enter"].includes(key)) {
+        keys.add(key);
+        event.preventDefault();
+      }
+    });
+
+    document.addEventListener("keyup", (event) => {
+      keys.delete(event.key.toLowerCase());
+    });
+
+    canvas.addEventListener("pointerdown", (event) => {
+      const rect = canvas.getBoundingClientRect();
+      player.x = Math.max(0, Math.min(cols - 1, Math.floor((event.clientX - rect.left) / (rect.width / cols))));
+      player.y = Math.max(rows - 5, Math.min(rows - 1, Math.floor((event.clientY - rect.top) / (rect.height / rows))));
+      shoot();
+    });
+
+    restartButton.addEventListener("click", resetGame);
+    resetGame();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
+
+

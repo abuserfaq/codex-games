@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connect Four</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+            <nav class="topbar" aria-label="&#1053;&#1072;&#1074;&#1080;&#1075;&#1072;&#1094;&#1080;&#1103; &#1087;&#1086; &#1080;&#1075;&#1088;&#1072;&#1084;">
+      <a class="brand" href="../../index.html">&#1050;&#1072;&#1090;&#1072;&#1083;&#1086;&#1075; &#1080;&#1075;&#1088;</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">&#1050;&#1088;&#1077;&#1089;&#1090;&#1080;&#1082;&#1080;-&#1085;&#1086;&#1083;&#1080;&#1082;&#1080;</a>
+        <a href="../snake/index.html">&#1047;&#1084;&#1077;&#1081;&#1082;&#1072;</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">&#1057;&#1072;&#1087;&#1077;&#1088;</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html" aria-current="page">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Connect Four</h1>
+      <p>Drop discs and connect four in a row.</p>
+    </header>
+
+    <section class="play-panel connect-board" id="board" aria-label="Connect Four board"></section>
+    <div class="statusbar" role="status">
+      <span id="turn">Red to move.</span>
+      <button class="button" id="restart" type="button">Restart</button>
+    </div>
+    <p class="hint">Click a column or use keys 1-7. Four in a row wins.</p>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const turnEl = document.querySelector("#turn");
+    const restartButton = document.querySelector("#restart");
+    const rows = 6;
+    const cols = 7;
+    let board;
+    let player;
+    let done;
+
+    function reset() {
+      board = Array.from({ length: rows }, () => Array(cols).fill(0));
+      player = 1;
+      done = false;
+      turnEl.textContent = "Red to move.";
+      draw();
+    }
+
+    function draw() {
+      boardEl.innerHTML = "";
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const cell = document.createElement("button");
+          cell.className = "disc-cell";
+          cell.type = "button";
+          cell.dataset.col = col;
+          cell.setAttribute("aria-label", `Column ${col + 1}, row ${row + 1}`);
+          if (board[row][col] === 1) cell.classList.add("red");
+          if (board[row][col] === 2) cell.classList.add("gold");
+          cell.addEventListener("click", () => drop(col));
+          boardEl.appendChild(cell);
+        }
+      }
+    }
+
+    function drop(col) {
+      if (done) return;
+      for (let row = rows - 1; row >= 0; row--) {
+        if (board[row][col] === 0) {
+          board[row][col] = player;
+          if (wins(row, col)) {
+            done = true;
+            turnEl.textContent = player === 1 ? "Red wins." : "Gold wins.";
+          } else if (board.every((line) => line.every(Boolean))) {
+            done = true;
+            turnEl.textContent = "Draw.";
+          } else {
+            player = player === 1 ? 2 : 1;
+            turnEl.textContent = player === 1 ? "Red to move." : "Gold to move.";
+          }
+          draw();
+          return;
+        }
+      }
+      turnEl.textContent = "Column is full.";
+    }
+
+    function wins(row, col) {
+      return [[1, 0], [0, 1], [1, 1], [1, -1]].some(([dr, dc]) => {
+        return count(row, col, dr, dc) + count(row, col, -dr, -dc) - 1 >= 4;
+      });
+    }
+
+    function count(row, col, dr, dc) {
+      let total = 0;
+      let r = row;
+      let c = col;
+      while (r >= 0 && r < rows && c >= 0 && c < cols && board[r][c] === player) {
+        total++;
+        r += dr;
+        c += dc;
+      }
+      return total;
+    }
+
+    document.addEventListener("keydown", (event) => {
+      const col = Number(event.key) - 1;
+      if (col >= 0 && col < cols) {
+        drop(col);
+        event.preventDefault();
+      }
+    });
+
+    restartButton.addEventListener("click", reset);
+    reset();
+  </script>
+</body>
+</html>
+

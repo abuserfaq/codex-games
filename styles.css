@@ -463,6 +463,49 @@ canvas.play-panel {
 .mole-cell.active::after {
   bottom: 22%;
 }
+
+.connect-board {
+  width: min(100%, calc(100svh - 205px), 490px);
+  aspect-ratio: 7 / 6;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 7px;
+  padding: 8px;
+  margin: 0 auto;
+  touch-action: manipulation;
+}
+
+.disc-cell {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 1;
+  border: 1px solid #9aa49b;
+  border-radius: 8px;
+  background: #e8f0eb;
+  cursor: pointer;
+}
+
+.disc-cell::after {
+  position: absolute;
+  inset: 14%;
+  border: 2px solid #1c2d24;
+  border-radius: 50%;
+  background: #ffffff;
+  content: "";
+}
+
+.disc-cell.red::after {
+  background: var(--danger);
+}
+
+.disc-cell.gold::after {
+  background: var(--gold);
+}
+
+.disc-cell:hover,
+.disc-cell:focus-visible {
+  background: #d8e3d2;
+}
 @media (max-width: 620px) {
   .topbar {
     align-items: flex-start;
@@ -483,4 +526,5 @@ canvas.play-panel {
     flex-direction: column;
   }
 }
+
 
