@@ -186,6 +186,7 @@ canvas.play-panel {
   aspect-ratio: 4 / 3;
 }
 
+
 .tall-board {
   width: min(100%, calc((100svh - 250px) / 2), 240px);
   aspect-ratio: 1 / 2;
@@ -593,6 +594,7 @@ canvas.play-panel {
   margin: 0 auto 8px;
 }
 
+
 @media (max-width: 620px) {
   .sokoban-wrap {
     width: min(100%, calc(100svh - 300px), 432px);
@@ -600,5 +602,69 @@ canvas.play-panel {
 
   .sokoban-controls {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.reversi-wrap {
+  width: min(100%, calc(100svh - 225px), 448px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  padding: 10px;
+  background: #173f31 url("./games/reversi/assets/board.svg") center / cover no-repeat;
+}
+
+.reversi-board {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+}
+
+.reversi-cell {
+  position: relative;
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+}
+
+.reversi-cell.dark::after,
+.reversi-cell.light::after {
+  position: absolute;
+  inset: 10%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: "";
+}
+
+.reversi-cell.dark::after {
+  background-image: url("./games/reversi/assets/disc-dark.svg");
+}
+
+.reversi-cell.light::after {
+  background-image: url("./games/reversi/assets/disc-light.svg");
+}
+
+.reversi-cell.legal::before {
+  position: absolute;
+  inset: 35%;
+  border: 2px solid rgba(255, 255, 255, 0.78);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  content: "";
+}
+
+.reversi-cell:hover,
+.reversi-cell:focus-visible {
+  outline: none;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+@media (max-width: 620px) {
+  .reversi-wrap {
+    width: min(100%, calc(100svh - 275px), 448px);
   }
 }
