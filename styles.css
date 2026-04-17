@@ -186,6 +186,11 @@ canvas.play-panel {
   aspect-ratio: 4 / 3;
 }
 
+.qix-board {
+  width: min(100%, calc((100svh - 250px) * 4 / 3), 640px);
+  aspect-ratio: 4 / 3;
+}
+
 
 .tall-board {
   width: min(100%, calc((100svh - 250px) / 2), 240px);
@@ -594,13 +599,22 @@ canvas.play-panel {
   margin: 0 auto 8px;
 }
 
+.qix-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  width: min(100%, 520px);
+  margin: 0 auto 8px;
+}
+
 
 @media (max-width: 620px) {
   .sokoban-wrap {
     width: min(100%, calc(100svh - 300px), 432px);
   }
 
-  .sokoban-controls {
+  .sokoban-controls,
+  .qix-controls {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

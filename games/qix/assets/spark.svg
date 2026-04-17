@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="spark">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="52%">
+      <stop offset="0" stop-color="#fff7bd"/>
+      <stop offset="0.48" stop-color="#d59c2a"/>
+      <stop offset="1" stop-color="#c94f3d"/>
+    </radialGradient>
+  </defs>
+  <path fill="#1c2d24" d="M31 2l8 20 21-6-13 18 15 16-22-3-8 15-8-16-22 4 15-17L4 16l21 6z"/>
+  <path fill="url(#glow)" d="M32 10l5 17 17-4-11 13 11 12-17-2-5 10-6-11-16 3 11-13-10-12 16 4z"/>
+</svg>
