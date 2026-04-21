@@ -738,3 +738,198 @@ canvas.play-panel {
     gap: 6px;
   }
 }
+
+.button:disabled {
+  border-color: var(--border);
+  color: var(--muted);
+  cursor: default;
+}
+
+.button:disabled:hover {
+  background: #ffffff;
+  color: var(--muted);
+}
+
+.mastermind-wrap {
+  width: min(100%, calc(100svh - 245px), 446px);
+  margin: 0 auto;
+  padding: 14px;
+  background:
+    url("./games/mastermind/assets/board-frame.svg") center / 100% 100% no-repeat,
+    radial-gradient(circle at 50% 0%, rgba(241, 223, 182, 0.18), transparent 42%),
+    linear-gradient(180deg, #10231f, #1e3c35);
+}
+
+.mastermind-board {
+  display: grid;
+  gap: 10px;
+}
+
+.mastermind-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 68px;
+  align-items: center;
+  gap: 10px;
+}
+
+.mastermind-guess {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mastermind-slot,
+.mastermind-feedback-pin,
+.mastermind-palette,
+.mastermind-submit {
+  border-radius: 8px;
+}
+
+.mastermind-slot {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background:
+    radial-gradient(circle at 50% 32%, rgba(255, 255, 255, 0.18), transparent 48%),
+    rgba(7, 13, 12, 0.34);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.34);
+}
+
+.mastermind-slot::after {
+  position: absolute;
+  inset: 14%;
+  border-radius: 50%;
+  background: var(--peg-color, transparent);
+  box-shadow:
+    inset 0 3px 7px rgba(255, 255, 255, 0.25),
+    inset 0 -5px 9px rgba(0, 0, 0, 0.3);
+  content: "";
+}
+
+.mastermind-slot.active {
+  outline: 2px solid rgba(241, 223, 182, 0.72);
+  outline-offset: 2px;
+}
+
+.mastermind-feedback {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid rgba(209, 165, 81, 0.28);
+  border-radius: 8px;
+  background: rgba(12, 20, 18, 0.42);
+}
+
+.mastermind-feedback-pin {
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background:
+    var(--feedback-image, none) center / 74% no-repeat,
+    rgba(255, 255, 255, 0.04);
+}
+
+.mastermind-controls {
+  display: grid;
+  gap: 8px;
+  width: min(100%, 446px);
+  margin: 10px auto 8px;
+}
+
+.mastermind-palette {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mastermind-palette button,
+.mastermind-actions button {
+  min-height: 44px;
+}
+
+.mastermind-palette button {
+  position: relative;
+  border: 1px solid rgba(28, 45, 36, 0.22);
+  background: #ffffff;
+}
+
+.mastermind-palette button::before {
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  background: var(--peg-color, transparent);
+  box-shadow:
+    inset 0 3px 7px rgba(255, 255, 255, 0.3),
+    inset 0 -5px 8px rgba(0, 0, 0, 0.28);
+  content: "";
+}
+
+.mastermind-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mastermind-submit {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.mastermind-submit:disabled {
+  border-color: var(--border);
+  background: #e7ece8;
+  color: var(--muted);
+  cursor: default;
+}
+
+.mastermind-legend {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin: 0 auto 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.mastermind-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mastermind-legend i {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-size: cover;
+}
+
+.mastermind-legend .hit {
+  background-image: url("./games/mastermind/assets/feedback-hit.svg");
+}
+
+.mastermind-legend .near {
+  background-image: url("./games/mastermind/assets/feedback-near.svg");
+}
+
+@media (max-width: 620px) {
+  .mastermind-wrap {
+    width: min(100%, calc(100svh - 322px), 446px);
+    padding: 10px;
+  }
+
+  .mastermind-row {
+    grid-template-columns: minmax(0, 1fr) 60px;
+    gap: 8px;
+  }
+
+  .mastermind-feedback {
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .mastermind-palette {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

@@ -11,7 +11,7 @@ The shared source of truth is `../stly.md`; this folder guide mirrors the requir
 ## Navigation style
 
 - The brand link always returns to the catalog `index.html` using the shortest relative path for the current folder.
-- Every game page uses the same game-link order as the catalog: Крестики-нолики, Змейка, Pong, Breakout, Сапер, Space Invaders, 15 Puzzle, Memory Match, Simon, Frogger, Hangman, Asteroids, Tetris, Whac-A-Mole, Lunar Lander, Connect Four, Centipede, Kaboom!, Pac-Man, Missile Command, Sokoban, Reversi, Qix Claim, Lights Out.
+- Every game page uses the same game-link order as the catalog: Крестики-нолики, Змейка, Pong, Breakout, Сапер, Space Invaders, 15 Puzzle, Memory Match, Simon, Frogger, Hangman, Asteroids, Tetris, Whac-A-Mole, Lunar Lander, Connect Four, Centipede, Kaboom!, Pac-Man, Missile Command, Sokoban, Reversi, Qix Claim, Lights Out, Mastermind.
 - Mark only the current game link with `aria-current="page"`.
 - Keep all URLs relative so local preview, repository hosting, and a later `.ru` domain use the same files.
 

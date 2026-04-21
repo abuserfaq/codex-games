@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 860" role="img" aria-labelledby="title desc">
+  <title id="title">Mastermind brass board frame</title>
+  <desc id="desc">A polished brass frame with dark enamel paneling for the Mastermind game board.</desc>
+  <defs>
+    <linearGradient id="brass" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f4dfaa"/>
+      <stop offset="28%" stop-color="#c48e2f"/>
+      <stop offset="58%" stop-color="#f5e2b7"/>
+      <stop offset="100%" stop-color="#8b5a14"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#26493f"/>
+      <stop offset="100%" stop-color="#112722"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="860" rx="34" fill="url(#brass)"/>
+  <rect x="22" y="22" width="596" height="816" rx="28" fill="#0d1917"/>
+  <rect x="38" y="38" width="564" height="784" rx="24" fill="url(#panel)"/>
+  <rect x="86" y="78" width="468" height="642" rx="22" fill="#17332d" stroke="rgba(255,255,255,0.12)"/>
+  <rect x="86" y="736" width="468" height="54" rx="20" fill="#17332d" stroke="rgba(255,255,255,0.12)"/>
+  <g fill="#f4dfaa" opacity="0.34">
+    <circle cx="72" cy="72" r="10"/>
+    <circle cx="568" cy="72" r="10"/>
+    <circle cx="72" cy="788" r="10"/>
+    <circle cx="568" cy="788" r="10"/>
+  </g>
+</svg>

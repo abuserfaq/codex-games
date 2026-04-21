@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Color-only match pin">
+  <defs>
+    <radialGradient id="near" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#f1efe7"/>
+      <stop offset="100%" stop-color="#c9c4b7"/>
+    </radialGradient>
+  </defs>
+  <circle cx="32" cy="32" r="26" fill="url(#near)" stroke="#f2d7a7" stroke-width="3"/>
+</svg>

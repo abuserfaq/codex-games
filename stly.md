@@ -9,7 +9,7 @@
 
 ## Menu and Navigation
 
-- Use the same compact top menu on the catalog and every game page: Catalog, Крестики-нолики, Змейка, Pong, Breakout, Сапер, Space Invaders, 15 Puzzle, Memory Match, Simon, Frogger, Hangman, Asteroids, Tetris, Whac-A-Mole, Lunar Lander, Connect Four, Centipede, Kaboom!, Pac-Man, Missile Command, Sokoban, Reversi, Qix Claim, Lights Out.
+- Use the same compact top menu on the catalog and every game page: Catalog, Крестики-нолики, Змейка, Pong, Breakout, Сапер, Space Invaders, 15 Puzzle, Memory Match, Simon, Frogger, Hangman, Asteroids, Tetris, Whac-A-Mole, Lunar Lander, Connect Four, Centipede, Kaboom!, Pac-Man, Missile Command, Sokoban, Reversi, Qix Claim, Lights Out, Mastermind.
 - The brand link always returns to `index.html`; game links use the shortest relative path for the current folder.
 - Mark the current game with `aria-current="page"`.
 - Keep the menu horizontally scrollable instead of wrapping into a tall block.
@@ -49,4 +49,4 @@
 
 - Create real assets only when a game needs them; do not rely on placeholders.
 - Store game-specific assets under that game's `assets` folder with clear names.
-- Pac-Man, Missile Command, Sokoban, Reversi, Qix Claim, and Lights Out use generated SVG assets while keeping the same compact board/status/button pattern as the other catalog games.
+- Pac-Man, Missile Command, Sokoban, Reversi, Qix Claim, Lights Out, and Mastermind use generated SVG assets while keeping the same compact board/status/button pattern as the other catalog games.

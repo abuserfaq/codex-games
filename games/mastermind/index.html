@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mastermind</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html" aria-current="page">Mastermind</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Mastermind</h1>
+      <p>Break the hidden four-color code in eight turns. Black pins are exact, white pins are the right color in the wrong slot.</p>
+    </header>
+
+    <section class="play-panel mastermind-wrap" aria-label="Mastermind board">
+      <div class="mastermind-board" id="board"></div>
+    </section>
+
+    <div class="mastermind-legend" aria-hidden="true">
+      <span><i class="hit"></i> exact color + slot</span>
+      <span><i class="near"></i> right color, wrong slot</span>
+    </div>
+
+    <div class="statusbar" role="status">
+      <span>Turn: <strong id="turn">1</strong>/8</span>
+      <span id="message">Pick four colors, then submit the row.</span>
+      <button class="button" id="restart" type="button">New code</button>
+    </div>
+
+    <div class="mastermind-controls" aria-label="Mastermind controls">
+      <div class="mastermind-palette" id="palette"></div>
+      <div class="mastermind-actions">
+        <button class="button" id="clear" type="button">Clear row</button>
+        <button class="button" id="erase" type="button">Backspace</button>
+        <button class="button mastermind-submit" id="submit" type="button">Submit</button>
+      </div>
+    </div>
+
+    <p class="hint">Tap a color to fill the highlighted slot. Use keys 1-6, Backspace, and Enter on desktop.</p>
+  </main>
+
+  <script>
+    const palette = [
+      { name: "Ruby", value: "#d84b4b", key: "1" },
+      { name: "Amber", value: "#e5a63a", key: "2" },
+      { name: "Fern", value: "#4fa56a", key: "3" },
+      { name: "Azure", value: "#4b7ed8", key: "4" },
+      { name: "Violet", value: "#8b58cb", key: "5" },
+      { name: "Ivory", value: "#d8ddd8", key: "6" }
+    ];
+    const maxTurns = 8;
+    const codeSize = 4;
+    const boardEl = document.querySelector("#board");
+    const paletteEl = document.querySelector("#palette");
+    const turnEl = document.querySelector("#turn");
+    const messageEl = document.querySelector("#message");
+    const submitButton = document.querySelector("#submit");
+    const restartButton = document.querySelector("#restart");
+    const clearButton = document.querySelector("#clear");
+    const eraseButton = document.querySelector("#erase");
+
+    let secret = [];
+    let guesses = [];
+    let currentGuess = [];
+    let gameOver = false;
+
+    function randomCode() {
+      return Array.from({ length: codeSize }, () => Math.floor(Math.random() * palette.length));
+    }
+
+    function evaluateGuess(guess, solution) {
+      let hits = 0;
+      const guessCounts = Array(palette.length).fill(0);
+      const solutionCounts = Array(palette.length).fill(0);
+
+      guess.forEach((color, index) => {
+        if (color === solution[index]) {
+          hits += 1;
+        } else {
+          guessCounts[color] += 1;
+          solutionCounts[solution[index]] += 1;
+        }
+      });
+
+      const near = guessCounts.reduce((total, count, index) => total + Math.min(count, solutionCounts[index]), 0);
+      return { hits, near };
+    }
+
+    function reset() {
+      secret = randomCode();
+      guesses = [];
+      currentGuess = [];
+      gameOver = false;
+      messageEl.textContent = "Pick four colors, then submit the row.";
+      render();
+    }
+
+    function activeTurn() {
+      return guesses.length + 1;
+    }
+
+    function selectColor(index) {
+      if (gameOver || currentGuess.length >= codeSize) return;
+      currentGuess.push(index);
+      render();
+    }
+
+    function erase() {
+      if (gameOver || !currentGuess.length) return;
+      currentGuess.pop();
+      render();
+    }
+
+    function clearRow() {
+      if (gameOver || !currentGuess.length) return;
+      currentGuess = [];
+      render();
+    }
+
+    function feedbackPins(result) {
+      const pins = [];
+      for (let index = 0; index < result.hits; index += 1) pins.push("hit");
+      for (let index = 0; index < result.near; index += 1) pins.push("near");
+      while (pins.length < codeSize) pins.push("empty");
+      return pins;
+    }
+
+    function submitGuess() {
+      if (gameOver || currentGuess.length !== codeSize) return;
+      const guess = [...currentGuess];
+      const result = evaluateGuess(guess, secret);
+      guesses.push({ guess, result });
+      currentGuess = [];
+
+      if (result.hits === codeSize) {
+        gameOver = true;
+        messageEl.textContent = `Code cracked in ${guesses.length} turns.`;
+      } else if (guesses.length >= maxTurns) {
+        gameOver = true;
+        const reveal = secret.map((value) => palette[value].name).join(", ");
+        messageEl.textContent = `Out of turns. Code: ${reveal}.`;
+      } else {
+        messageEl.textContent = "Use the clue pins to refine the next row.";
+      }
+
+      render();
+    }
+
+    function buildRow(rowIndex) {
+      const row = document.createElement("div");
+      row.className = "mastermind-row";
+      const guessWrap = document.createElement("div");
+      guessWrap.className = "mastermind-guess";
+      const feedbackWrap = document.createElement("div");
+      feedbackWrap.className = "mastermind-feedback";
+      const guessData = guesses[rowIndex];
+      const isActive = !gameOver && rowIndex === guesses.length;
+      const displayGuess = guessData ? guessData.guess : isActive ? currentGuess : [];
+
+      for (let slot = 0; slot < codeSize; slot += 1) {
+        const peg = document.createElement("div");
+        peg.className = "mastermind-slot";
+        const pegIndex = displayGuess[slot];
+        if (typeof pegIndex === "number") {
+          peg.style.setProperty("--peg-color", palette[pegIndex].value);
+        }
+        if (isActive && slot === currentGuess.length) peg.classList.add("active");
+        peg.setAttribute("aria-hidden", "true");
+        guessWrap.append(peg);
+      }
+
+      feedbackPins(guessData ? guessData.result : { hits: 0, near: 0 }).forEach((pin) => {
+        const chip = document.createElement("div");
+        chip.className = "mastermind-feedback-pin";
+        if (pin === "hit") {
+          chip.style.setProperty("--feedback-image", "url('./assets/feedback-hit.svg')");
+        } else if (pin === "near") {
+          chip.style.setProperty("--feedback-image", "url('./assets/feedback-near.svg')");
+        } else {
+          chip.setAttribute("aria-hidden", "true");
+        }
+        feedbackWrap.append(chip);
+      });
+
+      row.append(guessWrap, feedbackWrap);
+      return row;
+    }
+
+    function renderPalette() {
+      paletteEl.innerHTML = "";
+      palette.forEach((color, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "button";
+        button.style.setProperty("--peg-color", color.value);
+        button.setAttribute("aria-label", `${color.name} (${color.key})`);
+        button.addEventListener("click", () => selectColor(index));
+        paletteEl.append(button);
+      });
+    }
+
+    function render() {
+      boardEl.innerHTML = "";
+      for (let row = 0; row < maxTurns; row += 1) {
+        boardEl.append(buildRow(row));
+      }
+      turnEl.textContent = String(Math.min(activeTurn(), maxTurns));
+      submitButton.disabled = currentGuess.length !== codeSize || gameOver;
+      renderPalette();
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (gameOver) return;
+      const paletteIndex = palette.findIndex((color) => color.key === event.key);
+      if (paletteIndex >= 0) {
+        event.preventDefault();
+        selectColor(paletteIndex);
+        return;
+      }
+      if (event.key === "Backspace") {
+        event.preventDefault();
+        erase();
+        return;
+      }
+      if (event.key === "Enter") {
+        event.preventDefault();
+        submitGuess();
+      }
+    });
+
+    clearButton.addEventListener("click", clearRow);
+    eraseButton.addEventListener("click", erase);
+    submitButton.addEventListener("click", submitGuess);
+    restartButton.addEventListener("click", reset);
+
+    reset();
+  </script>
+</body>
+</html>
