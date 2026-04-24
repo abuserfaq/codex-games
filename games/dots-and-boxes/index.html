@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dots and Boxes</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+                <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html" aria-current="page">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Dots and Boxes</h1>
+      <p>Draw one line at a time. Close a square to score it and play again.</p>
+    </header>
+
+    <div class="statusbar" role="status">
+      <span>You: <strong id="playerScore">0</strong></span>
+      <span>Rival: <strong id="computerScore">0</strong></span>
+      <span id="message">Your line.</span>
+      <button class="button" id="restart" type="button">Restart</button>
+    </div>
+
+    <section class="play-panel dots-board" id="board" aria-label="Dots and Boxes board"></section>
+
+    <div class="statusbar">
+      <span class="hint">Tap any pale line. Green boxes are yours; red boxes belong to the rival.</span>
+      <span class="dots-legend" aria-hidden="true"><span>You</span><span>Rival</span></span>
+    </div>
+  </main>
+
+  <script>
+    const board = document.querySelector("#board");
+    const playerScoreEl = document.querySelector("#playerScore");
+    const computerScoreEl = document.querySelector("#computerScore");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+
+    const size = 5;
+    const boxCount = size - 1;
+    const player = "player";
+    const computer = "computer";
+    let edges;
+    let boxes;
+    let turn;
+    let playerScore;
+    let computerScore;
+    let locked;
+
+    function edgeKey(kind, row, col) {
+      return `${kind}-${row}-${col}`;
+    }
+
+    function boxKey(row, col) {
+      return `${row}-${col}`;
+    }
+
+    function boxEdges(row, col) {
+      return [
+        edgeKey("h", row, col),
+        edgeKey("h", row + 1, col),
+        edgeKey("v", row, col),
+        edgeKey("v", row, col + 1)
+      ];
+    }
+
+    function updateStatus(text) {
+      playerScoreEl.textContent = playerScore;
+      computerScoreEl.textContent = computerScore;
+      messageEl.textContent = text;
+    }
+
+    function openEdges() {
+      return [...document.querySelectorAll(".dots-edge:not(.claimed)")];
+    }
+
+    function markEdge(button, owner) {
+      button.classList.add("claimed", owner);
+      button.disabled = true;
+      edges.set(button.dataset.edge, owner);
+    }
+
+    function completeBoxes(owner) {
+      let scored = 0;
+      for (let row = 0; row < boxCount; row += 1) {
+        for (let col = 0; col < boxCount; col += 1) {
+          const key = boxKey(row, col);
+          if (boxes.has(key)) continue;
+          if (boxEdges(row, col).every((edge) => edges.has(edge))) {
+            boxes.set(key, owner);
+            scored += 1;
+            const cell = board.querySelector(`[data-box="${key}"]`);
+            const mark = document.createElement("span");
+            mark.className = `dots-box ${owner}`;
+            mark.textContent = owner === player ? "Y" : "R";
+            cell.append(mark);
+          }
+        }
+      }
+      if (owner === player) playerScore += scored;
+      if (owner === computer) computerScore += scored;
+      return scored;
+    }
+
+    function finishIfDone() {
+      if (boxes.size < boxCount * boxCount) return false;
+      locked = true;
+      const result = playerScore === computerScore
+        ? "Draw board."
+        : playerScore > computerScore
+          ? "You win the page."
+          : "Rival wins this page.";
+      updateStatus(result);
+      return true;
+    }
+
+    function chooseComputerEdge() {
+      const available = openEdges();
+      const scoring = available.find((button) => {
+        const trial = new Map(edges);
+        trial.set(button.dataset.edge, computer);
+        for (let row = 0; row < boxCount; row += 1) {
+          for (let col = 0; col < boxCount; col += 1) {
+            if (!boxes.has(boxKey(row, col)) && boxEdges(row, col).every((edge) => trial.has(edge))) {
+              return true;
+            }
+          }
+        }
+        return false;
+      });
+      if (scoring) return scoring;
+      return available[Math.floor(Math.random() * available.length)];
+    }
+
+    function computerMove() {
+      const button = chooseComputerEdge();
+      if (!button) return;
+      markEdge(button, computer);
+      const scored = completeBoxes(computer);
+      if (finishIfDone()) return;
+      if (scored > 0) {
+        updateStatus("Rival scored and draws again.");
+        setTimeout(computerMove, 360);
+        return;
+      }
+      locked = false;
+      turn = player;
+      updateStatus("Your line.");
+    }
+
+    function playerMove(button) {
+      if (locked || turn !== player || button.disabled) return;
+      markEdge(button, player);
+      const scored = completeBoxes(player);
+      if (finishIfDone()) return;
+      if (scored > 0) {
+        updateStatus("Box closed. Draw again.");
+        return;
+      }
+      turn = computer;
+      locked = true;
+      updateStatus("Rival thinking.");
+      setTimeout(computerMove, 420);
+    }
+
+    function renderBoard() {
+      board.innerHTML = "";
+      for (let row = 0; row < boxCount; row += 1) {
+        for (let col = 0; col < boxCount; col += 1) {
+          const cell = document.createElement("div");
+          cell.className = "dots-cell";
+          cell.dataset.box = boxKey(row, col);
+          if (col === boxCount - 1) cell.classList.add("last-col");
+          if (row === boxCount - 1) cell.classList.add("last-row");
+
+          const top = document.createElement("button");
+          top.className = "dots-edge horizontal";
+          top.type = "button";
+          top.dataset.edge = edgeKey("h", row, col);
+          top.setAttribute("aria-label", `Top line ${row + 1}, ${col + 1}`);
+          top.addEventListener("click", () => playerMove(top));
+          cell.append(top);
+
+          const left = document.createElement("button");
+          left.className = "dots-edge vertical";
+          left.type = "button";
+          left.dataset.edge = edgeKey("v", row, col);
+          left.setAttribute("aria-label", `Left line ${row + 1}, ${col + 1}`);
+          left.addEventListener("click", () => playerMove(left));
+          cell.append(left);
+
+          if (col === boxCount - 1) {
+            const right = document.createElement("button");
+            right.className = "dots-edge vertical right";
+            right.type = "button";
+            right.dataset.edge = edgeKey("v", row, col + 1);
+            right.setAttribute("aria-label", `Right line ${row + 1}, ${col + 1}`);
+            right.addEventListener("click", () => playerMove(right));
+            cell.append(right);
+          }
+
+          if (row === boxCount - 1) {
+            const bottom = document.createElement("button");
+            bottom.className = "dots-edge horizontal bottom";
+            bottom.type = "button";
+            bottom.dataset.edge = edgeKey("h", row + 1, col);
+            bottom.setAttribute("aria-label", `Bottom line ${row + 1}, ${col + 1}`);
+            bottom.addEventListener("click", () => playerMove(bottom));
+            cell.append(bottom);
+
+            const bottomDot = document.createElement("span");
+            bottomDot.className = "bottom-dot";
+            cell.append(bottomDot);
+          }
+
+          if (row === boxCount - 1 && col === boxCount - 1) {
+            const cornerDot = document.createElement("span");
+            cornerDot.className = "corner-dot";
+            cell.append(cornerDot);
+          }
+
+          board.append(cell);
+        }
+      }
+    }
+
+    function resetGame() {
+      edges = new Map();
+      boxes = new Map();
+      turn = player;
+      playerScore = 0;
+      computerScore = 0;
+      locked = false;
+      renderBoard();
+      updateStatus("Your line.");
+    }
+
+    restartButton.addEventListener("click", resetGame);
+    resetGame();
+  </script>
+</body>
+</html>

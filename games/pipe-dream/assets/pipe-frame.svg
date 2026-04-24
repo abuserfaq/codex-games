@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Pipe Dream frame</title>
+  <desc id="desc">Decorative panel frame with soft teal glow and brass corners.</desc>
+  <defs>
+    <linearGradient id="panel" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#132b25"/>
+      <stop offset="100%" stop-color="#081714"/>
+    </linearGradient>
+    <linearGradient id="corner" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#f3cf71"/>
+      <stop offset="100%" stop-color="#9c6517"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="28" fill="url(#panel)"/>
+  <rect x="16" y="16" width="480" height="480" rx="20" fill="none" stroke="#6ecad2" stroke-opacity=".35" stroke-width="4"/>
+  <path d="M48 18h76l14 18v34H48zM388 18h76v52h-90l14-18zM48 442h90v34l-14 18H48zM388 442h76v52h-76l-14-18z" fill="url(#corner)"/>
+  <circle cx="64" cy="64" r="12" fill="#f7e4a8"/>
+  <circle cx="448" cy="64" r="12" fill="#f7e4a8"/>
+  <circle cx="64" cy="448" r="12" fill="#f7e4a8"/>
+  <circle cx="448" cy="448" r="12" fill="#f7e4a8"/>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Pencil">
+  <defs>
+    <linearGradient id="wood" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f4d18a"/>
+      <stop offset="1" stop-color="#d59c2a"/>
+    </linearGradient>
+  </defs>
+  <path fill="#1c2d24" d="M20 94 28 70 78 20c6-6 16-6 22 0s6 16 0 22L50 92 20 94Z"/>
+  <path fill="#176a4a" d="m35 68 38-38 17 17-38 38-19 5 2-22Z"/>
+  <path fill="#ffffff" d="m28 70 7-2-2 22-13 4 8-24Z"/>
+  <path fill="url(#wood)" d="m73 30 8-8c4-4 10-4 14 0l5 5c4 4 4 10 0 14l-8 8-19-19Z"/>
+  <path fill="#c94f3d" d="m84 19 4-4c3-3 8-3 12 1l4 4c4 4 4 9 1 12l-4 4-17-17Z"/>
+  <path fill="#fbfdfb" opacity=".65" d="m43 72 37-37 5 5-37 37-5-5Z"/>
+</svg>

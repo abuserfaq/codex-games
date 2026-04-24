@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Brass valve</title>
+  <desc id="desc">A compact brass water valve with a red wheel handle.</desc>
+  <defs>
+    <linearGradient id="body" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#f3cf71"/>
+      <stop offset="100%" stop-color="#a76b16"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="0%" x2="0%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#f7e4a8"/>
+      <stop offset="100%" stop-color="#c98d22"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="22" fill="#0d1f1b"/>
+  <circle cx="64" cy="64" r="34" fill="url(#rim)" stroke="#f7e4a8" stroke-width="4"/>
+  <circle cx="64" cy="64" r="17" fill="#f8f7f2" opacity=".92"/>
+  <path d="M24 64h24M80 64h24M64 24v24M64 80v24" stroke="#d84b4b" stroke-linecap="round" stroke-width="10"/>
+  <circle cx="64" cy="64" r="10" fill="#d84b4b"/>
+  <path d="M38 96h52" stroke="url(#body)" stroke-linecap="round" stroke-width="16"/>
+</svg>

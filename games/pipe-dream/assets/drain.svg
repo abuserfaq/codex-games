@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Glass drain</title>
+  <desc id="desc">A round drain cap with blue glowing water channels.</desc>
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#bff6ff"/>
+      <stop offset="100%" stop-color="#267fa2"/>
+    </radialGradient>
+  </defs>
+  <rect width="128" height="128" rx="22" fill="#0d1f1b"/>
+  <circle cx="64" cy="64" r="39" fill="#d6e4ea" stroke="#70848d" stroke-width="6"/>
+  <circle cx="64" cy="64" r="28" fill="#18343f"/>
+  <path d="M64 36v56M42 46l44 36M42 82l44-36" stroke="url(#glow)" stroke-linecap="round" stroke-width="8"/>
+  <circle cx="64" cy="64" r="8" fill="#bff6ff"/>
+</svg>
