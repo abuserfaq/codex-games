@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yahtzee</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="./index.html" aria-current="page">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Yahtzee</h1>
+      <p>Roll five dice up to three times, hold your best faces, and fill each scoring line once.</p>
+    </header>
+
+    <section class="statusbar" role="status">
+      <span>Round: <strong id="round">1</strong>/13</span>
+      <span>Rolls: <strong id="rolls">3</strong></span>
+      <span>Total: <strong id="total">0</strong></span>
+      <button class="button" id="restart" type="button">New sheet</button>
+    </section>
+
+    <section class="play-panel yahtzee-wrap" aria-label="Yahtzee table">
+      <div class="yahtzee-table">
+        <div class="yahtzee-dice" id="dice" aria-label="Dice"></div>
+        <div class="yahtzee-message" id="message">Roll to open the score sheet.</div>
+        <div class="yahtzee-actions">
+          <button class="button" id="roll" type="button">Roll dice</button>
+        </div>
+        <div class="yahtzee-score" id="score" aria-label="Score categories"></div>
+      </div>
+    </section>
+
+    <div class="statusbar">
+      <span class="hint">Mouse, touch, or keys 1-5 to hold dice. Space rolls; R starts a new sheet.</span>
+    </div>
+  </main>
+
+  <script>
+    const categories = [
+      { id: "ones", label: "Ones", score: (dice) => sumFace(dice, 1) },
+      { id: "twos", label: "Twos", score: (dice) => sumFace(dice, 2) },
+      { id: "threes", label: "Threes", score: (dice) => sumFace(dice, 3) },
+      { id: "fours", label: "Fours", score: (dice) => sumFace(dice, 4) },
+      { id: "fives", label: "Fives", score: (dice) => sumFace(dice, 5) },
+      { id: "sixes", label: "Sixes", score: (dice) => sumFace(dice, 6) },
+      { id: "three", label: "3 Kind", score: (dice) => hasKind(dice, 3) ? sum(dice) : 0 },
+      { id: "four", label: "4 Kind", score: (dice) => hasKind(dice, 4) ? sum(dice) : 0 },
+      { id: "full", label: "Full House", score: (dice) => isFullHouse(dice) ? 25 : 0 },
+      { id: "small", label: "Small Run", score: (dice) => hasStraight(dice, 4) ? 30 : 0 },
+      { id: "large", label: "Large Run", score: (dice) => hasStraight(dice, 5) ? 40 : 0 },
+      { id: "yahtzee", label: "Yahtzee", score: (dice) => hasKind(dice, 5) ? 50 : 0 },
+      { id: "chance", label: "Chance", score: (dice) => sum(dice) }
+    ];
+
+    const diceEl = document.querySelector("#dice");
+    const scoreEl = document.querySelector("#score");
+    const messageEl = document.querySelector("#message");
+    const rollButton = document.querySelector("#roll");
+    const restartButton = document.querySelector("#restart");
+    const rollsEl = document.querySelector("#rolls");
+    const roundEl = document.querySelector("#round");
+    const totalEl = document.querySelector("#total");
+
+    let dice = [1, 1, 1, 1, 1];
+    let held = [false, false, false, false, false];
+    let rollsLeft = 3;
+    let scores = {};
+    let round = 1;
+    let started = false;
+
+    function sum(values) {
+      return values.reduce((total, value) => total + value, 0);
+    }
+
+    function sumFace(values, face) {
+      return values.filter((value) => value === face).length * face;
+    }
+
+    function counts(values) {
+      return values.reduce((map, value) => {
+        map[value] = (map[value] || 0) + 1;
+        return map;
+      }, {});
+    }
+
+    function hasKind(values, size) {
+      return Object.values(counts(values)).some((count) => count >= size);
+    }
+
+    function isFullHouse(values) {
+      const groups = Object.values(counts(values)).sort((a, b) => a - b).join(",");
+      return groups === "2,3" || groups === "5";
+    }
+
+    function hasStraight(values, length) {
+      const unique = [...new Set(values)].sort((a, b) => a - b).join("");
+      return length === 5
+        ? unique === "12345" || unique === "23456"
+        : ["1234", "2345", "3456"].some((run) => unique.includes(run));
+    }
+
+    function roll() {
+      if (rollsLeft === 0) return;
+      dice = dice.map((value, index) => held[index] ? value : Math.floor(Math.random() * 6) + 1);
+      rollsLeft -= 1;
+      started = true;
+      messageEl.textContent = rollsLeft > 0 ? "Hold dice or roll again." : "Choose a scoring line.";
+      render();
+    }
+
+    function scoreCategory(id) {
+      if (!started || scores[id] !== undefined) return;
+      const category = categories.find((item) => item.id === id);
+      const points = category.score(dice);
+      scores[id] = points;
+      const filled = Object.keys(scores).length;
+      round = Math.min(13, filled + 1);
+      held = held.map(() => false);
+      rollsLeft = 3;
+      started = false;
+      messageEl.textContent = filled === categories.length
+        ? `Sheet complete. Final score ${totalScore()}.`
+        : `${category.label} scored ${points}. Roll the next round.`;
+      render();
+    }
+
+    function toggleHold(index) {
+      if (!started || rollsLeft === 3) return;
+      held[index] = !held[index];
+      render();
+    }
+
+    function totalScore() {
+      return Object.values(scores).reduce((total, value) => total + value, 0);
+    }
+
+    function pipMarkup(value) {
+      return Array.from({ length: value }, (_, index) => `<span class="yahtzee-pip pip-${value}-${index + 1}"></span>`).join("");
+    }
+
+    function renderDice() {
+      diceEl.innerHTML = "";
+      dice.forEach((value, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `yahtzee-die${held[index] ? " held" : ""}`;
+        button.disabled = !started || rollsLeft === 3;
+        button.setAttribute("aria-label", `Die ${index + 1}: ${value}${held[index] ? ", held" : ""}`);
+        button.innerHTML = pipMarkup(value);
+        button.addEventListener("click", () => toggleHold(index));
+        diceEl.append(button);
+      });
+    }
+
+    function renderScore() {
+      scoreEl.innerHTML = "";
+      categories.forEach((category) => {
+        const value = scores[category.id];
+        const preview = started ? category.score(dice) : "-";
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "yahtzee-score-row";
+        button.disabled = !started || value !== undefined;
+        button.innerHTML = `<span>${category.label}</span><strong>${value ?? preview}</strong>`;
+        button.setAttribute("aria-label", `${category.label}: ${value ?? `${preview} possible`}`);
+        button.addEventListener("click", () => scoreCategory(category.id));
+        scoreEl.append(button);
+      });
+    }
+
+    function render() {
+      renderDice();
+      renderScore();
+      rollButton.disabled = rollsLeft === 0 || Object.keys(scores).length === categories.length;
+      rollsEl.textContent = rollsLeft;
+      roundEl.textContent = round;
+      totalEl.textContent = totalScore();
+    }
+
+    function reset() {
+      dice = [1, 1, 1, 1, 1];
+      held = [false, false, false, false, false];
+      rollsLeft = 3;
+      scores = {};
+      round = 1;
+      started = false;
+      messageEl.textContent = "Roll to open the score sheet.";
+      render();
+    }
+
+    rollButton.addEventListener("click", roll);
+    restartButton.addEventListener("click", reset);
+    window.addEventListener("keydown", (event) => {
+      if (["1", "2", "3", "4", "5"].includes(event.key)) toggleHold(Number(event.key) - 1);
+      if (event.code === "Space" && !rollButton.disabled) {
+        event.preventDefault();
+        roll();
+      }
+      if (event.key.toLowerCase() === "r") reset();
+    });
+
+    render();
+  </script>
+</body>
+</html>

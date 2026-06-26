@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mancala</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="./index.html" aria-current="page">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Mancala</h1>
+      <p>Sow stones around the carved board. Capture from the opposite cup and finish with the richer store.</p>
+    </header>
+
+    <section class="statusbar" role="status">
+      <span>You: <strong id="playerScore">0</strong></span>
+      <span>Table: <strong id="tableScore">0</strong></span>
+      <span id="message">Choose one of your lower cups.</span>
+      <button class="button" id="restart" type="button">New board</button>
+    </section>
+
+    <section class="play-panel mancala-wrap" aria-label="Mancala board">
+      <div class="mancala-board" id="board"></div>
+    </section>
+
+    <div class="statusbar">
+      <span class="hint">Mouse, touch, or keys 1-6: play a lower cup. Landing in your store grants another turn.</span>
+    </div>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const playerScoreEl = document.querySelector("#playerScore");
+    const tableScoreEl = document.querySelector("#tableScore");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+
+    const playerStore = 6;
+    const tableStore = 13;
+    const opposite = [12, 11, 10, 9, 8, 7];
+    let pits = [];
+    let turn = "player";
+    let locked = false;
+
+    function reset() {
+      pits = Array(14).fill(4);
+      pits[playerStore] = 0;
+      pits[tableStore] = 0;
+      turn = "player";
+      locked = false;
+      setMessage("Choose one of your lower cups.");
+      render();
+    }
+
+    function setMessage(text) {
+      messageEl.textContent = text;
+    }
+
+    function sideEmpty(indices) {
+      return indices.every((index) => pits[index] === 0);
+    }
+
+    function finishIfNeeded() {
+      const playerSide = [0, 1, 2, 3, 4, 5];
+      const tableSide = [7, 8, 9, 10, 11, 12];
+      if (!sideEmpty(playerSide) && !sideEmpty(tableSide)) return false;
+      pits[playerStore] += playerSide.reduce((sum, index) => sum + pits[index], 0);
+      pits[tableStore] += tableSide.reduce((sum, index) => sum + pits[index], 0);
+      playerSide.concat(tableSide).forEach((index) => pits[index] = 0);
+      locked = true;
+      if (pits[playerStore] === pits[tableStore]) setMessage("Stones are even. Draw.");
+      else setMessage(pits[playerStore] > pits[tableStore] ? "Your store wins." : "The table wins this board.");
+      render();
+      return true;
+    }
+
+    function sow(start) {
+      const activeStore = turn === "player" ? playerStore : tableStore;
+      const skipStore = turn === "player" ? tableStore : playerStore;
+      let stones = pits[start];
+      let index = start;
+      pits[start] = 0;
+      while (stones > 0) {
+        index = (index + 1) % pits.length;
+        if (index === skipStore) continue;
+        pits[index] += 1;
+        stones -= 1;
+      }
+
+      if (turn === "player" && index >= 0 && index <= 5 && pits[index] === 1 && pits[opposite[index]] > 0) {
+        pits[playerStore] += pits[opposite[index]] + 1;
+        pits[index] = 0;
+        pits[opposite[index]] = 0;
+        setMessage("Clean capture from the opposite cup.");
+      } else if (turn === "table" && index >= 7 && index <= 12 && pits[index] === 1 && pits[12 - index] > 0) {
+        pits[tableStore] += pits[12 - index] + 1;
+        pits[index] = 0;
+        pits[12 - index] = 0;
+      }
+
+      if (finishIfNeeded()) return;
+      if (index === activeStore) {
+        if (turn === "player") {
+          locked = false;
+          setMessage("Your last stone reached the store. Play again.");
+          render();
+        } else {
+          locked = false;
+          render();
+          window.setTimeout(tableMove, 520);
+        }
+        return;
+      }
+
+      turn = turn === "player" ? "table" : "player";
+      if (turn === "player") {
+        locked = false;
+        setMessage("Your turn.");
+        render();
+      } else {
+        locked = false;
+        setMessage("Table is choosing a cup.");
+        render();
+        window.setTimeout(tableMove, 520);
+      }
+    }
+
+    function playerMove(index) {
+      if (locked || turn !== "player" || index < 0 || index > 5 || pits[index] === 0) return;
+      locked = true;
+      sow(index);
+    }
+
+    function tableMove() {
+      if (locked || turn !== "table") return;
+      const choices = [12, 11, 10, 9, 8, 7].filter((index) => pits[index] > 0);
+      if (choices.length === 0) {
+        finishIfNeeded();
+        return;
+      }
+      const extra = choices.find((index) => (index + pits[index]) % 14 === tableStore);
+      const capture = choices.find((index) => {
+        let stones = pits[index];
+        let cursor = index;
+        while (stones > 0) {
+          cursor = (cursor + 1) % pits.length;
+          if (cursor === playerStore) continue;
+          stones -= 1;
+        }
+        return cursor >= 7 && cursor <= 12 && pits[cursor] === 0 && pits[12 - cursor] > 0;
+      });
+      const choice = extra ?? capture ?? choices[0];
+      sow(choice);
+    }
+
+    function stoneMarkup(count) {
+      let html = "";
+      const shown = Math.min(count, 12);
+      for (let index = 0; index < shown; index += 1) {
+        html += `<span class="mancala-stone" style="--x:${(index * 29) % 68}%;--y:${(index * 47) % 64}%;--r:${(index % 5) * 17 - 34}deg"></span>`;
+      }
+      return html;
+    }
+
+    function render() {
+      playerScoreEl.textContent = pits[playerStore];
+      tableScoreEl.textContent = pits[tableStore];
+      boardEl.innerHTML = "";
+
+      const tableStoreEl = storeElement("Table store", pits[tableStore], "table-store");
+      const playerStoreEl = storeElement("Your store", pits[playerStore], "player-store");
+      boardEl.append(tableStoreEl);
+      [12, 11, 10, 9, 8, 7].forEach((index) => boardEl.append(pitElement(index, "table")));
+      [0, 1, 2, 3, 4, 5].forEach((index) => boardEl.append(pitElement(index, "player")));
+      boardEl.append(playerStoreEl);
+    }
+
+    function storeElement(label, count, className) {
+      const store = document.createElement("div");
+      store.className = `mancala-store ${className}`;
+      store.setAttribute("aria-label", `${label}: ${count}`);
+      store.innerHTML = `<span class="mancala-count">${count}</span>${stoneMarkup(count)}`;
+      return store;
+    }
+
+    function pitElement(index, owner) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `mancala-pit ${owner}`;
+      button.disabled = owner !== "player" || turn !== "player" || locked || pits[index] === 0;
+      button.setAttribute("aria-label", `${owner === "player" ? "Your" : "Table"} cup ${owner === "player" ? index + 1 : 13 - index}: ${pits[index]} stones`);
+      button.innerHTML = `<span class="mancala-count">${pits[index]}</span>${stoneMarkup(pits[index])}`;
+      button.addEventListener("click", () => playerMove(index));
+      return button;
+    }
+
+    restartButton.addEventListener("click", reset);
+    window.addEventListener("keydown", (event) => {
+      if (["1", "2", "3", "4", "5", "6"].includes(event.key)) playerMove(Number(event.key) - 1);
+      if (event.key.toLowerCase() === "r") reset();
+    });
+
+    reset();
+  </script>
+</body>
+</html>

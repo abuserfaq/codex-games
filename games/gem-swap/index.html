@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gem Swap</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="./index.html" aria-current="page">Gem Swap</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Gem Swap</h1>
+      <p>Swap neighboring gems to make rows or columns of three before the move counter runs dry.</p>
+    </header>
+
+    <section class="statusbar gem-hud" role="status">
+      <span>Score: <strong id="score">0</strong>/<strong id="goal">900</strong></span>
+      <span>Moves: <strong id="moves">24</strong></span>
+      <span id="message">Pick a gem, then a neighbor.</span>
+      <button class="button" id="restart" type="button">Reset</button>
+    </section>
+
+    <section class="play-panel gem-wrap" aria-label="Gem Swap match-three board">
+      <div class="gem-board" id="board"></div>
+    </section>
+
+    <div class="statusbar gem-controls">
+      <button class="button" type="button" data-shuffle>Shuffle</button>
+      <span class="hint">Mouse/touch: swap neighbors. Keyboard: arrows, Enter, R.</span>
+    </div>
+  </main>
+
+  <script>
+    const size = 8;
+    const goal = 900;
+    const startMoves = 24;
+    const gems = ["ruby", "amber", "emerald", "sapphire", "violet"];
+    const boardEl = document.querySelector("#board");
+    const scoreEl = document.querySelector("#score");
+    const goalEl = document.querySelector("#goal");
+    const movesEl = document.querySelector("#moves");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+    const shuffleButton = document.querySelector("[data-shuffle]");
+    let board = [];
+    let selected = null;
+    let focused = { row: 0, col: 0 };
+    let score = 0;
+    let moves = startMoves;
+    let locked = false;
+    let finished = false;
+
+    function randomGem() {
+      return gems[Math.floor(Math.random() * gems.length)];
+    }
+
+    function createBoard() {
+      board = Array.from({ length: size }, () => Array(size).fill(""));
+      for (let row = 0; row < size; row += 1) {
+        for (let col = 0; col < size; col += 1) {
+          let next = randomGem();
+          while (
+            (col >= 2 && board[row][col - 1] === next && board[row][col - 2] === next) ||
+            (row >= 2 && board[row - 1][col] === next && board[row - 2][col] === next)
+          ) {
+            next = randomGem();
+          }
+          board[row][col] = next;
+        }
+      }
+    }
+
+    function keyOf(row, col) {
+      return `${row},${col}`;
+    }
+
+    function inBounds(row, col) {
+      return row >= 0 && row < size && col >= 0 && col < size;
+    }
+
+    function areNeighbors(a, b) {
+      return Math.abs(a.row - b.row) + Math.abs(a.col - b.col) === 1;
+    }
+
+    function swap(a, b) {
+      [board[a.row][a.col], board[b.row][b.col]] = [board[b.row][b.col], board[a.row][a.col]];
+    }
+
+    function findMatches() {
+      const matched = new Set();
+      for (let row = 0; row < size; row += 1) {
+        let runStart = 0;
+        for (let col = 1; col <= size; col += 1) {
+          if (col < size && board[row][col] === board[row][runStart]) continue;
+          if (col - runStart >= 3) {
+            for (let index = runStart; index < col; index += 1) matched.add(keyOf(row, index));
+          }
+          runStart = col;
+        }
+      }
+      for (let col = 0; col < size; col += 1) {
+        let runStart = 0;
+        for (let row = 1; row <= size; row += 1) {
+          if (row < size && board[row][col] === board[runStart][col]) continue;
+          if (row - runStart >= 3) {
+            for (let index = runStart; index < row; index += 1) matched.add(keyOf(index, col));
+          }
+          runStart = row;
+        }
+      }
+      return matched;
+    }
+
+    function collapse(matched) {
+      for (let col = 0; col < size; col += 1) {
+        const kept = [];
+        for (let row = size - 1; row >= 0; row -= 1) {
+          if (!matched.has(keyOf(row, col))) kept.push(board[row][col]);
+        }
+        for (let row = size - 1; row >= 0; row -= 1) {
+          board[row][col] = kept[size - 1 - row] || randomGem();
+        }
+      }
+    }
+
+    async function resolveMatches(opening = false) {
+      locked = true;
+      let chain = 0;
+      let matched = findMatches();
+      while (matched.size) {
+        chain += 1;
+        score += matched.size * 10 * chain;
+        render(matched);
+        await new Promise((resolve) => setTimeout(resolve, opening ? 80 : 180));
+        collapse(matched);
+        render();
+        await new Promise((resolve) => setTimeout(resolve, opening ? 40 : 130));
+        matched = findMatches();
+      }
+      locked = false;
+      endCheck();
+      render();
+    }
+
+    async function attemptSwap(next) {
+      if (locked || finished || !selected || !areNeighbors(selected, next)) return;
+      const previous = selected;
+      selected = null;
+      swap(previous, next);
+      const matched = findMatches();
+      if (!matched.size) {
+        render();
+        await new Promise((resolve) => setTimeout(resolve, 140));
+        swap(previous, next);
+        messageEl.textContent = "That swap makes no line.";
+        render();
+        return;
+      }
+      moves -= 1;
+      messageEl.textContent = "Match made.";
+      await resolveMatches();
+    }
+
+    function endCheck() {
+      if (score >= goal) {
+        finished = true;
+        messageEl.textContent = "Gem vault opened.";
+      } else if (moves <= 0) {
+        finished = true;
+        messageEl.textContent = "No moves left. Try again.";
+      } else {
+        messageEl.textContent = "Pick a gem, then a neighbor.";
+      }
+    }
+
+    function choose(row, col) {
+      if (locked || finished) return;
+      focused = { row, col };
+      if (!selected) {
+        selected = { row, col };
+        messageEl.textContent = "Choose an adjacent gem.";
+        render();
+        return;
+      }
+      if (selected.row === row && selected.col === col) {
+        selected = null;
+        messageEl.textContent = "Selection cleared.";
+        render();
+        return;
+      }
+      const next = { row, col };
+      if (!areNeighbors(selected, next)) {
+        selected = next;
+        messageEl.textContent = "New gem selected.";
+        render();
+        return;
+      }
+      attemptSwap(next);
+    }
+
+    async function shuffleBoard() {
+      if (locked || finished) return;
+      selected = null;
+      for (let row = 0; row < size; row += 1) {
+        for (let col = 0; col < size; col += 1) board[row][col] = randomGem();
+      }
+      messageEl.textContent = "Board shuffled.";
+      await resolveMatches(true);
+    }
+
+    async function reset() {
+      score = 0;
+      moves = startMoves;
+      selected = null;
+      focused = { row: 0, col: 0 };
+      finished = false;
+      createBoard();
+      goalEl.textContent = goal;
+      await resolveMatches(true);
+      messageEl.textContent = "Pick a gem, then a neighbor.";
+      render();
+    }
+
+    function render(matched = new Set()) {
+      boardEl.innerHTML = "";
+      board.forEach((row, rowIndex) => {
+        row.forEach((gem, colIndex) => {
+          const cell = document.createElement("button");
+          const isSelected = selected && selected.row === rowIndex && selected.col === colIndex;
+          cell.type = "button";
+          cell.className = `gem-cell ${gem}${isSelected ? " selected" : ""}${matched.has(keyOf(rowIndex, colIndex)) ? " matched" : ""}`;
+          cell.dataset.row = rowIndex;
+          cell.dataset.col = colIndex;
+          cell.setAttribute("aria-label", `${gem} gem at row ${rowIndex + 1}, column ${colIndex + 1}`);
+          cell.addEventListener("click", () => choose(rowIndex, colIndex));
+          boardEl.append(cell);
+        });
+      });
+      const focusCell = boardEl.querySelector(`[data-row="${focused.row}"][data-col="${focused.col}"]`);
+      if (focusCell) focusCell.tabIndex = 0;
+      scoreEl.textContent = score;
+      movesEl.textContent = moves;
+    }
+
+    restartButton.addEventListener("click", reset);
+    shuffleButton.addEventListener("click", shuffleBoard);
+    document.addEventListener("keydown", (event) => {
+      if (event.key.toLowerCase() === "r") {
+        reset();
+        return;
+      }
+      const directions = {
+        ArrowUp: [-1, 0],
+        ArrowDown: [1, 0],
+        ArrowLeft: [0, -1],
+        ArrowRight: [0, 1]
+      };
+      if (directions[event.key]) {
+        event.preventDefault();
+        const [dr, dc] = directions[event.key];
+        focused = {
+          row: Math.max(0, Math.min(size - 1, focused.row + dr)),
+          col: Math.max(0, Math.min(size - 1, focused.col + dc))
+        };
+        const focusCell = boardEl.querySelector(`[data-row="${focused.row}"][data-col="${focused.col}"]`);
+        if (focusCell) focusCell.focus();
+      }
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        choose(focused.row, focused.col);
+      }
+    });
+
+    reset();
+  </script>
+</body>
+</html>

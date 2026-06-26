@@ -1,0 +1,6 @@
+{
+  "ui": {
+    "gridPaper": "./assets/grid-paper.svg",
+    "inkMark": "./assets/ink-mark.svg"
+  }
+}

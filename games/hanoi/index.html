@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tower of Hanoi</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="./index.html" aria-current="page">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Tower of Hanoi</h1>
+      <p>Move the lacquer disks to the final tower. A larger disk can never sit on a smaller one.</p>
+    </header>
+
+    <section class="statusbar" role="status">
+      <span>Moves: <strong id="moves">0</strong></span>
+      <span>Best: <strong id="best">31</strong></span>
+      <span id="message">Choose the left tower.</span>
+      <button class="button" id="restart" type="button">Reset</button>
+    </section>
+
+    <section class="play-panel hanoi-wrap" aria-label="Tower of Hanoi board">
+      <div class="hanoi-board" id="board"></div>
+    </section>
+
+    <div class="statusbar">
+      <span class="hint">Mouse, touch, or keys 1-3: select a tower, then choose a legal destination.</span>
+    </div>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const movesEl = document.querySelector("#moves");
+    const bestEl = document.querySelector("#best");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+
+    const diskCount = 5;
+    const perfect = 2 ** diskCount - 1;
+    let towers = [];
+    let selected = -1;
+    let moves = 0;
+    let locked = false;
+
+    function reset() {
+      towers = [[], [], []];
+      for (let disk = diskCount; disk >= 1; disk -= 1) towers[0].push(disk);
+      selected = -1;
+      moves = 0;
+      locked = false;
+      setMessage("Choose the left tower.");
+      render();
+    }
+
+    function setMessage(text) {
+      messageEl.textContent = text;
+    }
+
+    function topDisk(towerIndex) {
+      return towers[towerIndex][towers[towerIndex].length - 1];
+    }
+
+    function canMove(from, to) {
+      const disk = topDisk(from);
+      const target = topDisk(to);
+      return Boolean(disk) && (!target || disk < target);
+    }
+
+    function choose(towerIndex) {
+      if (locked) return;
+      if (selected === -1) {
+        if (!topDisk(towerIndex)) {
+          setMessage("That tower is empty.");
+          return;
+        }
+        selected = towerIndex;
+        setMessage(`Tower ${towerIndex + 1} selected.`);
+        render();
+        return;
+      }
+
+      if (selected === towerIndex) {
+        selected = -1;
+        setMessage("Selection cleared.");
+        render();
+        return;
+      }
+
+      if (!canMove(selected, towerIndex)) {
+        setMessage("A larger disk cannot cover a smaller one.");
+        return;
+      }
+
+      towers[towerIndex].push(towers[selected].pop());
+      selected = -1;
+      moves += 1;
+      if (towers[2].length === diskCount) {
+        locked = true;
+        setMessage(moves === perfect ? "Perfect temple transfer." : "Tower complete.");
+      } else {
+        setMessage("Good move. Keep building right.");
+      }
+      render();
+    }
+
+    function render() {
+      movesEl.textContent = moves;
+      bestEl.textContent = perfect;
+      boardEl.innerHTML = "";
+      towers.forEach((tower, towerIndex) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "hanoi-tower";
+        if (selected === towerIndex) button.classList.add("selected");
+        button.setAttribute("aria-label", `Tower ${towerIndex + 1}, ${tower.length} disks`);
+        button.addEventListener("click", () => choose(towerIndex));
+
+        const stack = document.createElement("span");
+        stack.className = "hanoi-stack";
+        tower.forEach((disk) => {
+          const diskEl = document.createElement("span");
+          diskEl.className = "hanoi-disk";
+          diskEl.style.setProperty("--disk-width", `${35 + disk * 10}%`);
+          diskEl.setAttribute("aria-hidden", "true");
+          stack.append(diskEl);
+        });
+
+        button.append(stack);
+        boardEl.append(button);
+      });
+    }
+
+    restartButton.addEventListener("click", reset);
+    window.addEventListener("keydown", (event) => {
+      if (["1", "2", "3"].includes(event.key)) choose(Number(event.key) - 1);
+      if (event.key.toLowerCase() === "r") reset();
+    });
+
+    reset();
+  </script>
+</body>
+</html>

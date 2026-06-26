@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Washi grid paper texture">
+  <defs>
+    <pattern id="smallGrid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M24 0H0v24" fill="none" stroke="#f5dfad" stroke-width="1" opacity=".28"/>
+    </pattern>
+    <radialGradient id="glow" cx="48%" cy="28%" r="74%">
+      <stop offset="0" stop-color="#fff6d8"/>
+      <stop offset=".58" stop-color="#d9ad63"/>
+      <stop offset="1" stop-color="#6a3e20"/>
+    </radialGradient>
+  </defs>
+  <rect width="240" height="240" rx="16" fill="url(#glow)"/>
+  <rect x="12" y="12" width="216" height="216" rx="12" fill="#fff4cf" opacity=".13"/>
+  <rect width="240" height="240" fill="url(#smallGrid)"/>
+  <path d="M22 43c38-15 73-18 111-8 34 9 54 4 85-12M18 205c36 10 70 12 106 0 34-12 61-6 96 12" fill="none" stroke="#fff1c7" stroke-width="7" stroke-linecap="round" opacity=".16"/>
+</svg>

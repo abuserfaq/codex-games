@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Polished dice highlight">
+  <defs>
+    <radialGradient id="shine" cx="34%" cy="24%" r="70%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".92"/>
+      <stop offset=".42" stop-color="#fff8df" stop-opacity=".32"/>
+      <stop offset="1" stop-color="#d59c2a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rim" x1="15" x2="105" y1="10" y2="110">
+      <stop offset="0" stop-color="#fff6d6" stop-opacity=".72"/>
+      <stop offset="1" stop-color="#0b1511" stop-opacity=".22"/>
+    </linearGradient>
+  </defs>
+  <rect x="9" y="9" width="102" height="102" rx="20" fill="url(#shine)"/>
+  <rect x="10" y="10" width="100" height="100" rx="20" fill="none" stroke="url(#rim)" stroke-width="5"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 224" role="img" aria-label="Red playing card back">
+  <rect x="6" y="6" width="148" height="212" rx="14" fill="#fff7ea"/>
+  <rect x="16" y="16" width="128" height="192" rx="10" fill="#c94f3d"/>
+  <path d="M32 38h96v148H32z" fill="none" stroke="#fff2cf" stroke-width="4"/>
+  <path d="M48 56c30 12 34 12 64 0m-64 36c30 12 34 12 64 0m-64 36c30 12 34 12 64 0m-64 36c30 12 34 12 64 0" fill="none" stroke="#fff2cf" stroke-opacity=".8" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="80" cy="112" r="26" fill="none" stroke="#fff2cf" stroke-width="5"/>
+</svg>

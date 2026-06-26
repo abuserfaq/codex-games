@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-label="Green dice table felt">
+  <defs>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" seed="17"/>
+      <feColorMatrix type="saturate" values=".15"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 .18"/>
+      </feComponentTransfer>
+    </filter>
+    <radialGradient id="light" cx="50%" cy="26%" r="76%">
+      <stop offset="0" stop-color="#2f7d5a"/>
+      <stop offset=".58" stop-color="#173f31"/>
+      <stop offset="1" stop-color="#0a1813"/>
+    </radialGradient>
+  </defs>
+  <rect width="640" height="420" rx="22" fill="url(#light)"/>
+  <rect x="24" y="24" width="592" height="372" rx="18" fill="none" stroke="#f2d68a" stroke-opacity=".26" stroke-width="3"/>
+  <path d="M60 88c95-42 424-42 520 0" fill="none" stroke="#ffffff" stroke-opacity=".08" stroke-width="18" stroke-linecap="round"/>
+  <rect width="640" height="420" rx="22" filter="url(#grain)"/>
+</svg>

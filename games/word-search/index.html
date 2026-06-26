@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Word Search</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="./index.html" aria-current="page">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Word Search</h1>
+      <p>Find the hidden words in straight lines. Pick a first letter, then the last letter.</p>
+    </header>
+
+    <section class="statusbar" role="status">
+      <span>Found: <strong id="found">0</strong>/<strong id="total">6</strong></span>
+      <span id="message">Choose a starting letter.</span>
+      <button class="button" id="restart" type="button">New grid</button>
+    </section>
+
+    <section class="play-panel word-wrap" aria-label="Word search puzzle">
+      <div class="word-board" id="board"></div>
+      <div class="word-list" id="words" aria-label="Hidden words"></div>
+    </section>
+
+    <div class="statusbar">
+      <span class="hint">Mouse or touch: tap the first and last letter. Keyboard: R resets the grid.</span>
+    </div>
+  </main>
+
+  <script>
+    const puzzle = [
+      ["C", "O", "D", "E", "L", "A", "M", "P"],
+      ["A", "R", "C", "A", "D", "E", "I", "A"],
+      ["S", "T", "A", "R", "P", "U", "X", "T"],
+      ["T", "I", "M", "E", "S", "I", "O", "H"],
+      ["L", "E", "V", "E", "L", "Z", "N", "S"],
+      ["E", "A", "R", "T", "H", "M", "G", "O"],
+      ["B", "O", "N", "U", "S", "A", "E", "L"],
+      ["P", "L", "A", "Y", "E", "R", "R", "Q"]
+    ];
+
+    const words = [
+      { text: "CODE", cells: [[0, 0], [0, 1], [0, 2], [0, 3]] },
+      { text: "ARCADE", cells: [[1, 0], [1, 1], [1, 2], [1, 3], [1, 4], [1, 5]] },
+      { text: "PATHS", cells: [[0, 7], [1, 7], [2, 7], [3, 7], [4, 7]] },
+      { text: "LEVEL", cells: [[4, 0], [4, 1], [4, 2], [4, 3], [4, 4]] },
+      { text: "BONUS", cells: [[6, 0], [6, 1], [6, 2], [6, 3], [6, 4]] },
+      { text: "PLAYER", cells: [[7, 0], [7, 1], [7, 2], [7, 3], [7, 4], [7, 5]] }
+    ];
+
+    const boardEl = document.querySelector("#board");
+    const wordsEl = document.querySelector("#words");
+    const foundEl = document.querySelector("#found");
+    const totalEl = document.querySelector("#total");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+
+    let found = new Set();
+    let selected = null;
+
+    function key(row, col) {
+      return `${row},${col}`;
+    }
+
+    function sameCells(a, b) {
+      return a.length === b.length && a.every((cell, index) => cell[0] === b[index][0] && cell[1] === b[index][1]);
+    }
+
+    function lineBetween(start, end) {
+      const dr = Math.sign(end.row - start.row);
+      const dc = Math.sign(end.col - start.col);
+      const rowDelta = Math.abs(end.row - start.row);
+      const colDelta = Math.abs(end.col - start.col);
+      if (!(start.row === end.row || start.col === end.col || rowDelta === colDelta)) return [];
+      const length = Math.max(rowDelta, colDelta) + 1;
+      return Array.from({ length }, (_, index) => [start.row + dr * index, start.col + dc * index]);
+    }
+
+    function foundKeys() {
+      return words
+        .filter((word) => found.has(word.text))
+        .flatMap((word) => word.cells.map(([row, col]) => key(row, col)));
+    }
+
+    function choose(row, col) {
+      if (!selected) {
+        selected = { row, col };
+        messageEl.textContent = "Choose the ending letter.";
+        render();
+        return;
+      }
+
+      const line = lineBetween(selected, { row, col });
+      const reversed = [...line].reverse();
+      const match = words.find((word) => !found.has(word.text) && (sameCells(line, word.cells) || sameCells(reversed, word.cells)));
+
+      if (match) {
+        found.add(match.text);
+        messageEl.textContent = found.size === words.length ? "Every word circled." : `${match.text} found.`;
+      } else {
+        messageEl.textContent = line.length ? "No hidden word on that line." : "Words run straight or diagonal.";
+      }
+      selected = null;
+      render();
+    }
+
+    function reset() {
+      found = new Set();
+      selected = null;
+      messageEl.textContent = "Choose a starting letter.";
+      render();
+    }
+
+    function renderBoard() {
+      const circled = new Set(foundKeys());
+      boardEl.innerHTML = "";
+      puzzle.forEach((row, rowIndex) => row.forEach((letter, colIndex) => {
+        const button = document.createElement("button");
+        const isSelected = selected && selected.row === rowIndex && selected.col === colIndex;
+        button.type = "button";
+        button.className = `word-cell${circled.has(key(rowIndex, colIndex)) ? " found" : ""}${isSelected ? " selected" : ""}`;
+        button.textContent = letter;
+        button.setAttribute("aria-label", `Row ${rowIndex + 1}, column ${colIndex + 1}, letter ${letter}`);
+        button.addEventListener("click", () => choose(rowIndex, colIndex));
+        boardEl.append(button);
+      }));
+    }
+
+    function renderWords() {
+      wordsEl.innerHTML = "";
+      words.forEach((word) => {
+        const item = document.createElement("span");
+        item.className = found.has(word.text) ? "found" : "";
+        item.textContent = word.text;
+        wordsEl.append(item);
+      });
+    }
+
+    function render() {
+      renderBoard();
+      renderWords();
+      foundEl.textContent = found.size;
+      totalEl.textContent = words.length;
+    }
+
+    restartButton.addEventListener("click", reset);
+    window.addEventListener("keydown", (event) => {
+      if (event.key.toLowerCase() === "r") reset();
+      if (event.key === "Escape") {
+        selected = null;
+        messageEl.textContent = "Choose a starting letter.";
+        render();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
