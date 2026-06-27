@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkers</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html" aria-current="page">Checkers</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Checkers</h1>
+      <p>Move on dark squares, jump rival pieces, and crown kings on the far edge.</p>
+    </header>
+
+    <section class="statusbar checkers-hud" role="status">
+      <span>Red: <strong id="redCount">12</strong></span>
+      <span>Ivory: <strong id="ivoryCount">12</strong></span>
+      <span id="message">Red to move.</span>
+      <button class="button" id="restart" type="button">Reset</button>
+    </section>
+
+    <section class="play-panel checkers-wrap" aria-label="Checkers board">
+      <div class="checkers-board" id="board"></div>
+    </section>
+
+    <div class="statusbar checkers-controls" aria-label="Checkers controls">
+      <button class="button" id="hintButton" type="button">Show moves</button>
+      <span class="hint">Select a piece, then a glowing square. Captures are mandatory when available.</span>
+    </div>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const redCountEl = document.querySelector("#redCount");
+    const ivoryCountEl = document.querySelector("#ivoryCount");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+    const hintButton = document.querySelector("#hintButton");
+    const size = 8;
+    const red = "red";
+    const ivory = "ivory";
+    const directions = {
+      red: [[-1, 1], [1, 1]],
+      ivory: [[-1, -1], [1, -1]]
+    };
+    let board;
+    let turn;
+    let selected;
+    let finished;
+    let showHints;
+
+    function makePiece(side, king = false) {
+      return { side, king };
+    }
+
+    function reset() {
+      board = Array.from({ length: size }, () => Array(size).fill(null));
+      for (let row = 0; row < 3; row += 1) {
+        for (let col = 0; col < size; col += 1) {
+          if ((row + col) % 2 === 1) board[row][col] = makePiece(red);
+        }
+      }
+      for (let row = 5; row < size; row += 1) {
+        for (let col = 0; col < size; col += 1) {
+          if ((row + col) % 2 === 1) board[row][col] = makePiece(ivory);
+        }
+      }
+      turn = red;
+      selected = null;
+      finished = false;
+      showHints = true;
+      render();
+    }
+
+    function inside(row, col) {
+      return row >= 0 && row < size && col >= 0 && col < size;
+    }
+
+    function pieceDirs(piece) {
+      return piece.king ? [...directions.red, ...directions.ivory] : directions[piece.side];
+    }
+
+    function movesFor(row, col, capturesOnly = false) {
+      const piece = board[row][col];
+      if (!piece || piece.side !== turn) return [];
+      const moves = [];
+      pieceDirs(piece).forEach(([dc, dr]) => {
+        const stepRow = row + dr;
+        const stepCol = col + dc;
+        const jumpRow = row + dr * 2;
+        const jumpCol = col + dc * 2;
+        if (inside(jumpRow, jumpCol) && board[stepRow][stepCol] && board[stepRow][stepCol].side !== piece.side && !board[jumpRow][jumpCol]) {
+          moves.push({ row: jumpRow, col: jumpCol, capture: [stepRow, stepCol] });
+        } else if (!capturesOnly && inside(stepRow, stepCol) && !board[stepRow][stepCol]) {
+          moves.push({ row: stepRow, col: stepCol, capture: null });
+        }
+      });
+      return moves;
+    }
+
+    function allMoves(side = turn, capturesOnly = false) {
+      const savedTurn = turn;
+      turn = side;
+      const moves = [];
+      for (let row = 0; row < size; row += 1) {
+        for (let col = 0; col < size; col += 1) {
+          movesFor(row, col, capturesOnly).forEach((move) => moves.push({ from: [row, col], ...move }));
+        }
+      }
+      turn = savedTurn;
+      return moves;
+    }
+
+    function legalMovesFor(row, col) {
+      const captures = allMoves(turn, true);
+      const mustCapture = captures.length > 0;
+      return movesFor(row, col, mustCapture).filter((move) => !mustCapture || move.capture);
+    }
+
+    function countPieces() {
+      return board.flat().reduce((counts, piece) => {
+        if (piece) counts[piece.side] += 1;
+        return counts;
+      }, { red: 0, ivory: 0 });
+    }
+
+    function movePiece(fromRow, fromCol, move) {
+      const piece = board[fromRow][fromCol];
+      board[fromRow][fromCol] = null;
+      board[move.row][move.col] = piece;
+      if (move.capture) {
+        const [capRow, capCol] = move.capture;
+        board[capRow][capCol] = null;
+      }
+      if ((piece.side === red && move.row === size - 1) || (piece.side === ivory && move.row === 0)) {
+        piece.king = true;
+      }
+
+      selected = null;
+      if (move.capture && legalMovesFor(move.row, move.col).some((next) => next.capture)) {
+        selected = [move.row, move.col];
+      } else {
+        turn = turn === red ? ivory : red;
+      }
+      updateFinished();
+      render();
+    }
+
+    function updateFinished() {
+      const counts = countPieces();
+      if (!counts.red || !counts.ivory || allMoves(turn).length === 0) {
+        finished = true;
+      }
+    }
+
+    function handleSquare(row, col) {
+      if (finished) return;
+      const piece = board[row][col];
+      if (selected) {
+        const [fromRow, fromCol] = selected;
+        const move = legalMovesFor(fromRow, fromCol).find((candidate) => candidate.row === row && candidate.col === col);
+        if (move) {
+          movePiece(fromRow, fromCol, move);
+          return;
+        }
+      }
+      if (piece && piece.side === turn) {
+        selected = [row, col];
+      } else {
+        selected = null;
+      }
+      render();
+    }
+
+    function updateStatus() {
+      const counts = countPieces();
+      redCountEl.textContent = counts.red;
+      ivoryCountEl.textContent = counts.ivory;
+      if (finished) {
+        const winner = counts.red === counts.ivory ? "Draw" : counts.red > counts.ivory ? "Red wins" : "Ivory wins";
+        messageEl.textContent = `${winner}.`;
+        return;
+      }
+      const captureCount = allMoves(turn, true).length;
+      messageEl.textContent = `${turn === red ? "Red" : "Ivory"} to move${captureCount ? " - capture required" : ""}.`;
+    }
+
+    function render() {
+      const selectedKey = selected ? selected.join(",") : "";
+      const selectedMoves = selected ? legalMovesFor(selected[0], selected[1]) : [];
+      const targetKeys = new Set(selectedMoves.map((move) => `${move.row},${move.col}`));
+      const playableKeys = new Set(showHints ? allMoves(turn).map((move) => move.from.join(",")) : []);
+      boardEl.innerHTML = "";
+
+      for (let row = 0; row < size; row += 1) {
+        for (let col = 0; col < size; col += 1) {
+          const cell = document.createElement("button");
+          const piece = board[row][col];
+          const key = `${row},${col}`;
+          cell.type = "button";
+          cell.className = "checker-cell";
+          cell.setAttribute("aria-label", `Row ${row + 1}, column ${col + 1}`);
+          if ((row + col) % 2 === 1) cell.classList.add("dark-square");
+          if (playableKeys.has(key)) cell.classList.add("playable");
+          if (targetKeys.has(key)) cell.classList.add("target");
+          cell.addEventListener("click", () => handleSquare(row, col));
+          if (piece) {
+            const pieceEl = document.createElement("span");
+            pieceEl.className = `checker-piece ${piece.side}${piece.king ? " king" : ""}${selectedKey === key ? " selected" : ""}`;
+            pieceEl.setAttribute("aria-label", `${piece.side} ${piece.king ? "king" : "piece"}`);
+            cell.append(pieceEl);
+          }
+          boardEl.append(cell);
+        }
+      }
+      hintButton.textContent = showHints ? "Hide moves" : "Show moves";
+      updateStatus();
+    }
+
+    restartButton.addEventListener("click", reset);
+    hintButton.addEventListener("click", () => {
+      showHints = !showHints;
+      render();
+    });
+    reset();
+  </script>
+</body>
+</html>

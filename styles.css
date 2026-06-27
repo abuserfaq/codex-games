@@ -2739,3 +2739,137 @@ canvas.play-panel {
     flex: 1 1 175px;
   }
 }
+
+.checkers-wrap {
+  width: min(100%, calc(100svh - 285px), 500px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  overflow: hidden;
+  border-color: #301d13;
+  background:
+    url("./games/checkers/assets/board-wood.svg") center / cover no-repeat,
+    linear-gradient(145deg, #7a4627, #2b1710);
+}
+
+.checkers-board {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-rows: repeat(8, minmax(0, 1fr));
+  gap: 4px;
+  padding: 14px;
+}
+
+.checker-cell {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid rgba(59, 34, 20, 0.42);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(255, 245, 210, 0.76), rgba(205, 169, 103, 0.74));
+  cursor: default;
+}
+
+.checker-cell.dark-square {
+  background:
+    linear-gradient(145deg, rgba(89, 48, 29, 0.98), rgba(43, 24, 17, 0.98));
+  box-shadow: inset 0 2px 0 rgba(255, 229, 183, 0.08), inset 0 -3px 0 rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+}
+
+.checker-cell.playable::before,
+.checker-cell.target::before {
+  position: absolute;
+  inset: 33%;
+  border: 2px solid rgba(255, 236, 175, 0.86);
+  border-radius: 50%;
+  background: rgba(255, 236, 175, 0.14);
+  content: "";
+}
+
+.checker-cell.target::before {
+  inset: 24%;
+  border-color: rgba(142, 211, 166, 0.92);
+  background: rgba(142, 211, 166, 0.2);
+}
+
+.checker-piece {
+  position: absolute;
+  inset: 9%;
+  border: 0;
+  border-radius: 50%;
+  background: var(--piece-image) center / contain no-repeat;
+  cursor: pointer;
+  filter: drop-shadow(0 7px 8px rgba(15, 18, 14, 0.34));
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.checker-piece:hover,
+.checker-piece:focus-visible,
+.checker-piece.selected {
+  outline: 2px solid #ffedb1;
+  outline-offset: 2px;
+  transform: translateY(-2px);
+  filter: drop-shadow(0 9px 10px rgba(15, 18, 14, 0.4)) brightness(1.08);
+}
+
+.checker-piece.red {
+  --piece-image: url("./games/checkers/assets/piece-red.svg");
+}
+
+.checker-piece.ivory {
+  --piece-image: url("./games/checkers/assets/piece-ivory.svg");
+}
+
+.checker-piece.king::after {
+  position: absolute;
+  inset: 27%;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 240, 174, 0.9);
+  border-radius: 50%;
+  background: rgba(60, 34, 18, 0.28);
+  color: #fff2b8;
+  font: 800 1rem / 1 Arial, sans-serif;
+  content: "K";
+}
+
+.checkers-hud,
+.checkers-controls {
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.checkers-controls .hint {
+  flex-basis: 100%;
+  text-align: center;
+}
+
+@media (max-width: 520px) {
+  .checkers-wrap {
+    width: min(100%, calc(100svh - 375px), 365px);
+  }
+
+  .checkers-board {
+    gap: 3px;
+    padding: 9px;
+  }
+
+  .checkers-hud {
+    align-items: center;
+    flex-direction: row;
+    gap: 7px 10px;
+  }
+
+  .checkers-hud .button {
+    margin-left: auto;
+    padding: 6px 10px;
+  }
+
+  .checkers-hud #message {
+    flex: 1 1 175px;
+  }
+}

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="polished wooden checkers board">
+  <defs>
+    <linearGradient id="wood" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#9b6035"/>
+      <stop offset=".5" stop-color="#5d3320"/>
+      <stop offset="1" stop-color="#2a1711"/>
+    </linearGradient>
+    <filter id="grain">
+      <feTurbulence baseFrequency=".018 .12" numOctaves="3" seed="8"/>
+      <feColorMatrix type="saturate" values=".35"/>
+      <feBlend in="SourceGraphic" mode="multiply"/>
+    </filter>
+  </defs>
+  <rect width="600" height="600" rx="26" fill="url(#wood)"/>
+  <rect x="22" y="22" width="556" height="556" rx="18" fill="none" stroke="#f2c879" stroke-width="10" opacity=".42"/>
+  <rect x="45" y="45" width="510" height="510" rx="10" fill="#341c14" opacity=".34" filter="url(#grain)"/>
+  <path d="M62 96c92-28 178 30 268-2 68-24 120-16 210 4M58 260c76 23 150-15 220 2 94 24 160 22 264-8M70 445c116-30 168 30 260 0 80-26 122-18 204 12" fill="none" stroke="#f8d69d" stroke-width="7" opacity=".12"/>
+  <circle cx="92" cy="91" r="20" fill="#f3d38e" opacity=".2"/>
+  <circle cx="508" cy="500" r="32" fill="#140b08" opacity=".18"/>
+</svg>

@@ -1,0 +1,7 @@
+{
+  "board": "assets/board-wood.svg",
+  "pieces": {
+    "red": "assets/piece-red.svg",
+    "ivory": "assets/piece-ivory.svg"
+  }
+}
