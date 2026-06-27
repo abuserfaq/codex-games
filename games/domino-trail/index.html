@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Domino Trail</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html" aria-current="page">Domino Trail</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Domino Trail</h1>
+      <p>Match a bone to either open end, empty your hand, and keep the line alive.</p>
+    </header>
+
+    <section class="statusbar domino-hud" role="status">
+      <span>Left: <strong id="leftEnd">6</strong></span>
+      <span>Right: <strong id="rightEnd">6</strong></span>
+      <span>Score: <strong id="score">12</strong></span>
+      <span id="message">Choose a matching domino.</span>
+      <button class="button" id="restart" type="button">Reset</button>
+    </section>
+
+    <section class="play-panel domino-wrap" aria-label="Domino Trail table">
+      <div class="domino-board" id="board"></div>
+      <img class="asset-preload" src="./assets/bone-face.svg" alt="">
+      <img class="asset-preload" src="./assets/table-felt.svg" alt="">
+      <img class="asset-preload" src="./assets/pip.svg" alt="">
+    </section>
+
+    <section class="statusbar domino-hand" aria-label="Domino hand">
+      <div class="domino-rack" id="hand"></div>
+      <div class="domino-actions">
+        <button class="button" id="playLeft" type="button">Play left</button>
+        <button class="button" id="playRight" type="button">Play right</button>
+        <button class="button" id="drawBone" type="button">Draw</button>
+      </div>
+      <span class="hint">Tap a bone, then choose a side. Doubles stand upright. Draw when no bone fits.</span>
+    </section>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const handEl = document.querySelector("#hand");
+    const leftEndEl = document.querySelector("#leftEnd");
+    const rightEndEl = document.querySelector("#rightEnd");
+    const scoreEl = document.querySelector("#score");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+    const playLeftButton = document.querySelector("#playLeft");
+    const playRightButton = document.querySelector("#playRight");
+    const drawButton = document.querySelector("#drawBone");
+
+    const seedHand = [[6, 2], [3, 6], [1, 5], [0, 4], [4, 4]];
+    const seedDeck = [[2, 2], [5, 6], [1, 1], [0, 6], [3, 4], [2, 5], [0, 0], [1, 3], [4, 6], [2, 4], [0, 5]];
+    const startBone = { left: 6, right: 6 };
+    let hand = [];
+    let deck = [];
+    let trail = [];
+    let selected = -1;
+    let score = 0;
+    let finished = false;
+
+    function makeDomino(values) {
+      return { left: values[0], right: values[1] };
+    }
+
+    function reset() {
+      hand = seedHand.map(makeDomino);
+      deck = seedDeck.map(makeDomino);
+      trail = [{ ...startBone }];
+      selected = -1;
+      score = startBone.left + startBone.right;
+      finished = false;
+      render("Choose a matching domino.");
+    }
+
+    function ends() {
+      return {
+        left: trail[0].left,
+        right: trail[trail.length - 1].right
+      };
+    }
+
+    function legalSides(domino) {
+      if (!domino) return [];
+      const open = ends();
+      const sides = [];
+      if (domino.left === open.left || domino.right === open.left) sides.push("left");
+      if (domino.left === open.right || domino.right === open.right) sides.push("right");
+      return sides;
+    }
+
+    function orientedFor(domino, side) {
+      const open = ends();
+      if (side === "left") {
+        return domino.right === open.left ? { left: domino.left, right: domino.right } : { left: domino.right, right: domino.left };
+      }
+      return domino.left === open.right ? { left: domino.left, right: domino.right } : { left: domino.right, right: domino.left };
+    }
+
+    function hasPlayableBone() {
+      return hand.some((domino) => legalSides(domino).length);
+    }
+
+    function playDomino(side) {
+      const domino = hand[selected];
+      if (finished || !domino || !legalSides(domino).includes(side)) return;
+      const played = orientedFor(domino, side);
+      hand.splice(selected, 1);
+      selected = -1;
+      if (side === "left") {
+        trail.unshift(played);
+      } else {
+        trail.push(played);
+      }
+      score += played.left + played.right;
+      const result = hand.length === 0 ? "Trail cleared. You win." : "Bone placed.";
+      if (hand.length === 0) finished = true;
+      render(result);
+    }
+
+    function drawBone() {
+      if (finished || hasPlayableBone()) {
+        render(hasPlayableBone() ? "A bone in your hand still matches." : "Round finished.");
+        return;
+      }
+      if (deck.length) {
+        hand.push(deck.shift());
+        render("Drew one bone.");
+        return;
+      }
+      finished = true;
+      render("No moves and no draw pile. Trail blocked.");
+    }
+
+    function pipMarkup(count) {
+      return Array.from({ length: count }, () => "<span></span>").join("");
+    }
+
+    function boneMarkup(domino, extraClass = "") {
+      const doubleClass = domino.left === domino.right ? " double" : "";
+      return `<span class="domino-bone${doubleClass} ${extraClass}" data-left="${domino.left}" data-right="${domino.right}">
+        <span class="domino-half pips-${domino.left}">${pipMarkup(domino.left)}</span>
+        <span class="domino-half pips-${domino.right}">${pipMarkup(domino.right)}</span>
+      </span>`;
+    }
+
+    function render(message) {
+      const open = ends();
+      leftEndEl.textContent = open.left;
+      rightEndEl.textContent = open.right;
+      scoreEl.textContent = score;
+      messageEl.textContent = message;
+
+      boardEl.innerHTML = trail.map((domino, index) => boneMarkup(domino, index === 0 || index === trail.length - 1 ? "open-end" : "")).join("");
+      handEl.innerHTML = "";
+      hand.forEach((domino, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `domino-choice${selected === index ? " selected" : ""}`;
+        button.innerHTML = boneMarkup(domino);
+        button.setAttribute("aria-label", `Domino ${domino.left}-${domino.right}`);
+        button.addEventListener("click", () => {
+          selected = selected === index ? -1 : index;
+          render(`${domino.left}-${domino.right} selected.`);
+        });
+        handEl.append(button);
+      });
+
+      const sides = legalSides(hand[selected]);
+      playLeftButton.disabled = finished || !sides.includes("left");
+      playRightButton.disabled = finished || !sides.includes("right");
+      drawButton.disabled = finished || hasPlayableBone();
+    }
+
+    restartButton.addEventListener("click", reset);
+    playLeftButton.addEventListener("click", () => playDomino("left"));
+    playRightButton.addEventListener("click", () => playDomino("right"));
+    drawButton.addEventListener("click", drawBone);
+
+    window.__dominoTrailTest = {
+      reset,
+      legalSides: (values) => legalSides(makeDomino(values)),
+      playSelected: (index, side) => {
+        selected = index;
+        playDomino(side);
+        return { hand: hand.length, score, ends: ends(), finished };
+      },
+      state: () => ({ hand: hand.map((domino) => [domino.left, domino.right]), deck: deck.length, trail: trail.map((domino) => [domino.left, domino.right]), score, finished })
+    };
+
+    reset();
+  </script>
+</body>
+</html>

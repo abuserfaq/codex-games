@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120" role="img" aria-label="ivory domino bone">
+  <defs>
+    <linearGradient id="bone" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff8e4"/>
+      <stop offset="0.46" stop-color="#f2dfb4"/>
+      <stop offset="1" stop-color="#c9a46e"/>
+    </linearGradient>
+  </defs>
+  <rect width="240" height="120" rx="18" fill="url(#bone)"/>
+  <rect x="7" y="7" width="226" height="106" rx="14" fill="none" stroke="#7b5931" stroke-opacity=".36" stroke-width="4"/>
+  <path d="M120 15v90" stroke="#7b5931" stroke-opacity=".5" stroke-width="4" stroke-linecap="round"/>
+  <path d="M24 22c27-9 70-11 101-3M141 101c20 6 48 6 76-3" fill="none" stroke="#fff7d8" stroke-opacity=".55" stroke-width="5" stroke-linecap="round"/>
+</svg>
