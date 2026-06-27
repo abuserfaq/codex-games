@@ -1,0 +1,8 @@
+{
+  "assets": {
+    "board": "./assets/wood-board.svg",
+    "marble": "./assets/marble.svg",
+    "goal": "./assets/goal-cup.svg",
+    "hazard": "./assets/hazard-hole.svg"
+  }
+}
