@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-label="green felt board">
+  <defs>
+    <linearGradient id="felt" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#2e7b55"/>
+      <stop offset="0.55" stop-color="#195f45"/>
+      <stop offset="1" stop-color="#0e3c32"/>
+    </linearGradient>
+    <filter id="softNoise">
+      <feTurbulence baseFrequency="0.82" numOctaves="3" seed="12" type="fractalNoise"/>
+      <feColorMatrix values="0 0 0 0 0.07 0 0 0 0 0.18 0 0 0 0 0.13 0 0 0 .22 0"/>
+      <feBlend in2="SourceGraphic" mode="overlay"/>
+    </filter>
+  </defs>
+  <rect width="320" height="320" rx="28" fill="#5c341b"/>
+  <rect x="14" y="14" width="292" height="292" rx="20" fill="url(#felt)" filter="url(#softNoise)"/>
+  <path d="M38 50h244M38 270h244" fill="none" stroke="#e9c77a" stroke-linecap="round" stroke-opacity=".45" stroke-width="5"/>
+  <path d="M54 36c28 18 184 18 212 0M54 284c28-18 184-18 212 0" fill="none" stroke="#111" stroke-opacity=".14" stroke-width="4"/>
+</svg>
