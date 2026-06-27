@@ -1,0 +1,6 @@
+{
+  "ui": {
+    "bumper": "./assets/bumper.svg",
+    "plunger": "./assets/plunger.svg"
+  }
+}

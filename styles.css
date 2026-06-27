@@ -2385,3 +2385,55 @@ canvas.play-panel {
     flex: 1 1 190px;
   }
 }
+
+.pinball-board {
+  display: block;
+  width: min(100%, calc((100svh - 305px) * 0.65625), 360px);
+  aspect-ratio: 21 / 32;
+  margin: 0 auto;
+  border-color: #0f2019;
+  background: #0c211c;
+}
+
+.pinball-hud,
+.pinball-controls {
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.pinball-controls .button {
+  min-width: 82px;
+}
+
+.pinball-controls .hint {
+  flex-basis: 100%;
+  text-align: center;
+}
+
+@media (max-width: 520px) {
+  .pinball-board {
+    width: min(100%, calc((100svh - 410px) * 0.65625), 330px);
+  }
+
+  .pinball-controls .button {
+    flex: 1 1 28%;
+    min-width: 0;
+    padding-inline: 8px;
+  }
+
+  .pinball-hud {
+    align-items: center;
+    flex-direction: row;
+    gap: 7px 10px;
+  }
+
+  .pinball-hud .button {
+    margin-left: auto;
+    padding: 6px 10px;
+  }
+
+  .pinball-hud #message {
+    flex: 1 1 180px;
+  }
+}

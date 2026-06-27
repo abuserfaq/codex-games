@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pocket Pinball</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="./index.html" aria-current="page">Pocket Pinball</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Pocket Pinball</h1>
+      <p>Launch the steel ball, time the flippers, and keep the table alive through three balls.</p>
+    </header>
+
+    <section class="statusbar pinball-hud" role="status">
+      <span>Score: <strong id="score">0</strong></span>
+      <span>Balls: <strong id="balls">3</strong></span>
+      <span id="message">Hold Launch, then release.</span>
+      <button class="button" id="restart" type="button">Reset</button>
+    </section>
+
+    <canvas class="play-panel pinball-board" id="board" width="420" height="640" aria-label="Pocket Pinball table"></canvas>
+
+    <div class="statusbar pinball-controls" aria-label="Pocket Pinball controls">
+      <button class="button" type="button" data-flipper="left">Left</button>
+      <button class="button" type="button" data-launch>Launch</button>
+      <button class="button" type="button" data-flipper="right">Right</button>
+      <span class="hint">Keyboard: A/Left, D/Right, Space launch. Touch buttons work on mobile.</span>
+    </div>
+
+    <img id="bumperImage" src="./assets/bumper.svg" alt="" hidden>
+    <img id="plungerImage" src="./assets/plunger.svg" alt="" hidden>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#board");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.querySelector("#score");
+    const ballsEl = document.querySelector("#balls");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+    const bumperImage = document.querySelector("#bumperImage");
+    const plungerImage = document.querySelector("#plungerImage");
+    const launchButton = document.querySelector("[data-launch]");
+    const flipperButtons = document.querySelectorAll("[data-flipper]");
+
+    const width = 420;
+    const height = 640;
+    const ballRadius = 9;
+    const gravity = 0.19;
+    const damping = 0.996;
+    const wallBounce = 0.84;
+    const leftFlipper = { pivot: { x: 148, y: 548 }, rest: -0.22, active: -0.82, side: -1 };
+    const rightFlipper = { pivot: { x: 272, y: 548 }, rest: Math.PI + 0.22, active: Math.PI + 0.82, side: 1 };
+    const bumpers = [
+      { x: 142, y: 190, r: 31, value: 80 },
+      { x: 272, y: 190, r: 31, value: 80 },
+      { x: 207, y: 304, r: 34, value: 120 }
+    ];
+    const lanes = [
+      { x: 92, y: 374, w: 42, h: 12, value: 35 },
+      { x: 288, y: 374, w: 42, h: 12, value: 35 }
+    ];
+
+    let ball;
+    let score;
+    let balls;
+    let done;
+    let leftHeld;
+    let rightHeld;
+    let charging;
+    let charge;
+    let launched;
+    let lastTime;
+    let sparkTimer;
+
+    function resetBall() {
+      ball = { x: 363, y: 556, vx: 0, vy: 0 };
+      launched = false;
+      charging = false;
+      charge = 0;
+      messageEl.textContent = balls > 0 ? "Hold Launch, then release." : "No balls left. Reset to play.";
+    }
+
+    function resetGame() {
+      score = 0;
+      balls = 3;
+      done = false;
+      leftHeld = false;
+      rightHeld = false;
+      sparkTimer = 0;
+      scoreEl.textContent = score;
+      ballsEl.textContent = balls;
+      resetBall();
+    }
+
+    function addScore(points, note) {
+      score += points;
+      sparkTimer = 12;
+      scoreEl.textContent = score;
+      messageEl.textContent = note;
+    }
+
+    function loseBall() {
+      if (done) return;
+      balls -= 1;
+      ballsEl.textContent = balls;
+      if (balls <= 0) {
+        done = true;
+        messageEl.textContent = "Table closed. Reset for another run.";
+      } else {
+        resetBall();
+      }
+    }
+
+    function launchStart() {
+      if (done || launched) return;
+      charging = true;
+      messageEl.textContent = "Release to launch.";
+    }
+
+    function launchRelease() {
+      if (done || launched || !charging) return;
+      const power = Math.max(10, Math.min(22, 10 + charge * 0.26));
+      ball.vy = -power;
+      ball.vx = -1.1;
+      launched = true;
+      charging = false;
+      charge = 0;
+      messageEl.textContent = "Keep it above the drain.";
+    }
+
+    function clampBall() {
+      if (ball.x < 40 + ballRadius) {
+        ball.x = 40 + ballRadius;
+        ball.vx = Math.abs(ball.vx) * wallBounce;
+      }
+      if (ball.x > 380 - ballRadius) {
+        ball.x = 380 - ballRadius;
+        ball.vx = -Math.abs(ball.vx) * wallBounce;
+      }
+      if (ball.y < 45 + ballRadius) {
+        ball.y = 45 + ballRadius;
+        ball.vy = Math.abs(ball.vy) * wallBounce;
+      }
+      if (ball.x > 335 && ball.y > 96 && !launched) {
+        ball.x = Math.max(ball.x, 346);
+      }
+      if (ball.x > 337 && launched && ball.y < 540) {
+        ball.vx -= 0.12;
+      }
+    }
+
+    function hitCircle(target) {
+      const dx = ball.x - target.x;
+      const dy = ball.y - target.y;
+      const dist = Math.hypot(dx, dy);
+      const minDist = ballRadius + target.r;
+      if (dist >= minDist || dist === 0) return false;
+      const nx = dx / dist;
+      const ny = dy / dist;
+      const speed = Math.max(7, Math.hypot(ball.vx, ball.vy) + 2.2);
+      ball.x = target.x + nx * minDist;
+      ball.y = target.y + ny * minDist;
+      ball.vx = nx * speed;
+      ball.vy = ny * speed;
+      addScore(target.value, "Bumper hit.");
+      return true;
+    }
+
+    function hitLane(lane) {
+      if (
+        ball.x + ballRadius < lane.x ||
+        ball.x - ballRadius > lane.x + lane.w ||
+        ball.y + ballRadius < lane.y ||
+        ball.y - ballRadius > lane.y + lane.h
+      ) return;
+      ball.vy = -Math.abs(ball.vy || 5) - 1.5;
+      ball.vx += ball.x < width / 2 ? 1.1 : -1.1;
+      addScore(lane.value, "Lane rebound.");
+    }
+
+    function flipperAngle(flipper, held) {
+      return held ? flipper.active : flipper.rest;
+    }
+
+    function hitFlipper(flipper, held) {
+      const length = 96;
+      const angle = flipperAngle(flipper, held);
+      const ax = flipper.pivot.x;
+      const ay = flipper.pivot.y;
+      const bx = ax + Math.cos(angle) * length;
+      const by = ay + Math.sin(angle) * length;
+      const abx = bx - ax;
+      const aby = by - ay;
+      const t = Math.max(0, Math.min(1, ((ball.x - ax) * abx + (ball.y - ay) * aby) / (length * length)));
+      const px = ax + abx * t;
+      const py = ay + aby * t;
+      const dx = ball.x - px;
+      const dy = ball.y - py;
+      const dist = Math.hypot(dx, dy);
+      if (dist > ballRadius + 8 || ball.vy < -8) return;
+      const nx = dist ? dx / dist : 0;
+      const ny = dist ? dy / dist : -1;
+      const lift = held ? 12.5 : 8.4;
+      ball.x = px + nx * (ballRadius + 9);
+      ball.y = py + ny * (ballRadius + 9);
+      ball.vx = nx * 4.4 + flipper.side * (held ? -4.2 : -2.2);
+      ball.vy = -lift;
+      addScore(15, "Flipper save.");
+    }
+
+    function update() {
+      if (!done) {
+        if (charging) charge = Math.min(50, charge + 1);
+        if (launched) {
+          ball.vy += gravity;
+          ball.vx *= damping;
+          ball.vy *= damping;
+          ball.x += ball.vx;
+          ball.y += ball.vy;
+          clampBall();
+          bumpers.forEach(hitCircle);
+          lanes.forEach(hitLane);
+          hitFlipper(leftFlipper, leftHeld);
+          hitFlipper(rightFlipper, rightHeld);
+          if (ball.y > height + 26) loseBall();
+        }
+      }
+      if (sparkTimer > 0) sparkTimer -= 1;
+    }
+
+    function drawTable() {
+      const table = ctx.createLinearGradient(0, 0, 0, height);
+      table.addColorStop(0, "#12372d");
+      table.addColorStop(0.48, "#0c211c");
+      table.addColorStop(1, "#241d18");
+      ctx.fillStyle = table;
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.fillStyle = "rgba(255, 244, 181, 0.1)";
+      ctx.beginPath();
+      ctx.arc(210, 174, 142, Math.PI * 0.98, Math.PI * 2.02);
+      ctx.strokeStyle = "#fff1ad";
+      ctx.lineWidth = 5;
+      ctx.stroke();
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.24)";
+      ctx.lineWidth = 2;
+      for (let y = 86; y < 520; y += 42) {
+        ctx.beginPath();
+        ctx.moveTo(54, y);
+        ctx.lineTo(318, y + 18);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = "#092018";
+      ctx.fillRect(334, 92, 52, 482);
+      ctx.strokeStyle = "#d59c2a";
+      ctx.lineWidth = 4;
+      ctx.strokeRect(334, 92, 52, 482);
+      if (plungerImage.complete && plungerImage.naturalWidth > 0) {
+        ctx.drawImage(plungerImage, 332, 378 + charge * 1.4, 60, 166);
+      }
+
+      ctx.fillStyle = "rgba(255, 241, 173, 0.86)";
+      lanes.forEach((lane) => {
+        ctx.fillRect(lane.x, lane.y, lane.w, lane.h);
+      });
+    }
+
+    function drawBumpers() {
+      bumpers.forEach((bumper) => {
+        if (bumperImage.complete && bumperImage.naturalWidth > 0) {
+          ctx.drawImage(bumperImage, bumper.x - bumper.r - 10, bumper.y - bumper.r - 10, (bumper.r + 10) * 2, (bumper.r + 10) * 2);
+        } else {
+          ctx.fillStyle = "#d59c2a";
+          ctx.beginPath();
+          ctx.arc(bumper.x, bumper.y, bumper.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+    }
+
+    function drawFlipper(flipper, held) {
+      const angle = flipperAngle(flipper, held);
+      ctx.save();
+      ctx.translate(flipper.pivot.x, flipper.pivot.y);
+      ctx.rotate(angle);
+      ctx.fillStyle = held ? "#fff1ad" : "#f6dfdf";
+      ctx.strokeStyle = "#1c2d24";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.roundRect(0, -8, 96, 16, 8);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawBall() {
+      const glow = ctx.createRadialGradient(ball.x - 4, ball.y - 5, 2, ball.x, ball.y, ballRadius + 8);
+      glow.addColorStop(0, "#ffffff");
+      glow.addColorStop(0.44, "#dce7f5");
+      glow.addColorStop(1, "#66746d");
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ballRadius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.7)";
+      ctx.stroke();
+    }
+
+    function draw() {
+      drawTable();
+      drawBumpers();
+      drawFlipper(leftFlipper, leftHeld);
+      drawFlipper(rightFlipper, rightHeld);
+      if (sparkTimer > 0) {
+        ctx.strokeStyle = `rgba(255, 241, 173, ${sparkTimer / 12})`;
+        ctx.lineWidth = 7;
+        ctx.strokeRect(23, 23, width - 46, height - 46);
+      }
+      drawBall();
+    }
+
+    function loop(time) {
+      const steps = lastTime ? Math.min(3, Math.max(1, Math.round((time - lastTime) / 16.67))) : 1;
+      lastTime = time;
+      for (let step = 0; step < steps; step += 1) update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    function setFlipper(side, value) {
+      if (side === "left") leftHeld = value;
+      if (side === "right") rightHeld = value;
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.code === "Space") {
+        event.preventDefault();
+        launchStart();
+      }
+      if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") setFlipper("left", true);
+      if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") setFlipper("right", true);
+    });
+
+    document.addEventListener("keyup", (event) => {
+      if (event.code === "Space") launchRelease();
+      if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") setFlipper("left", false);
+      if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") setFlipper("right", false);
+    });
+
+    function bindHold(button, start, end) {
+      button.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        button.setPointerCapture(event.pointerId);
+        start();
+      });
+      button.addEventListener("pointerup", end);
+      button.addEventListener("pointercancel", end);
+      button.addEventListener("pointerleave", end);
+    }
+
+    bindHold(launchButton, launchStart, launchRelease);
+    flipperButtons.forEach((button) => {
+      const side = button.dataset.flipper;
+      bindHold(button, () => setFlipper(side, true), () => setFlipper(side, false));
+    });
+
+    restartButton.addEventListener("click", resetGame);
+    resetGame();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
