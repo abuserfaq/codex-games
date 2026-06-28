@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 110" role="img" aria-label="small brass cannon">
+  <defs>
+    <linearGradient id="barrel" x1="0" x2="1">
+      <stop offset="0" stop-color="#fff1a8"/>
+      <stop offset=".45" stop-color="#d79b36"/>
+      <stop offset="1" stop-color="#7b461d"/>
+    </linearGradient>
+    <linearGradient id="wheel" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#8c5230"/>
+      <stop offset="1" stop-color="#3f2417"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M34 72 L94 80 L138 59" stroke="#3e2618" stroke-width="11"/>
+    <path d="M55 38 L143 18 L151 48 L63 67 Z" fill="url(#barrel)" stroke="#3e2618" stroke-width="5"/>
+    <path d="M53 42 L41 46" stroke="#f8d775" stroke-width="11"/>
+    <circle cx="52" cy="78" r="22" fill="url(#wheel)" stroke="#2e1b12" stroke-width="5"/>
+    <circle cx="111" cy="83" r="16" fill="url(#wheel)" stroke="#2e1b12" stroke-width="5"/>
+    <circle cx="52" cy="78" r="7" fill="#d8aa57"/>
+    <circle cx="111" cy="83" r="5" fill="#d8aa57"/>
+  </g>
+</svg>

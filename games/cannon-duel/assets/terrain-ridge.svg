@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" role="img" aria-label="painted sunset artillery ridge">
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffe8a3"/>
+      <stop offset="0.48" stop-color="#f1a862"/>
+      <stop offset="1" stop-color="#364b43"/>
+    </linearGradient>
+    <linearGradient id="earth" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#6f6b42"/>
+      <stop offset="1" stop-color="#26382f"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="260" fill="url(#sky)"/>
+  <circle cx="674" cy="72" r="42" fill="#fff1b7" opacity=".82"/>
+  <path d="M0 172 C96 132 152 154 220 135 C310 110 364 160 442 132 C536 96 604 140 682 118 C764 96 820 124 900 100 L900 260 L0 260 Z" fill="#4d5b43" opacity=".58"/>
+  <path d="M0 203 C112 173 179 196 252 174 C348 145 411 199 494 166 C579 132 641 171 723 150 C802 130 847 145 900 128 L900 260 L0 260 Z" fill="url(#earth)"/>
+  <path d="M0 214 C120 186 181 211 270 188 C362 165 427 211 512 181 C604 149 656 185 746 166 C826 150 863 164 900 147" fill="none" stroke="#f4d47c" stroke-width="4" opacity=".45"/>
+</svg>

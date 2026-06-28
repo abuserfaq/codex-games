@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="glowing cannon spark">
+  <defs>
+    <radialGradient id="spark" cx=".42" cy=".36" r=".62">
+      <stop offset="0" stop-color="#fff8c5"/>
+      <stop offset=".42" stop-color="#f5b94d"/>
+      <stop offset="1" stop-color="#b7422d"/>
+    </radialGradient>
+  </defs>
+  <path d="M48 5 L57 34 L86 18 L68 46 L91 61 L61 62 L66 92 L48 67 L29 92 L35 62 L5 61 L28 46 L10 18 L39 34 Z" fill="url(#spark)" stroke="#6d2f24" stroke-width="4"/>
+</svg>

@@ -3070,3 +3070,77 @@ canvas.play-panel {
     flex: 1 1 170px;
   }
 }
+
+.cannon-wrap {
+  position: relative;
+  width: min(100%, calc((100svh - 300px) * 1.666), 620px);
+  aspect-ratio: 5 / 3;
+  margin: 0 auto;
+  overflow: hidden;
+  border-color: #26382f;
+  background:
+    url("./games/cannon-duel/assets/terrain-ridge.svg") center / cover no-repeat,
+    linear-gradient(180deg, #f4bb6f, #243b35);
+}
+
+.cannon-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.cannon-hud,
+.cannon-controls {
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.cannon-controls label {
+  display: grid;
+  flex: 1 1 150px;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.cannon-controls input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.cannon-controls .button {
+  min-width: 86px;
+}
+
+.cannon-controls .hint {
+  flex-basis: 100%;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .cannon-wrap {
+    width: min(100%, calc((100svh - 385px) * 1.666), 380px);
+  }
+
+  .cannon-hud {
+    align-items: center;
+    flex-direction: row;
+    gap: 7px 10px;
+  }
+
+  .cannon-hud .button {
+    margin-left: auto;
+    padding: 6px 10px;
+  }
+
+  .cannon-hud #message {
+    flex: 1 1 170px;
+  }
+
+  .cannon-controls label {
+    flex-basis: 100%;
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "game": "Cannon Duel",
+  "assets": [
+    "terrain-ridge.svg",
+    "cannon-brass.svg",
+    "shell-spark.svg"
+  ]
+}

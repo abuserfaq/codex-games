@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cannon Duel</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html" aria-current="page">Cannon Duel</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Cannon Duel</h1>
+      <p>Set angle and powder, read the wind, and arc one clean shell onto the rival hill.</p>
+    </header>
+
+    <section class="statusbar cannon-hud" role="status">
+      <span>Shots: <strong id="shots">0</strong></span>
+      <span>Wind: <strong id="wind">0</strong></span>
+      <span id="message">Line up the first shot.</span>
+      <button class="button" id="restart" type="button">Reset</button>
+    </section>
+
+    <section class="play-panel cannon-wrap" aria-label="Cannon Duel battlefield">
+      <canvas id="field" width="900" height="540"></canvas>
+      <img class="asset-preload" id="terrainAsset" src="./assets/terrain-ridge.svg" alt="">
+      <img class="asset-preload" id="cannonAsset" src="./assets/cannon-brass.svg" alt="">
+      <img class="asset-preload" id="sparkAsset" src="./assets/shell-spark.svg" alt="">
+    </section>
+
+    <section class="statusbar cannon-controls" aria-label="Cannon Duel controls">
+      <label>Angle <strong id="angleValue">22</strong><input id="angle" type="range" min="18" max="78" value="22"></label>
+      <label>Powder <strong id="powerValue">98</strong><input id="power" type="range" min="34" max="100" value="98"></label>
+      <button class="button" id="fire" type="button">Fire</button>
+      <span class="hint">Drag sliders or use Arrow keys. Hit the rival cannon before it ranges you in.</span>
+    </section>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#field");
+    const ctx = canvas.getContext("2d");
+    const terrainAsset = document.querySelector("#terrainAsset");
+    const cannonAsset = document.querySelector("#cannonAsset");
+    const sparkAsset = document.querySelector("#sparkAsset");
+    const shotsEl = document.querySelector("#shots");
+    const windEl = document.querySelector("#wind");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+    const angleInput = document.querySelector("#angle");
+    const powerInput = document.querySelector("#power");
+    const angleValueEl = document.querySelector("#angleValue");
+    const powerValueEl = document.querySelector("#powerValue");
+    const fireButton = document.querySelector("#fire");
+
+    const width = canvas.width;
+    const height = canvas.height;
+    const gravity = 0.21;
+    const player = { x: 112, y: 391 };
+    const rival = { x: 780, y: 316 };
+    let state;
+    let rafId = 0;
+
+    function ridgeY(x) {
+      return 424 - Math.sin(x / 94) * 24 - Math.sin(x / 37) * 8 - (x / width) * 68;
+    }
+
+    function reset() {
+      state = {
+        shots: 0,
+        wind: -0.028,
+        phase: "aim",
+        projectile: null,
+        blast: null,
+        rivalRange: 0,
+        message: "Line up the first shot."
+      };
+      angleInput.value = 22;
+      powerInput.value = 98;
+      updateHud();
+      draw();
+    }
+
+    function updateHud() {
+      shotsEl.textContent = state.shots;
+      windEl.textContent = state.wind > 0 ? `+${state.wind.toFixed(2)}` : state.wind.toFixed(2);
+      messageEl.textContent = state.message;
+      angleValueEl.textContent = angleInput.value;
+      powerValueEl.textContent = powerInput.value;
+      fireButton.disabled = state.phase !== "aim";
+      angleInput.disabled = state.phase !== "aim";
+      powerInput.disabled = state.phase !== "aim";
+    }
+
+    function shotVector(angle, power, fromPlayer) {
+      const radians = angle * Math.PI / 180;
+      const force = power / 6.5;
+      return {
+        x: Math.cos(radians) * force * (fromPlayer ? 1 : -1),
+        y: -Math.sin(radians) * force
+      };
+    }
+
+    function firePlayer() {
+      if (state.phase !== "aim") return;
+      const angle = Number(angleInput.value);
+      const power = Number(powerInput.value);
+      const velocity = shotVector(angle, power, true);
+      state.shots += 1;
+      state.phase = "player-shot";
+      state.projectile = { x: player.x + 48, y: player.y - 38, vx: velocity.x, vy: velocity.y, fromPlayer: true };
+      state.message = "Shell away.";
+      updateHud();
+      tick();
+    }
+
+    function rivalFire() {
+      const dx = rival.x - player.x;
+      const angle = 48 - Math.min(state.rivalRange * 3, 10);
+      const power = Math.min(78, 57 + dx / 58 + state.rivalRange * 6);
+      const velocity = shotVector(angle, power, false);
+      state.phase = "rival-shot";
+      state.projectile = { x: rival.x - 42, y: rival.y - 38, vx: velocity.x, vy: velocity.y, fromPlayer: false };
+      state.message = "Rival cannon answers.";
+      updateHud();
+      tick();
+    }
+
+    function resolveImpact(hit) {
+      state.blast = { x: state.projectile.x, y: state.projectile.y, radius: 1, life: 34, hit };
+      state.projectile = null;
+      if (hit === "rival") {
+        state.phase = "won";
+        state.message = `Direct hit in ${state.shots} shot${state.shots === 1 ? "" : "s"}.`;
+      } else if (hit === "player") {
+        state.phase = "lost";
+        state.message = "Rival ranged you in. Reset for another duel.";
+      } else if (state.phase === "player-shot") {
+        state.phase = "pause";
+        state.message = "Short of the mark. Watch the countershot.";
+        setTimeout(() => {
+          if (state.phase === "pause") {
+            state.rivalRange += 1;
+            rivalFire();
+          }
+        }, 650);
+      } else {
+        state.phase = "aim";
+        state.message = "Rival missed. Adjust and fire.";
+      }
+      updateHud();
+    }
+
+    function stepProjectile() {
+      const shell = state.projectile;
+      if (!shell) return;
+      shell.vx += state.wind;
+      shell.vy += gravity;
+      shell.x += shell.vx;
+      shell.y += shell.vy;
+      const target = shell.fromPlayer ? rival : player;
+      const dx = shell.x - target.x;
+      const dy = shell.y - (target.y - 28);
+      if (Math.hypot(dx, dy) < 34) {
+        resolveImpact(shell.fromPlayer ? "rival" : "player");
+        return;
+      }
+      if (shell.x < -40 || shell.x > width + 40 || shell.y > ridgeY(shell.x) - 3) {
+        resolveImpact("ground");
+      }
+    }
+
+    function tick() {
+      cancelAnimationFrame(rafId);
+      stepProjectile();
+      if (state.blast) {
+        state.blast.radius += 2.8;
+        state.blast.life -= 1;
+        if (state.blast.life <= 0) state.blast = null;
+      }
+      draw();
+      if (state.projectile || state.blast) {
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    function drawCannon(base, flip) {
+      if (!cannonAsset.complete || !cannonAsset.naturalWidth) return;
+      ctx.save();
+      ctx.translate(base.x, base.y - 36);
+      ctx.scale(flip ? -0.7 : 0.7, 0.7);
+      ctx.drawImage(cannonAsset, -64, -46, 128, 88);
+      ctx.restore();
+    }
+
+    function drawTrajectoryPreview() {
+      if (state.phase !== "aim") return;
+      const vector = shotVector(Number(angleInput.value), Number(powerInput.value), true);
+      let x = player.x + 48;
+      let y = player.y - 38;
+      let vx = vector.x;
+      let vy = vector.y;
+      ctx.save();
+      ctx.setLineDash([6, 9]);
+      ctx.strokeStyle = "rgba(255, 250, 206, 0.82)";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      for (let i = 0; i < 76; i += 1) {
+        vx += state.wind;
+        vy += gravity;
+        x += vx;
+        y += vy;
+        if (y > ridgeY(x)) break;
+        ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+      if (terrainAsset.complete && terrainAsset.naturalWidth) {
+        ctx.drawImage(terrainAsset, 0, 0, width, height);
+      } else {
+        const sky = ctx.createLinearGradient(0, 0, 0, height);
+        sky.addColorStop(0, "#ffe8a3");
+        sky.addColorStop(0.58, "#f1a862");
+        sky.addColorStop(1, "#364b43");
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, width, height);
+      }
+      ctx.fillStyle = "#26382f";
+      ctx.beginPath();
+      ctx.moveTo(0, ridgeY(0));
+      for (let x = 0; x <= width; x += 12) ctx.lineTo(x, ridgeY(x));
+      ctx.lineTo(width, height);
+      ctx.lineTo(0, height);
+      ctx.closePath();
+      ctx.fill();
+      drawTrajectoryPreview();
+      drawCannon(player, false);
+      drawCannon(rival, true);
+      if (state.projectile) {
+        ctx.save();
+        ctx.translate(state.projectile.x, state.projectile.y);
+        ctx.rotate(state.projectile.vx * 0.12);
+        if (sparkAsset.complete && sparkAsset.naturalWidth) {
+          ctx.drawImage(sparkAsset, -13, -13, 26, 26);
+        } else {
+          ctx.fillStyle = "#f5b94d";
+          ctx.beginPath();
+          ctx.arc(0, 0, 8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+      if (state.blast) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, state.blast.life / 34);
+        ctx.fillStyle = state.blast.hit === "ground" ? "rgba(245, 185, 77, 0.36)" : "rgba(247, 87, 56, 0.48)";
+        ctx.beginPath();
+        ctx.arc(state.blast.x, state.blast.y, state.blast.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    fireButton.addEventListener("click", firePlayer);
+    restartButton.addEventListener("click", reset);
+    [angleInput, powerInput].forEach((input) => input.addEventListener("input", () => {
+      updateHud();
+      draw();
+    }));
+    window.addEventListener("keydown", (event) => {
+      if (event.key === " " || event.key === "Enter") {
+        event.preventDefault();
+        firePlayer();
+      }
+    });
+    [terrainAsset, cannonAsset, sparkAsset].forEach((asset) => asset.addEventListener("load", draw));
+
+    window.__cannonDuelTest = {
+      reset,
+      firePlayer,
+      setAim: (angle, power) => {
+        angleInput.value = angle;
+        powerInput.value = power;
+        draw();
+      },
+      state: () => ({ phase: state.phase, shots: state.shots, message: state.message, wind: state.wind })
+    };
+
+    reset();
+  </script>
+</body>
+</html>
