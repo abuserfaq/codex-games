@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Royal Game of Ur</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html">Cannon Duel</a>
+        <a href="../royal-ur/index.html" aria-current="page">Royal Game of Ur</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Royal Game of Ur</h1>
+      <p>Roll four marked dice, race five shells through the rosettes, and bear them off first.</p>
+    </header>
+
+    <section class="statusbar ur-hud" role="status">
+      <span>Roll: <strong id="roll">-</strong></span>
+      <span>Red off: <strong id="redOff">0</strong>/5</span>
+      <span>Ivory off: <strong id="ivoryOff">0</strong>/5</span>
+      <span id="message">Roll to begin.</span>
+      <button class="button" id="restart" type="button">Reset</button>
+    </section>
+
+    <section class="play-panel ur-wrap" aria-label="Royal Game of Ur board">
+      <div class="ur-board" id="board"></div>
+      <img class="asset-preload" src="./assets/ur-board.svg" alt="">
+      <img class="asset-preload" src="./assets/ur-piece-red.svg" alt="">
+      <img class="asset-preload" src="./assets/ur-piece-ivory.svg" alt="">
+      <img class="asset-preload" src="./assets/ur-die.svg" alt="">
+    </section>
+
+    <section class="statusbar ur-controls" aria-label="Royal Game of Ur controls">
+      <div class="ur-dice" id="dice" aria-label="Binary dice"></div>
+      <button class="button" id="rollButton" type="button">Roll</button>
+      <span class="hint">Click a lit red shell after rolling. Rosettes grant another turn and cannot be captured.</span>
+    </section>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const diceEl = document.querySelector("#dice");
+    const rollEl = document.querySelector("#roll");
+    const redOffEl = document.querySelector("#redOff");
+    const ivoryOffEl = document.querySelector("#ivoryOff");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+    const rollButton = document.querySelector("#rollButton");
+
+    const piecesPerSide = 5;
+    const rosettes = new Set([3, 7, 13]);
+    const redPath = [
+      [2, 0], [2, 1], [2, 2], [2, 3],
+      [1, 3], [1, 4], [1, 5], [1, 6], [1, 7], [1, 2], [1, 1], [1, 0],
+      [2, 4], [2, 5]
+    ];
+    const ivoryPath = [
+      [0, 0], [0, 1], [0, 2], [0, 3],
+      [1, 3], [1, 4], [1, 5], [1, 6], [1, 7], [1, 2], [1, 1], [1, 0],
+      [0, 4], [0, 5]
+    ];
+    const playableCells = new Set([
+      "0-0", "0-1", "0-2", "0-3", "0-4", "0-5",
+      "1-0", "1-1", "1-2", "1-3", "1-4", "1-5", "1-6", "1-7",
+      "2-0", "2-1", "2-2", "2-3", "2-4", "2-5"
+    ]);
+
+    let state;
+
+    function makeSide() {
+      return Array.from({ length: piecesPerSide }, () => -1);
+    }
+
+    function reset() {
+      state = {
+        turn: "red",
+        red: makeSide(),
+        ivory: makeSide(),
+        roll: null,
+        dice: [0, 0, 0, 0],
+        message: "Roll to begin.",
+        finished: false
+      };
+      render();
+    }
+
+    function sidePath(side) {
+      return side === "red" ? redPath : ivoryPath;
+    }
+
+    function sidePieces(side) {
+      return side === "red" ? state.red : state.ivory;
+    }
+
+    function opponentPieces(side) {
+      return side === "red" ? state.ivory : state.red;
+    }
+
+    function occupiedByOwn(side, target) {
+      return sidePieces(side).includes(target);
+    }
+
+    function capturedIndex(side, target) {
+      const opponent = opponentPieces(side);
+      const shared = target >= 4 && target <= 11;
+      return shared && !rosettes.has(target) ? opponent.indexOf(target) : -1;
+    }
+
+    function legalMoves(side = state.turn, roll = state.roll) {
+      if (!roll || state.finished) return [];
+      return sidePieces(side).map((position, index) => {
+        const target = position + roll;
+        if (target > redPath.length) return null;
+        if (target < redPath.length && occupiedByOwn(side, target)) return null;
+        if (target < redPath.length && rosettes.has(target) && opponentPieces(side).includes(target)) return null;
+        return { index, from: position, target, bearOff: target === redPath.length, rosette: rosettes.has(target) };
+      }).filter(Boolean);
+    }
+
+    function rollDice(values) {
+      if (state.finished || state.roll !== null || state.turn !== "red") return;
+      const dice = values || Array.from({ length: 4 }, () => Math.random() < 0.5 ? 0 : 1);
+      state.dice = dice;
+      state.roll = dice.reduce((sum, value) => sum + value, 0);
+      if (!state.roll) {
+        state.message = "No marked dice. Ivory rolls.";
+        render();
+        setTimeout(rivalTurn, 520);
+        return;
+      }
+      const moves = legalMoves("red", state.roll);
+      state.message = moves.length ? "Choose a highlighted red shell." : "No legal red move. Ivory rolls.";
+      render();
+      if (!moves.length) setTimeout(rivalTurn, 650);
+    }
+
+    function movePiece(side, index) {
+      const move = legalMoves(side, state.roll).find((entry) => entry.index === index);
+      if (!move) return false;
+      const pieces = sidePieces(side);
+      const opponent = opponentPieces(side);
+      const caught = move.target < redPath.length ? capturedIndex(side, move.target) : -1;
+      if (caught >= 0) opponent[caught] = -1;
+      pieces[index] = move.bearOff ? redPath.length : move.target;
+      const off = pieces.filter((position) => position === redPath.length).length;
+      if (off === piecesPerSide) {
+        state.finished = true;
+        state.message = side === "red" ? "Red shells reach the palace. You win." : "Ivory wins the race.";
+      } else if (move.rosette) {
+        state.message = side === "red" ? "Rosette. Roll again." : "Ivory rests on a rosette and rolls again.";
+      } else {
+        state.turn = side === "red" ? "ivory" : "red";
+        state.message = state.turn === "red" ? "Your roll." : "Ivory rolls.";
+      }
+      state.roll = null;
+      render();
+      if (!state.finished && side === "red" && !move.rosette) setTimeout(rivalTurn, 620);
+      if (!state.finished && side === "ivory" && move.rosette) setTimeout(rivalTurn, 620);
+      return true;
+    }
+
+    function chooseRivalMove(moves) {
+      return moves
+        .slice()
+        .sort((a, b) => Number(b.bearOff) - Number(a.bearOff) || Number(b.rosette) - Number(a.rosette) || b.target - a.target)[0];
+    }
+
+    function rivalTurn(values) {
+      if (state.finished) return;
+      state.turn = "ivory";
+      state.dice = values || Array.from({ length: 4 }, () => Math.random() < 0.5 ? 0 : 1);
+      state.roll = state.dice.reduce((sum, value) => sum + value, 0);
+      if (!state.roll) {
+        state.roll = null;
+        state.turn = "red";
+        state.message = "Ivory rolled zero. Your roll.";
+        render();
+        return;
+      }
+      const moves = legalMoves("ivory", state.roll);
+      if (!moves.length) {
+        state.roll = null;
+        state.turn = "red";
+        state.message = "Ivory has no legal move. Your roll.";
+        render();
+        return;
+      }
+      movePiece("ivory", chooseRivalMove(moves).index);
+    }
+
+    function piecesAt(row, col) {
+      const result = [];
+      for (const side of ["red", "ivory"]) {
+        sidePieces(side).forEach((position, index) => {
+          if (position < 0 || position >= redPath.length) return;
+          const [pieceRow, pieceCol] = sidePath(side)[position];
+          if (pieceRow === row && pieceCol === col) result.push({ side, index, position });
+        });
+      }
+      return result;
+    }
+
+    function renderCell(row, col) {
+      const cell = document.createElement("button");
+      const key = `${row}-${col}`;
+      const position = redPath.findIndex(([pathRow, pathCol]) => pathRow === row && pathCol === col);
+      const playable = playableCells.has(key);
+      cell.type = "button";
+      cell.className = `ur-cell${playable ? "" : " empty"}${rosettes.has(position) ? " rosette" : ""}`;
+      cell.disabled = !playable;
+      cell.setAttribute("aria-label", playable ? `Board square ${key}` : "Empty board space");
+      const stack = piecesAt(row, col);
+      for (const piece of stack) {
+        const pieceButton = document.createElement("span");
+        const legal = piece.side === "red" && legalMoves("red", state.roll).some((move) => move.index === piece.index);
+        pieceButton.className = `ur-piece ${piece.side}${legal ? " playable" : ""}`;
+        pieceButton.textContent = String(piece.index + 1);
+        cell.append(pieceButton);
+      }
+      cell.addEventListener("click", () => {
+        const redPiece = stack.find((piece) => piece.side === "red");
+        if (redPiece) movePiece("red", redPiece.index);
+      });
+      return cell;
+    }
+
+    function renderHome(side) {
+      return sidePieces(side).map((position, index) => {
+        const legal = state.turn === side && position === -1 && legalMoves(side, state.roll).some((move) => move.index === index);
+        return `<button class="ur-home-piece ${side}${legal ? " playable" : ""}" type="button" data-side="${side}" data-index="${index}" ${position !== -1 ? "disabled" : ""}>${index + 1}</button>`;
+      }).join("");
+    }
+
+    function render() {
+      rollEl.textContent = state.roll === null ? "-" : state.roll;
+      redOffEl.textContent = state.red.filter((position) => position === redPath.length).length;
+      ivoryOffEl.textContent = state.ivory.filter((position) => position === redPath.length).length;
+      messageEl.textContent = state.message;
+      rollButton.disabled = state.finished || state.turn !== "red" || state.roll !== null;
+      diceEl.innerHTML = state.dice.map((value) => `<span class="ur-die${value ? " marked" : ""}">${value ? "1" : ""}</span>`).join("");
+      boardEl.innerHTML = `
+        <div class="ur-home red-home" aria-label="Red start">${renderHome("red")}</div>
+        <div class="ur-grid" aria-label="Race board"></div>
+        <div class="ur-home ivory-home" aria-label="Ivory start">${renderHome("ivory")}</div>
+      `;
+      const grid = boardEl.querySelector(".ur-grid");
+      for (let row = 0; row < 3; row += 1) {
+        for (let col = 0; col < 8; col += 1) {
+          grid.append(renderCell(row, col));
+        }
+      }
+      boardEl.querySelectorAll(".ur-home-piece").forEach((button) => {
+        button.addEventListener("click", () => movePiece(button.dataset.side, Number(button.dataset.index)));
+      });
+    }
+
+    restartButton.addEventListener("click", reset);
+    rollButton.addEventListener("click", () => rollDice());
+
+    window.__royalUrTest = {
+      reset,
+      rollDice,
+      legalMoves,
+      movePiece,
+      rivalTurn,
+      state: () => JSON.parse(JSON.stringify(state))
+    };
+
+    reset();
+  </script>
+</body>
+</html>
