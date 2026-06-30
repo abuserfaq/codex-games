@@ -1,0 +1,8 @@
+{
+  "name": "Klondike Solitaire",
+  "assets": [
+    "card-back.svg",
+    "table-felt.svg",
+    "suit-marks.svg"
+  ]
+}

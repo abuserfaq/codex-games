@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Klondike Solitaire</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html">Cannon Duel</a>
+        <a href="../royal-ur/index.html">Royal Game of Ur</a>
+        <a href="../solitaire/index.html" aria-current="page">Klondike Solitaire</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Klondike Solitaire</h1>
+      <p>Build four suited foundations from ace to king while unpacking the tableau.</p>
+    </header>
+
+    <section class="statusbar solitaire-hud" role="status">
+      <span>Moves: <strong id="moves">0</strong></span>
+      <span>Stock: <strong id="stockCount">24</strong></span>
+      <span>Foundations: <strong id="foundationCount">0</strong>/52</span>
+      <span id="message">Draw from the stock or move a face-up card.</span>
+      <button class="button" id="restart" type="button">Reset</button>
+    </section>
+
+    <section class="play-panel solitaire-wrap" aria-label="Klondike Solitaire table">
+      <div class="solitaire-table">
+        <div class="solitaire-top">
+          <button class="sol-pile sol-stock" id="stock" type="button" aria-label="Draw from stock"></button>
+          <button class="sol-pile sol-waste" id="waste" type="button" aria-label="Waste pile"></button>
+          <div class="sol-foundations" id="foundations" aria-label="Foundation piles"></div>
+        </div>
+        <div class="sol-tableau" id="tableau" aria-label="Tableau columns"></div>
+      </div>
+      <img class="asset-preload" src="./assets/card-back.svg" alt="">
+      <img class="asset-preload" src="./assets/table-felt.svg" alt="">
+      <img class="asset-preload" src="./assets/suit-marks.svg" alt="">
+    </section>
+
+    <section class="statusbar solitaire-controls" aria-label="Solitaire controls">
+      <button class="button" id="autoFoundation" type="button">Auto foundation</button>
+      <button class="button" id="clearSelection" type="button">Clear pick</button>
+      <span class="hint">Tap a face-up card or run, then tap a tableau or foundation target. Kings fill empty columns.</span>
+    </section>
+  </main>
+
+  <script>
+    const suits = ["spades", "hearts", "diamonds", "clubs"];
+    const ranks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+    const suitMarks = { spades: "♠", hearts: "♥", diamonds: "♦", clubs: "♣" };
+    const redSuits = new Set(["hearts", "diamonds"]);
+
+    const stockEl = document.querySelector("#stock");
+    const wasteEl = document.querySelector("#waste");
+    const foundationsEl = document.querySelector("#foundations");
+    const tableauEl = document.querySelector("#tableau");
+    const movesEl = document.querySelector("#moves");
+    const stockCountEl = document.querySelector("#stockCount");
+    const foundationCountEl = document.querySelector("#foundationCount");
+    const messageEl = document.querySelector("#message");
+    const restartButton = document.querySelector("#restart");
+    const autoFoundationButton = document.querySelector("#autoFoundation");
+    const clearSelectionButton = document.querySelector("#clearSelection");
+
+    let state;
+    let selected = null;
+
+    function cardValue(card) {
+      return ranks.indexOf(card.rank) + 1;
+    }
+
+    function cardColor(card) {
+      return redSuits.has(card.suit) ? "red" : "black";
+    }
+
+    function buildDeck() {
+      return suits.flatMap((suit) => ranks.map((rank) => ({ rank, suit, faceUp: false, id: `${rank}-${suit}` })));
+    }
+
+    function shuffle(cards) {
+      const copy = [...cards];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function deal(deck = shuffle(buildDeck())) {
+      const tableau = Array.from({ length: 7 }, () => []);
+      let cursor = 0;
+      for (let column = 0; column < 7; column += 1) {
+        for (let row = 0; row <= column; row += 1) {
+          const card = { ...deck[cursor], faceUp: row === column };
+          tableau[column].push(card);
+          cursor += 1;
+        }
+      }
+      return {
+        stock: deck.slice(cursor).map((card) => ({ ...card, faceUp: false })),
+        waste: [],
+        foundations: { spades: [], hearts: [], diamonds: [], clubs: [] },
+        tableau,
+        moves: 0,
+        won: false,
+        message: "Draw from the stock or move a face-up card."
+      };
+    }
+
+    function reset(deck) {
+      state = deal(deck);
+      selected = null;
+      render();
+    }
+
+    function selectionCards() {
+      if (!selected) return [];
+      if (selected.area === "waste") return state.waste.slice(-1);
+      if (selected.area === "tableau") return state.tableau[selected.column].slice(selected.index);
+      return [];
+    }
+
+    function canMoveToFoundation(card, suit = card?.suit) {
+      if (!card || !card.faceUp || card.suit !== suit) return false;
+      const pile = state.foundations[suit];
+      return cardValue(card) === pile.length + 1;
+    }
+
+    function canMoveToTableau(cards, column) {
+      if (!cards.length || !cards.every((card) => card.faceUp)) return false;
+      const target = state.tableau[column];
+      const first = cards[0];
+      if (!target.length) return first.rank === "K";
+      const top = target[target.length - 1];
+      return top.faceUp && cardColor(top) !== cardColor(first) && cardValue(top) === cardValue(first) + 1;
+    }
+
+    function flipTop(column) {
+      const pile = state.tableau[column];
+      const top = pile[pile.length - 1];
+      if (top && !top.faceUp) top.faceUp = true;
+    }
+
+    function drawStock() {
+      if (state.won) return;
+      selected = null;
+      if (state.stock.length) {
+        const card = state.stock.pop();
+        card.faceUp = true;
+        state.waste.push(card);
+        state.moves += 1;
+        state.message = "Card drawn to waste.";
+      } else if (state.waste.length) {
+        state.stock = state.waste.reverse().map((card) => ({ ...card, faceUp: false }));
+        state.waste = [];
+        state.moves += 1;
+        state.message = "Waste recycled into stock.";
+      } else {
+        state.message = "No cards left in stock.";
+      }
+      render();
+    }
+
+    function moveSelectedToFoundation(suit) {
+      const cards = selectionCards();
+      if (cards.length !== 1 || !canMoveToFoundation(cards[0], suit)) {
+        state.message = "That card cannot go to this foundation.";
+        render();
+        return false;
+      }
+      const card = removeSelectedCards()[0];
+      state.foundations[suit].push(card);
+      state.moves += 1;
+      state.message = `${card.rank}${suitMarks[card.suit]} placed on foundation.`;
+      selected = null;
+      checkWin();
+      render();
+      return true;
+    }
+
+    function moveSelectedToTableau(column) {
+      const cards = selectionCards();
+      if (!canMoveToTableau(cards, column)) {
+        state.message = "That run cannot land there.";
+        render();
+        return false;
+      }
+      const moved = removeSelectedCards();
+      state.tableau[column].push(...moved);
+      state.moves += 1;
+      state.message = "Run moved across the tableau.";
+      selected = null;
+      render();
+      return true;
+    }
+
+    function removeSelectedCards() {
+      if (selected.area === "waste") return [state.waste.pop()];
+      if (selected.area === "tableau") {
+        const pile = state.tableau[selected.column];
+        const cards = pile.splice(selected.index);
+        flipTop(selected.column);
+        return cards;
+      }
+      return [];
+    }
+
+    function selectWaste() {
+      if (!state.waste.length || state.won) return;
+      selected = { area: "waste" };
+      state.message = "Waste card selected.";
+      render();
+    }
+
+    function selectTableau(column, index) {
+      const card = state.tableau[column][index];
+      if (!card?.faceUp || state.won) return;
+      selected = { area: "tableau", column, index };
+      state.message = `${card.rank}${suitMarks[card.suit]} selected.`;
+      render();
+    }
+
+    function clearSelection() {
+      selected = null;
+      state.message = "Selection cleared.";
+      render();
+    }
+
+    function autoFoundation() {
+      const wasteCard = state.waste[state.waste.length - 1];
+      if (wasteCard && moveSelectedCard({ area: "waste" }, "foundation")) return;
+      for (let column = 0; column < 7; column += 1) {
+        const pile = state.tableau[column];
+        const top = pile[pile.length - 1];
+        if (top && canMoveToFoundation(top)) {
+          moveSelectedCard({ area: "tableau", column, index: pile.length - 1 }, "foundation");
+          return;
+        }
+      }
+      state.message = "No safe foundation move is ready.";
+      render();
+    }
+
+    function moveSelectedCard(pick, target) {
+      selected = pick;
+      const card = selectionCards()[0];
+      if (target === "foundation" && card) return moveSelectedToFoundation(card.suit);
+      return false;
+    }
+
+    function foundationTotal() {
+      return suits.reduce((sum, suit) => sum + state.foundations[suit].length, 0);
+    }
+
+    function checkWin() {
+      if (foundationTotal() === 52) {
+        state.won = true;
+        state.message = "All foundations complete. You win.";
+      }
+    }
+
+    function makeCard(card, context) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `sol-card ${card.faceUp ? cardColor(card) : "facedown"}`;
+      button.style.setProperty("--stack", context.stack || 0);
+      button.setAttribute("aria-label", card.faceUp ? `${card.rank} of ${card.suit}` : "Face-down card");
+      if (!card.faceUp) {
+        button.disabled = true;
+        return button;
+      }
+      button.innerHTML = `<span>${card.rank}</span><strong>${suitMarks[card.suit]}</strong><span>${card.rank}</span>`;
+      if (selected?.area === context.area && selected?.column === context.column && context.index >= selected.index) {
+        button.classList.add("selected");
+      }
+      button.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if (context.area === "waste") selectWaste();
+        if (context.area === "tableau") selectTableau(context.column, context.index);
+      });
+      return button;
+    }
+
+    function render() {
+      movesEl.textContent = state.moves;
+      stockCountEl.textContent = state.stock.length;
+      foundationCountEl.textContent = foundationTotal();
+      messageEl.textContent = state.message;
+      stockEl.className = `sol-pile sol-stock${state.stock.length ? " has-cards" : ""}`;
+      stockEl.textContent = state.stock.length ? "" : "↻";
+      stockEl.disabled = state.won || (!state.stock.length && !state.waste.length);
+
+      wasteEl.innerHTML = "";
+      wasteEl.className = "sol-pile sol-waste";
+      const wasteCard = state.waste[state.waste.length - 1];
+      if (wasteCard) {
+        wasteEl.append(makeCard(wasteCard, { area: "waste" }));
+      } else {
+        wasteEl.textContent = "Waste";
+      }
+
+      foundationsEl.innerHTML = "";
+      suits.forEach((suit) => {
+        const pile = document.createElement("button");
+        const top = state.foundations[suit][state.foundations[suit].length - 1];
+        pile.type = "button";
+        pile.className = "sol-pile sol-foundation";
+        pile.setAttribute("aria-label", `${suit} foundation`);
+        pile.addEventListener("click", () => selected && moveSelectedToFoundation(suit));
+        if (top) {
+          pile.append(makeCard(top, { area: "foundation" }));
+        } else {
+          pile.innerHTML = `<span class="sol-suit ${redSuits.has(suit) ? "red" : "black"}">${suitMarks[suit]}</span>`;
+        }
+        foundationsEl.append(pile);
+      });
+
+      tableauEl.innerHTML = "";
+      state.tableau.forEach((pile, column) => {
+        const columnEl = document.createElement("button");
+        columnEl.type = "button";
+        columnEl.className = "sol-column";
+        columnEl.setAttribute("aria-label", `Tableau column ${column + 1}`);
+        columnEl.addEventListener("click", () => selected && moveSelectedToTableau(column));
+        pile.forEach((card, index) => {
+          columnEl.append(makeCard(card, { area: "tableau", column, index, stack: index }));
+        });
+        tableauEl.append(columnEl);
+      });
+    }
+
+    stockEl.addEventListener("click", drawStock);
+    wasteEl.addEventListener("click", () => selected ? moveSelectedToFoundation(selectionCards()[0]?.suit) : selectWaste());
+    restartButton.addEventListener("click", () => reset());
+    autoFoundationButton.addEventListener("click", autoFoundation);
+    clearSelectionButton.addEventListener("click", clearSelection);
+
+    window.__solitaireTest = {
+      reset,
+      buildDeck,
+      deal,
+      drawStock,
+      canMoveToFoundation,
+      canMoveToTableau,
+      selectTableau,
+      selectWaste,
+      moveSelectedToFoundation,
+      moveSelectedToTableau,
+      state: () => JSON.parse(JSON.stringify(state))
+    };
+
+    reset();
+  </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" preserveAspectRatio="none" role="img" aria-label="deep green card table felt">
+  <defs>
+    <linearGradient id="felt" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#17664a"/>
+      <stop offset=".55" stop-color="#0c4e3d"/>
+      <stop offset="1" stop-color="#073829"/>
+    </linearGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" seed="18"/>
+      <feColorMatrix type="saturate" values=".25"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 .18"/>
+      </feComponentTransfer>
+    </filter>
+    <radialGradient id="glow" cx=".52" cy=".28" r=".76">
+      <stop offset="0" stop-color="#42a87c" stop-opacity=".45"/>
+      <stop offset=".55" stop-color="#0d5b43" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#031f18" stop-opacity=".6"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="620" fill="url(#felt)"/>
+  <rect width="900" height="620" filter="url(#grain)"/>
+  <rect width="900" height="620" fill="url(#glow)"/>
+  <path d="M38 45h824v530H38z" fill="none" stroke="#f0c86b" stroke-width="5" opacity=".75"/>
+  <path d="M58 65h784v490H58z" fill="none" stroke="#ffffff" stroke-width="2" opacity=".18"/>
+</svg>
