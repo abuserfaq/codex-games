@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 150" role="img" aria-label="Ivory mahjong tile">
+  <rect x="8" y="6" width="102" height="132" rx="10" fill="#f8efd8"/>
+  <path d="M110 18v116c0 5-4 9-9 9H20c-6 0-11-5-11-11h84c5 0 9-4 9-9V7c5 1 8 5 8 11z" fill="#c9ab73"/>
+  <rect x="14" y="12" width="88" height="113" rx="8" fill="#fff9e8"/>
+  <path d="M20 17h76v17H20z" fill="#f1ddb3" opacity=".55"/>
+  <rect x="17" y="15" width="82" height="108" rx="7" fill="none" stroke="#805f2d" stroke-width="3" opacity=".55"/>
+</svg>

@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mahjong Solitaire</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html">Cannon Duel</a>
+        <a href="../royal-ur/index.html">Royal Game of Ur</a>
+        <a href="../solitaire/index.html">Klondike Solitaire</a>
+        <a href="../mahjong-solitaire/index.html" aria-current="page">Mahjong Solitaire</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Mahjong Solitaire</h1>
+      <p>Снимайте открытые одинаковые плитки, пока стол не станет пустым.</p>
+    </header>
+
+    <section class="statusbar mahjong-hud" aria-live="polite">
+      <span id="message">Выберите две свободные одинаковые плитки.</span>
+      <span>Пары: <strong id="pairs">0</strong>/12</span>
+      <span>Ходы: <strong id="moves">0</strong></span>
+      <button class="button" type="button" id="restart">Заново</button>
+    </section>
+
+    <section class="play-panel mahjong-wrap" aria-label="Поле Mahjong Solitaire">
+      <div class="mahjong-board" id="mahjongBoard"></div>
+    </section>
+
+    <section class="statusbar mahjong-controls">
+      <button class="button" type="button" id="hint">Подсказка</button>
+      <button class="button" type="button" id="shuffle">Перемешать</button>
+      <p class="hint">Свободная плитка не накрыта и имеет открытый левый или правый край.</p>
+    </section>
+  </main>
+
+  <div class="asset-preload" aria-hidden="true">
+    <img src="./assets/tile-face.svg" alt="">
+    <img src="./assets/tile-shadow.svg" alt="">
+    <img src="./assets/bamboo-mark.svg" alt="">
+  </div>
+
+  <script>
+    const symbols = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "B", "C", "D"];
+    const marks = {
+      "1": "1", "2": "2", "3": "3", "4": "4", "5": "5", "6": "6",
+      "7": "7", "8": "8", "9": "9", B: "竹", C: "花", D: "月"
+    };
+    const layout = [
+      { x: 1, y: 0, z: 0 }, { x: 2, y: 0, z: 0 }, { x: 3, y: 0, z: 0 }, { x: 4, y: 0, z: 0 },
+      { x: 0, y: 1, z: 0 }, { x: 1, y: 1, z: 0 }, { x: 2, y: 1, z: 0 }, { x: 3, y: 1, z: 0 }, { x: 4, y: 1, z: 0 }, { x: 5, y: 1, z: 0 },
+      { x: 0, y: 2, z: 0 }, { x: 1, y: 2, z: 0 }, { x: 2, y: 2, z: 0 }, { x: 3, y: 2, z: 0 }, { x: 4, y: 2, z: 0 }, { x: 5, y: 2, z: 0 },
+      { x: 1, y: 3, z: 0 }, { x: 2, y: 3, z: 0 }, { x: 3, y: 3, z: 0 }, { x: 4, y: 3, z: 0 },
+      { x: 2, y: 1, z: 1 }, { x: 3, y: 1, z: 1 }, { x: 2, y: 2, z: 1 }, { x: 3, y: 2, z: 1 }
+    ];
+
+    const board = document.querySelector("#mahjongBoard");
+    const message = document.querySelector("#message");
+    const pairsLabel = document.querySelector("#pairs");
+    const movesLabel = document.querySelector("#moves");
+    const restartButton = document.querySelector("#restart");
+    const hintButton = document.querySelector("#hint");
+    const shuffleButton = document.querySelector("#shuffle");
+
+    let tiles = [];
+    let selectedId = null;
+    let moves = 0;
+    let pairs = 0;
+
+    function makeDeck() {
+      return symbols.flatMap((symbol) => [symbol, symbol]).sort(() => Math.random() - 0.5);
+    }
+
+    function resetGame() {
+      const deck = makeDeck();
+      tiles = layout.map((spot, index) => ({ ...spot, id: index, symbol: deck[index], removed: false, hinted: false }));
+      selectedId = null;
+      moves = 0;
+      pairs = 0;
+      render();
+      setMessage("Выберите две свободные одинаковые плитки.");
+    }
+
+    function setMessage(text) {
+      message.textContent = text;
+    }
+
+    function overlaps(a, b) {
+      return Math.abs(a.x - b.x) < 1 && Math.abs(a.y - b.y) < 1;
+    }
+
+    function isTileFree(tile, set = tiles) {
+      if (!tile || tile.removed) return false;
+      const covered = set.some((other) => !other.removed && other.z > tile.z && overlaps(tile, other));
+      if (covered) return false;
+      const leftBlocked = set.some((other) => !other.removed && other.z === tile.z && other.y === tile.y && other.x === tile.x - 1);
+      const rightBlocked = set.some((other) => !other.removed && other.z === tile.z && other.y === tile.y && other.x === tile.x + 1);
+      return !leftBlocked || !rightBlocked;
+    }
+
+    function canMatch(first, second) {
+      return Boolean(first && second && first.id !== second.id && first.symbol === second.symbol && isTileFree(first) && isTileFree(second));
+    }
+
+    function freeMatches() {
+      const free = tiles.filter((tile) => isTileFree(tile));
+      const matches = [];
+      for (let i = 0; i < free.length; i += 1) {
+        for (let j = i + 1; j < free.length; j += 1) {
+          if (free[i].symbol === free[j].symbol) matches.push([free[i], free[j]]);
+        }
+      }
+      return matches;
+    }
+
+    function render() {
+      board.innerHTML = "";
+      pairsLabel.textContent = pairs;
+      movesLabel.textContent = moves;
+      tiles.forEach((tile) => {
+        if (tile.removed) return;
+        const button = document.createElement("button");
+        button.className = "mahjong-tile";
+        button.type = "button";
+        button.dataset.id = tile.id;
+        button.style.setProperty("--x", tile.x);
+        button.style.setProperty("--y", tile.y);
+        button.style.setProperty("--z", tile.z);
+        button.disabled = !isTileFree(tile);
+        button.setAttribute("aria-label", `Плитка ${marks[tile.symbol]}`);
+        if (tile.id === selectedId) button.classList.add("selected");
+        if (tile.hinted) button.classList.add("hinted");
+        button.innerHTML = `<span class="mahjong-glyph">${marks[tile.symbol]}</span>`;
+        button.addEventListener("click", () => chooseTile(tile.id));
+        board.append(button);
+      });
+    }
+
+    function chooseTile(id) {
+      const tile = tiles.find((item) => item.id === id);
+      tiles.forEach((item) => { item.hinted = false; });
+      if (!isTileFree(tile)) {
+        setMessage("Эта плитка заблокирована.");
+        render();
+        return;
+      }
+      if (selectedId === null) {
+        selectedId = id;
+        setMessage("Теперь выберите такую же свободную плитку.");
+        render();
+        return;
+      }
+      const selected = tiles.find((item) => item.id === selectedId);
+      if (selectedId === id) {
+        selectedId = null;
+        setMessage("Выбор снят.");
+      } else if (canMatch(selected, tile)) {
+        selected.removed = true;
+        tile.removed = true;
+        selectedId = null;
+        pairs += 1;
+        moves += 1;
+        setMessage(pairs === symbols.length ? "Стол очищен." : "Пара снята.");
+      } else {
+        selectedId = id;
+        moves += 1;
+        setMessage("Плитки не совпадают.");
+      }
+      render();
+      if (pairs < symbols.length && freeMatches().length === 0) {
+        setMessage("Нет открытых пар. Перемешайте оставшиеся плитки.");
+      }
+    }
+
+    function showHint() {
+      tiles.forEach((tile) => { tile.hinted = false; });
+      const [match] = freeMatches();
+      if (!match) {
+        setMessage("Открытых пар нет.");
+        render();
+        return;
+      }
+      match[0].hinted = true;
+      match[1].hinted = true;
+      setMessage("Подсказка подсветила открытую пару.");
+      render();
+    }
+
+    function shuffleOpen() {
+      const remaining = tiles.filter((tile) => !tile.removed);
+      const symbolsLeft = remaining.map((tile) => tile.symbol).sort(() => Math.random() - 0.5);
+      remaining.forEach((tile, index) => {
+        tile.symbol = symbolsLeft[index];
+        tile.hinted = false;
+      });
+      selectedId = null;
+      moves += 1;
+      setMessage("Оставшиеся плитки перемешаны.");
+      render();
+    }
+
+    restartButton.addEventListener("click", resetGame);
+    hintButton.addEventListener("click", showHint);
+    shuffleButton.addEventListener("click", shuffleOpen);
+    resetGame();
+
+    window.__mahjongTest = {
+      get tiles() { return tiles; },
+      isTileFree,
+      canMatch,
+      freeMatches,
+      chooseTile,
+      resetGame
+    };
+  </script>
+</body>
+</html>
