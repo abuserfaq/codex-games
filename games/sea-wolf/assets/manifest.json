@@ -1,0 +1,8 @@
+{
+  "game": "Sea Wolf",
+  "assets": [
+    "periscope-mask.svg",
+    "target-ship.svg",
+    "torpedo-wake.svg"
+  ]
+}

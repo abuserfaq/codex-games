@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 88" role="img" aria-label="Torpedo wake">
+  <defs>
+    <linearGradient id="wake" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff4bd"/>
+      <stop offset=".45" stop-color="#97e2d2" stop-opacity=".82"/>
+      <stop offset="1" stop-color="#225d68" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <path d="M18 4c8 15 12 29 12 42S26 72 18 84C10 72 6 59 6 46S10 19 18 4Z" fill="url(#wake)"/>
+  <path d="M18 5v70" stroke="#fff7ce" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="18" cy="12" r="7" fill="#f3b74c" stroke="#ffffff" stroke-opacity=".74" stroke-width="2"/>
+</svg>

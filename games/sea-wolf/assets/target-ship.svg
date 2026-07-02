@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 62" role="img" aria-label="Patrol ship">
+  <defs>
+    <linearGradient id="hull" x1="0" x2="1">
+      <stop offset="0" stop-color="#263d42"/>
+      <stop offset=".58" stop-color="#6f8584"/>
+      <stop offset="1" stop-color="#14272c"/>
+    </linearGradient>
+    <linearGradient id="deck" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#f4e5b2"/>
+      <stop offset="1" stop-color="#c58b45"/>
+    </linearGradient>
+  </defs>
+  <path d="M9 33h160l-19 22H32C22 50 14 43 9 33Z" fill="url(#hull)" stroke="#0b1b1f" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M63 16h49l15 17H47l16-17Z" fill="url(#deck)" stroke="#432c1b" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M88 4h15v14H88zM113 11h25v9h-25z" fill="#293f42" stroke="#0b1b1f" stroke-width="3"/>
+  <path d="M29 39h119" stroke="#f6eed7" stroke-opacity=".45" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="58" cy="43" r="4" fill="#f6eed7"/>
+  <circle cx="88" cy="43" r="4" fill="#f6eed7"/>
+  <circle cx="118" cy="43" r="4" fill="#f6eed7"/>
+</svg>
