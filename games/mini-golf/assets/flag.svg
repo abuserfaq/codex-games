@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 120" role="img" aria-label="mini golf cup flag">
+  <path d="M36 16v82" fill="none" stroke="#f8f4df" stroke-width="5" stroke-linecap="round"/>
+  <path d="M40 18c15-8 27-7 34 2v34c-9-8-21-9-34-2z" fill="#d84a3a"/>
+  <path d="M40 18v34c13-7 25-6 34 2V20c-7-9-19-10-34-2z" fill="none" stroke="#7d241d" stroke-width="3" stroke-linejoin="round"/>
+  <ellipse cx="36" cy="101" rx="26" ry="10" fill="#0b2f24" opacity=".42"/>
+  <ellipse cx="36" cy="97" rx="22" ry="8" fill="#12261e"/>
+  <ellipse cx="36" cy="94" rx="15" ry="4" fill="#050807" opacity=".65"/>
+</svg>

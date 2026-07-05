@@ -32,7 +32,7 @@ assert(catalog.includes("<h2>Sea Wolf</h2>"), "catalog card title is missing");
 assert(catalog.includes('<div class="tag">49 игра</div>'), "Sea Wolf should be catalog item 49");
 
 assert(game.includes("<title>Sea Wolf</title>"), "game title is missing");
-assert(game.includes('href="../sea-wolf/index.html" aria-current="page"'), "game menu current link is missing");
+assert(game.includes('aria-current="page">Sea Wolf</a>'), "game menu current link is missing");
 assert(game.includes('class="sea-board"'), "Sea Wolf board markup is missing");
 assert(game.includes('id="seaField"'), "Sea Wolf canvas id is missing");
 assert(game.includes("function spawnShip"), "ship spawning rule is missing");

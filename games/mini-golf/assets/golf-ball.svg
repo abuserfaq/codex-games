@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" role="img" aria-label="dimpled golf ball">
+  <defs>
+    <radialGradient id="ball" cx=".34" cy=".26" r=".72">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".55" stop-color="#f0f3eb"/>
+      <stop offset="1" stop-color="#bec7ba"/>
+    </radialGradient>
+  </defs>
+  <circle cx="40" cy="40" r="34" fill="url(#ball)" stroke="#647268" stroke-width="3"/>
+  <g fill="#b9c4bb" opacity=".72">
+    <circle cx="28" cy="26" r="3"/>
+    <circle cx="42" cy="23" r="3"/>
+    <circle cx="54" cy="31" r="3"/>
+    <circle cx="22" cy="41" r="3"/>
+    <circle cx="38" cy="38" r="3"/>
+    <circle cx="56" cy="47" r="3"/>
+    <circle cx="32" cy="55" r="3"/>
+    <circle cx="47" cy="58" r="3"/>
+  </g>
+</svg>

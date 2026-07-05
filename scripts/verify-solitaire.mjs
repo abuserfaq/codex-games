@@ -32,7 +32,7 @@ assert(catalog.includes("<h2>Klondike Solitaire</h2>"), "catalog card title is m
 assert(catalog.includes('<div class="tag">47 игра</div>'), "Solitaire should be catalog item 47");
 
 assert(game.includes("<title>Klondike Solitaire</title>"), "game title is missing");
-assert(game.includes('href="../solitaire/index.html" aria-current="page"'), "game menu current link is missing");
+assert(game.includes('aria-current="page">Klondike Solitaire</a>'), "game menu current link is missing");
 assert(game.includes('class="solitaire-table"'), "Solitaire table markup is missing");
 assert(game.includes('id="stock"'), "stock pile is missing");
 assert(game.includes('id="foundations"'), "foundation piles are missing");

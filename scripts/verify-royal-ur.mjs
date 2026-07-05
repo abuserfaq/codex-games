@@ -34,7 +34,7 @@ assert(catalog.includes("<h2>Royal Game of Ur</h2>"), "catalog card title is mis
 assert(catalog.includes('<div class="tag">46 игра</div>'), "Royal Game of Ur should be catalog item 46");
 
 assert(game.includes("<title>Royal Game of Ur</title>"), "game title is missing");
-assert(game.includes('href="../royal-ur/index.html" aria-current="page"'), "game menu current link is missing");
+assert(game.includes('aria-current="page">Royal Game of Ur</a>'), "game menu current link is missing");
 assert(game.includes('class="ur-board"'), "Ur board markup is missing");
 assert(game.includes('id="dice"'), "dice row is missing");
 assert(game.includes("function legalMoves"), "legal move logic is missing");

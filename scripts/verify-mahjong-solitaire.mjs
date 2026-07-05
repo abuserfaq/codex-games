@@ -32,7 +32,7 @@ assert(catalog.includes("<h2>Mahjong Solitaire</h2>"), "catalog card title is mi
 assert(catalog.includes('<div class="tag">48 игра</div>'), "Mahjong Solitaire should be catalog item 48");
 
 assert(game.includes("<title>Mahjong Solitaire</title>"), "game title is missing");
-assert(game.includes('href="../mahjong-solitaire/index.html" aria-current="page"'), "game menu current link is missing");
+assert(game.includes('aria-current="page">Mahjong Solitaire</a>'), "game menu current link is missing");
 assert(game.includes('class="mahjong-board"'), "Mahjong board markup is missing");
 assert(game.includes('id="mahjongBoard"'), "Mahjong board id is missing");
 assert(game.includes("function isTileFree"), "free tile rule is missing");

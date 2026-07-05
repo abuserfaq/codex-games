@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini Golf</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html">Cannon Duel</a>
+        <a href="../royal-ur/index.html">Royal Game of Ur</a>
+        <a href="../solitaire/index.html">Klondike Solitaire</a>
+        <a href="../mahjong-solitaire/index.html">Mahjong Solitaire</a>
+        <a href="../sea-wolf/index.html">Sea Wolf</a>
+        <a href="./index.html" aria-current="page">Mini Golf</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Mini Golf</h1>
+      <p>Aim one careful putt through the tiny course, bank off rails, and drop the ball in the cup.</p>
+    </header>
+
+    <section class="statusbar mini-golf-hud" role="status">
+      <span>Strokes: <strong id="strokes">0</strong></span>
+      <span>Power: <strong id="powerReadout">42</strong></span>
+      <span id="message">Line up the opening putt.</span>
+      <button class="button" id="resetButton" type="button">Reset</button>
+    </section>
+
+    <section class="play-panel mini-golf-wrap" aria-label="Mini Golf course">
+      <canvas class="mini-golf-board" id="golfCourse" width="760" height="520"></canvas>
+      <img class="asset-preload" id="turfAsset" src="./assets/turf-texture.svg" alt="">
+      <img class="asset-preload" id="flagAsset" src="./assets/flag.svg" alt="">
+      <img class="asset-preload" id="ballAsset" src="./assets/golf-ball.svg" alt="">
+    </section>
+
+    <section class="statusbar mini-golf-controls" aria-label="Mini Golf controls">
+      <button class="button" id="leftButton" type="button">Left</button>
+      <button class="button" id="rightButton" type="button">Right</button>
+      <label>Power <input id="powerSlider" type="range" min="20" max="80" value="42"></label>
+      <button class="button" id="puttButton" type="button">Putt</button>
+      <span class="hint">Use Arrow keys to aim, slider to set power, and Space or Putt to shoot.</span>
+    </section>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#golfCourse");
+    const ctx = canvas.getContext("2d");
+    const turfAsset = document.querySelector("#turfAsset");
+    const flagAsset = document.querySelector("#flagAsset");
+    const ballAsset = document.querySelector("#ballAsset");
+    const strokesEl = document.querySelector("#strokes");
+    const powerReadout = document.querySelector("#powerReadout");
+    const messageEl = document.querySelector("#message");
+    const resetButton = document.querySelector("#resetButton");
+    const leftButton = document.querySelector("#leftButton");
+    const rightButton = document.querySelector("#rightButton");
+    const puttButton = document.querySelector("#puttButton");
+    const powerSlider = document.querySelector("#powerSlider");
+
+    const width = canvas.width;
+    const height = canvas.height;
+    const cup = { x: 632, y: 108, r: 17 };
+    const start = { x: 118, y: 410 };
+    const walls = [
+      { x: 204, y: 120, w: 32, h: 245 },
+      { x: 332, y: 264, w: 34, h: 170 },
+      { x: 470, y: 92, w: 34, h: 212 },
+      { x: 548, y: 244, w: 130, h: 30 }
+    ];
+    const keys = new Set();
+    let state;
+    let rafId = 0;
+    let lastTime = 0;
+
+    function reset() {
+      state = {
+        ball: { x: start.x, y: start.y, vx: 0, vy: 0 },
+        angle: -32,
+        power: Number(powerSlider.value),
+        strokes: 0,
+        phase: "ready",
+        message: "Line up the opening putt."
+      };
+      lastTime = performance.now();
+      updateHud();
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(loop);
+    }
+
+    function moving() {
+      return Math.hypot(state.ball.vx, state.ball.vy) > 6;
+    }
+
+    function updateHud() {
+      strokesEl.textContent = state.strokes;
+      powerReadout.textContent = state.power;
+      messageEl.textContent = state.message;
+      const disabled = state.phase === "won" || moving();
+      leftButton.disabled = disabled;
+      rightButton.disabled = disabled;
+      puttButton.disabled = disabled;
+      powerSlider.disabled = disabled;
+    }
+
+    function aim(delta) {
+      if (state.phase === "won" || moving()) return;
+      state.angle = Math.max(-84, Math.min(18, state.angle + delta));
+      state.message = `Aim ${Math.round(Math.abs(state.angle))} degrees.`;
+      updateHud();
+      draw();
+    }
+
+    function putt() {
+      if (state.phase === "won" || moving()) return false;
+      const radians = state.angle * Math.PI / 180;
+      const force = state.power * 5.35;
+      state.ball.vx = Math.cos(radians) * force;
+      state.ball.vy = Math.sin(radians) * force;
+      state.strokes += 1;
+      state.phase = "rolling";
+      state.message = "Rolling.";
+      updateHud();
+      return true;
+    }
+
+    function clampBall() {
+      const b = state.ball;
+      const r = 13;
+      if (b.x < 32 + r) { b.x = 32 + r; b.vx = Math.abs(b.vx) * 0.72; }
+      if (b.x > width - 32 - r) { b.x = width - 32 - r; b.vx = -Math.abs(b.vx) * 0.72; }
+      if (b.y < 32 + r) { b.y = 32 + r; b.vy = Math.abs(b.vy) * 0.72; }
+      if (b.y > height - 32 - r) { b.y = height - 32 - r; b.vy = -Math.abs(b.vy) * 0.72; }
+    }
+
+    function hitWall(wall) {
+      const b = state.ball;
+      const r = 13;
+      const nx = Math.max(wall.x, Math.min(b.x, wall.x + wall.w));
+      const ny = Math.max(wall.y, Math.min(b.y, wall.y + wall.h));
+      const dx = b.x - nx;
+      const dy = b.y - ny;
+      if (dx * dx + dy * dy > r * r) return;
+      if (Math.abs(dx) > Math.abs(dy)) {
+        b.x = nx + Math.sign(dx || b.vx || 1) * r;
+        b.vx *= -0.76;
+      } else {
+        b.y = ny + Math.sign(dy || b.vy || 1) * r;
+        b.vy *= -0.76;
+      }
+      b.vx *= 0.96;
+      b.vy *= 0.96;
+    }
+
+    function step(dt) {
+      if (state.phase === "won") return;
+      if (!moving()) {
+        if (state.phase === "rolling") {
+          state.phase = "ready";
+          state.ball.vx = 0;
+          state.ball.vy = 0;
+          state.message = "Set up the next putt.";
+          updateHud();
+        }
+        if (keys.has("ArrowLeft")) aim(-1.2);
+        if (keys.has("ArrowRight")) aim(1.2);
+        return;
+      }
+      const b = state.ball;
+      b.x += b.vx * dt;
+      b.y += b.vy * dt;
+      clampBall();
+      for (const wall of walls) hitWall(wall);
+      b.vx *= Math.pow(0.18, dt);
+      b.vy *= Math.pow(0.18, dt);
+      const dist = Math.hypot(b.x - cup.x, b.y - cup.y);
+      const speed = Math.hypot(b.vx, b.vy);
+      if (dist < cup.r && speed < 190) {
+        b.x = cup.x;
+        b.y = cup.y;
+        b.vx = 0;
+        b.vy = 0;
+        state.phase = "won";
+        state.message = state.strokes <= 3 ? "Birdie pace. Cup cleared." : "Cup cleared.";
+        updateHud();
+      }
+    }
+
+    function drawCourse() {
+      ctx.clearRect(0, 0, width, height);
+      if (turfAsset.complete && turfAsset.naturalWidth) {
+        ctx.drawImage(turfAsset, 0, 0, width, height);
+      } else {
+        ctx.fillStyle = "#3f9b52";
+        ctx.fillRect(0, 0, width, height);
+      }
+      ctx.fillStyle = "#123626";
+      ctx.fillRect(0, 0, width, 32);
+      ctx.fillRect(0, height - 32, width, 32);
+      ctx.fillRect(0, 0, 32, height);
+      ctx.fillRect(width - 32, 0, 32, height);
+      ctx.fillStyle = "#d7c389";
+      ctx.fillRect(72, 384, 98, 54);
+      ctx.fillStyle = "#245b3a";
+      for (const wall of walls) {
+        ctx.fillStyle = "#155536";
+        ctx.fillRect(wall.x, wall.y, wall.w, wall.h);
+        ctx.fillStyle = "rgba(255,255,255,0.2)";
+        ctx.fillRect(wall.x + 4, wall.y + 4, wall.w - 8, 3);
+      }
+      ctx.beginPath();
+      ctx.arc(cup.x, cup.y, cup.r + 6, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255,255,255,0.2)";
+      ctx.fill();
+      if (flagAsset.complete && flagAsset.naturalWidth) {
+        ctx.drawImage(flagAsset, cup.x - 36, cup.y - 96, 72, 108);
+      } else {
+        ctx.fillStyle = "#111";
+        ctx.beginPath();
+        ctx.arc(cup.x, cup.y, cup.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function drawAim() {
+      if (state.phase === "won" || moving()) return;
+      const radians = state.angle * Math.PI / 180;
+      const len = 48 + state.power * 1.3;
+      ctx.save();
+      ctx.translate(state.ball.x, state.ball.y);
+      ctx.strokeStyle = "#fff2a8";
+      ctx.lineWidth = 4;
+      ctx.setLineDash([9, 8]);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(Math.cos(radians) * len, Math.sin(radians) * len);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = "#fff2a8";
+      ctx.beginPath();
+      ctx.arc(Math.cos(radians) * len, Math.sin(radians) * len, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawBall() {
+      if (ballAsset.complete && ballAsset.naturalWidth) {
+        ctx.drawImage(ballAsset, state.ball.x - 14, state.ball.y - 14, 28, 28);
+      } else {
+        ctx.beginPath();
+        ctx.arc(state.ball.x, state.ball.y, 13, 0, Math.PI * 2);
+        ctx.fillStyle = "#f6f8f2";
+        ctx.fill();
+      }
+    }
+
+    function draw() {
+      drawCourse();
+      drawAim();
+      drawBall();
+    }
+
+    function loop(now) {
+      const dt = Math.min(0.04, (now - lastTime) / 1000);
+      lastTime = now;
+      step(dt);
+      draw();
+      rafId = requestAnimationFrame(loop);
+    }
+
+    powerSlider.addEventListener("input", () => {
+      state.power = Number(powerSlider.value);
+      state.message = `Power ${state.power}.`;
+      updateHud();
+      draw();
+    });
+    resetButton.addEventListener("click", reset);
+    leftButton.addEventListener("click", () => aim(-4));
+    rightButton.addEventListener("click", () => aim(4));
+    puttButton.addEventListener("click", putt);
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        keys.add(event.key);
+        event.preventDefault();
+      }
+      if (event.key === " " || event.key === "Enter") {
+        event.preventDefault();
+        putt();
+      }
+    });
+    window.addEventListener("keyup", (event) => keys.delete(event.key));
+    [turfAsset, flagAsset, ballAsset].forEach((asset) => asset.addEventListener("load", draw));
+
+    window.__miniGolfTest = {
+      reset,
+      aim,
+      putt,
+      step,
+      setBall: (x, y, vx = 0, vy = 0) => {
+        state.ball.x = x;
+        state.ball.y = y;
+        state.ball.vx = vx;
+        state.ball.vy = vy;
+        draw();
+      },
+      setAim: (angle, power = state.power) => {
+        state.angle = angle;
+        state.power = power;
+        powerSlider.value = power;
+        updateHud();
+        draw();
+      },
+      state: () => ({
+        x: state.ball.x,
+        y: state.ball.y,
+        strokes: state.strokes,
+        phase: state.phase,
+        message: state.message,
+        power: state.power,
+        angle: state.angle
+      })
+    };
+
+    reset();
+  </script>
+</body>
+</html>

@@ -39,7 +39,7 @@ assert(catalog.includes('<div class="tag">44 игра</div>'), "Domino Trail sho
 assert(count(catalog, "Domino Trail") >= 1, "Domino Trail is not named in the catalog");
 
 assert(game.includes("<title>Domino Trail</title>"), "game title is missing");
-assert(game.includes('href="../domino-trail/index.html" aria-current="page"'), "game menu current link is missing");
+assert(game.includes('aria-current="page">Domino Trail</a>'), "game menu current link is missing");
 assert(game.includes('class="domino-board"'), "domino board markup is missing");
 assert(game.includes('id="leftEnd"'), "left-end HUD marker is missing");
 assert(game.includes('id="rightEnd"'), "right-end HUD marker is missing");

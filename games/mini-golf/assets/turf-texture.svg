@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 190" role="img" aria-label="layered putting green texture">
+  <defs>
+    <linearGradient id="green" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#7fd36c"/>
+      <stop offset="0.52" stop-color="#3f9b52"/>
+      <stop offset="1" stop-color="#1f6f43"/>
+    </linearGradient>
+    <pattern id="grain" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M2 18c8-8 15-8 24 0M-6 4c8-8 15-8 24 0M12 32c8-8 15-8 24 0" fill="none" stroke="#c3f0a9" stroke-width="2" stroke-linecap="round" opacity=".18"/>
+      <path d="M6 7h18M1 25h15" stroke="#0f4e32" stroke-width="1.5" stroke-linecap="round" opacity=".12"/>
+    </pattern>
+  </defs>
+  <rect width="320" height="190" rx="18" fill="url(#green)"/>
+  <rect width="320" height="190" rx="18" fill="url(#grain)"/>
+  <path d="M12 134c47-22 86-12 120 2 38 16 72 20 118-4 23-12 43-17 58-14v60H12z" fill="#185b38" opacity=".28"/>
+  <path d="M0 44c43 14 78 11 110-7 40-22 80-27 128-4 31 15 55 18 82 8" fill="none" stroke="#d3f6b9" stroke-width="9" stroke-linecap="round" opacity=".16"/>
+</svg>

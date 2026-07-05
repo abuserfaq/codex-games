@@ -33,7 +33,7 @@ assert(catalog.includes("./games/cannon-duel/index.html"), "catalog does not lin
 assert(catalog.includes("<h2>Cannon Duel</h2>"), "catalog card title is missing");
 assert(catalog.includes('<div class="tag">45 игра</div>'), "Cannon Duel should be catalog item 45");
 assert(game.includes("<title>Cannon Duel</title>"), "game title is missing");
-assert(game.includes('href="../cannon-duel/index.html" aria-current="page"'), "game menu current link is missing");
+assert(game.includes('aria-current="page">Cannon Duel</a>'), "game menu current link is missing");
 assert(game.includes("cannon-wrap"), "cannon battlefield wrapper is missing");
 assert(game.includes('id="field"'), "canvas field is missing");
 assert(game.includes("function shotVector"), "ballistic vector logic is missing");
