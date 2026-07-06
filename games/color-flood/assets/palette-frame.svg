@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-label="Lacquered palette frame">
+  <rect width="640" height="640" rx="34" fill="#173127"/>
+  <rect x="18" y="18" width="604" height="604" rx="26" fill="none" stroke="#f8e8ad" stroke-opacity=".42" stroke-width="8"/>
+  <path d="M48 88c124-58 421-54 544 0" fill="none" stroke="#fff5c7" stroke-opacity=".22" stroke-width="12" stroke-linecap="round"/>
+  <path d="M46 562c137 49 411 51 548-2" fill="none" stroke="#07140f" stroke-opacity=".32" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="92" cy="90" r="18" fill="#f8e8ad" opacity=".28"/>
+  <circle cx="548" cy="550" r="26" fill="#07140f" opacity=".2"/>
+</svg>

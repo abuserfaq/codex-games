@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Color Flood</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html">Cannon Duel</a>
+        <a href="../royal-ur/index.html">Royal Game of Ur</a>
+        <a href="../solitaire/index.html">Klondike Solitaire</a>
+        <a href="../mahjong-solitaire/index.html">Mahjong Solitaire</a>
+        <a href="../sea-wolf/index.html">Sea Wolf</a>
+        <a href="../mini-golf/index.html">Mini Golf</a>
+        <a href="./index.html" aria-current="page">Color Flood</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Color Flood</h1>
+      <p>Choose colors to grow the corner flood until every glossy tile belongs to one field.</p>
+    </header>
+
+    <section class="statusbar flood-hud" role="status">
+      <span>Moves: <strong id="moves">0</strong>/<strong id="limit">18</strong></span>
+      <span>Flooded: <strong id="coverage">1</strong>%</span>
+      <span id="message">Pick a color to expand from the top-left tile.</span>
+      <button class="button" id="resetButton" type="button">New board</button>
+    </section>
+
+    <section class="play-panel flood-wrap" aria-label="Color Flood board">
+      <div class="flood-board" id="board" role="grid" aria-label="10 by 10 color flood grid"></div>
+      <img class="asset-preload" src="./assets/tile-sheen.svg" alt="">
+      <img class="asset-preload" src="./assets/palette-frame.svg" alt="">
+      <img class="asset-preload" src="./assets/flood-drop.svg" alt="">
+    </section>
+
+    <section class="statusbar flood-controls" aria-label="Color Flood controls">
+      <div class="flood-palette" id="palette"></div>
+      <span class="hint">Click a swatch or press 1-6. Capture all tiles before the move limit.</span>
+    </section>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const paletteEl = document.querySelector("#palette");
+    const movesEl = document.querySelector("#moves");
+    const limitEl = document.querySelector("#limit");
+    const coverageEl = document.querySelector("#coverage");
+    const messageEl = document.querySelector("#message");
+    const resetButton = document.querySelector("#resetButton");
+
+    const size = 10;
+    const limit = 18;
+    const colors = [
+      { name: "Moss", value: "#2f9b63" },
+      { name: "Coral", value: "#d75a4a" },
+      { name: "Gold", value: "#dcae32" },
+      { name: "Sky", value: "#4389c7" },
+      { name: "Plum", value: "#8b5dbd" },
+      { name: "Ink", value: "#243f55" }
+    ];
+    const seeds = [
+      [0,0,1,1,2,2,3,3,4,4,0,0,1,1,2,2,3,3,4,4,0,1,1,2,2,3,3,4,4,5,1,1,2,2,3,3,4,4,5,5,1,2,2,3,3,4,4,5,5,0,2,2,3,3,4,4,5,5,0,0,2,2,3,3,4,4,5,5,0,0,2,3,3,4,4,5,5,0,0,1,3,3,4,4,5,5,0,0,1,1,3,4,4,5,5,0,0,1,1,2],
+      [3,3,4,4,5,5,0,0,1,2,3,4,4,5,5,0,0,1,1,2,4,4,5,3,0,0,1,1,2,2,4,5,5,0,0,1,3,2,2,3,5,5,0,0,1,1,2,2,3,3,5,0,0,1,4,2,2,3,3,4,0,0,1,1,2,5,3,3,4,4,0,1,1,2,2,3,3,4,4,5,1,1,2,2,3,3,4,4,5,5,1,2,2,3,3,4,4,5,5,0],
+      [5,5,0,0,1,1,2,2,3,4,5,0,0,1,1,2,2,3,3,4,0,0,1,5,2,2,3,3,4,4,0,1,1,2,2,3,5,4,4,5,1,1,2,2,3,3,4,4,5,5,1,2,2,3,0,4,4,5,5,0,2,2,3,3,4,1,5,5,0,0,2,3,3,4,4,5,5,0,0,1,3,3,4,4,5,5,0,0,1,1,3,4,4,5,5,0,0,1,1,2]
+    ];
+    let state;
+
+    function cloneBoard(seed) {
+      return seed.map((color) => color);
+    }
+
+    function reset(seedIndex = 0) {
+      state = {
+        board: cloneBoard(seeds[seedIndex % seeds.length]),
+        seedIndex: seedIndex % seeds.length,
+        moves: 0,
+        phase: "playing",
+        message: "Pick a color to expand from the top-left tile."
+      };
+      render();
+    }
+
+    function index(row, col) {
+      return row * size + col;
+    }
+
+    function neighbors(cell) {
+      const row = Math.floor(cell / size);
+      const col = cell % size;
+      const result = [];
+      if (row > 0) result.push(index(row - 1, col));
+      if (row < size - 1) result.push(index(row + 1, col));
+      if (col > 0) result.push(index(row, col - 1));
+      if (col < size - 1) result.push(index(row, col + 1));
+      return result;
+    }
+
+    function ownedCells(board = state.board) {
+      const target = board[0];
+      const seen = new Set([0]);
+      const queue = [0];
+      while (queue.length) {
+        const cell = queue.shift();
+        for (const next of neighbors(cell)) {
+          if (!seen.has(next) && board[next] === target) {
+            seen.add(next);
+            queue.push(next);
+          }
+        }
+      }
+      return seen;
+    }
+
+    function flood(color) {
+      if (state.phase !== "playing" || color === state.board[0]) return false;
+      const owned = ownedCells();
+      for (const cell of owned) state.board[cell] = color;
+      state.moves += 1;
+      const expanded = ownedCells();
+      const won = expanded.size === state.board.length;
+      if (won) {
+        state.phase = "won";
+        state.message = `Whole board flooded in ${state.moves} moves.`;
+      } else if (state.moves >= limit) {
+        state.phase = "lost";
+        state.message = "Move limit reached. Try another board.";
+      } else {
+        state.message = `${expanded.size} tiles captured.`;
+      }
+      render();
+      return true;
+    }
+
+    function renderBoard() {
+      const owned = ownedCells();
+      boardEl.innerHTML = "";
+      state.board.forEach((color, cell) => {
+        const tile = document.createElement("button");
+        tile.className = "flood-cell";
+        tile.type = "button";
+        tile.role = "gridcell";
+        tile.style.setProperty("--flood-color", colors[color].value);
+        tile.setAttribute("aria-label", `${colors[color].name} tile`);
+        if (owned.has(cell)) tile.classList.add("owned");
+        tile.addEventListener("click", () => flood(color));
+        boardEl.append(tile);
+      });
+    }
+
+    function renderPalette() {
+      paletteEl.innerHTML = "";
+      colors.forEach((color, colorIndex) => {
+        const button = document.createElement("button");
+        button.className = "flood-swatch";
+        button.type = "button";
+        button.style.setProperty("--flood-color", color.value);
+        button.textContent = String(colorIndex + 1);
+        button.setAttribute("aria-label", `Flood with ${color.name}`);
+        button.disabled = state.phase !== "playing" || state.board[0] === colorIndex;
+        button.addEventListener("click", () => flood(colorIndex));
+        paletteEl.append(button);
+      });
+    }
+
+    function render() {
+      const owned = ownedCells();
+      movesEl.textContent = state.moves;
+      limitEl.textContent = limit;
+      coverageEl.textContent = Math.round((owned.size / state.board.length) * 100);
+      messageEl.textContent = state.message;
+      renderBoard();
+      renderPalette();
+    }
+
+    resetButton.addEventListener("click", () => reset(state.seedIndex + 1));
+    window.addEventListener("keydown", (event) => {
+      const choice = Number(event.key);
+      if (choice >= 1 && choice <= colors.length) {
+        event.preventDefault();
+        flood(choice - 1);
+      }
+    });
+
+    window.__colorFloodTest = {
+      reset,
+      flood,
+      ownedCells: () => Array.from(ownedCells()),
+      state: () => ({
+        board: [...state.board],
+        moves: state.moves,
+        phase: state.phase,
+        message: state.message,
+        coverage: ownedCells().size
+      })
+    };
+
+    reset();
+  </script>
+</body>
+</html>

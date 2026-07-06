@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" role="img" aria-label="Glossy color tile highlight">
+  <rect width="80" height="80" rx="13" fill="#ffffff" opacity=".08"/>
+  <path d="M12 18c12-9 37-10 53-1-16 3-33 5-53 1Z" fill="#ffffff" opacity=".36"/>
+  <path d="M14 66c15 5 36 5 52-2-9 10-36 13-52 2Z" fill="#0b1b17" opacity=".2"/>
+</svg>

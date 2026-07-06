@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Paint drop">
+  <path d="M60 8c22 29 38 52 38 74 0 20-16 34-38 34S22 102 22 82C22 60 38 37 60 8Z" fill="#176a4a"/>
+  <path d="M43 42c7-12 12-20 17-27 4 7 9 14 14 22-12-2-22-1-31 5Z" fill="#fff6c5" opacity=".42"/>
+  <path d="M37 80c0 14 11 22 27 22 9 0 17-3 23-8-7 13-22 19-37 16-17-4-27-18-22-34 2 3 5 4 9 4Z" fill="#0b1b17" opacity=".24"/>
+</svg>

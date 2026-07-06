@@ -3798,3 +3798,135 @@ canvas.play-panel {
     flex: 1 1 175px;
   }
 }
+
+.flood-wrap {
+  width: min(100%, calc(100svh - 385px), 400px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  padding: clamp(10px, 2.4vw, 16px);
+  border-color: #18352a;
+  background:
+    url("./games/color-flood/assets/palette-frame.svg") center / cover no-repeat,
+    radial-gradient(circle at 24% 17%, rgba(255, 245, 190, 0.22), transparent 31%),
+    linear-gradient(145deg, #173127, #07140f);
+}
+
+.flood-board {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: clamp(3px, 0.9vw, 6px);
+}
+
+.flood-cell {
+  position: relative;
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 7px;
+  background:
+    url("./games/color-flood/assets/tile-sheen.svg") center / cover no-repeat,
+    var(--flood-color);
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.22),
+    inset 0 -6px 9px rgba(0, 0, 0, 0.22),
+    0 2px 5px rgba(3, 17, 13, 0.18);
+  cursor: pointer;
+  transition: filter 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+}
+
+.flood-cell.owned {
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.28),
+    inset 0 -6px 9px rgba(0, 0, 0, 0.2),
+    0 0 0 2px rgba(255, 241, 178, 0.2),
+    0 4px 7px rgba(3, 17, 13, 0.2);
+}
+
+.flood-cell:hover,
+.flood-cell:focus-visible {
+  outline: 2px solid rgba(255, 238, 174, 0.95);
+  outline-offset: 1px;
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.flood-hud,
+.flood-controls {
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.flood-palette {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  width: min(100%, 330px);
+}
+
+.flood-swatch {
+  display: grid;
+  min-width: 0;
+  min-height: 42px;
+  place-items: center;
+  border: 1px solid rgba(28, 45, 36, 0.34);
+  border-radius: 8px;
+  color: #ffffff;
+  font: 800 14px Arial, sans-serif;
+  background:
+    url("./games/color-flood/assets/flood-drop.svg") center / 56% no-repeat,
+    linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(0, 0, 0, 0.15)),
+    var(--flood-color);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.24);
+  cursor: pointer;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.42);
+}
+
+.flood-swatch:hover,
+.flood-swatch:focus-visible {
+  outline: 2px solid rgba(255, 238, 174, 0.95);
+  outline-offset: 2px;
+  filter: brightness(1.08);
+}
+
+.flood-swatch:disabled {
+  cursor: default;
+  opacity: 0.46;
+  filter: saturate(0.62);
+}
+
+.flood-controls .hint {
+  flex-basis: 100%;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .flood-wrap {
+    width: min(100%, calc(100svh - 450px), 320px);
+    padding: 8px;
+  }
+
+  .flood-hud {
+    align-items: center;
+    flex-direction: row;
+    gap: 7px 10px;
+  }
+
+  .flood-hud .button {
+    margin-left: auto;
+    padding: 6px 10px;
+  }
+
+  .flood-hud #message {
+    flex: 1 1 175px;
+  }
+
+  .flood-palette {
+    gap: 6px;
+  }
+
+  .flood-swatch {
+    min-height: 34px;
+  }
+}
