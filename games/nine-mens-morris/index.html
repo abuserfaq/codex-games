@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nine Men's Morris</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html">Cannon Duel</a>
+        <a href="../royal-ur/index.html">Royal Game of Ur</a>
+        <a href="../solitaire/index.html">Klondike Solitaire</a>
+        <a href="../mahjong-solitaire/index.html">Mahjong Solitaire</a>
+        <a href="../sea-wolf/index.html">Sea Wolf</a>
+        <a href="../mini-golf/index.html">Mini Golf</a>
+        <a href="../color-flood/index.html">Color Flood</a>
+        <a href="./index.html" aria-current="page">Nine Men's Morris</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Nine Men's Morris</h1>
+      <p>Place stones, close three-in-a-row mills, then slide to trap the rival board.</p>
+    </header>
+
+    <section class="statusbar morris-hud" role="status">
+      <span>Turn: <strong id="turnLabel">Ivory</strong></span>
+      <span>Place: <strong id="stockLabel">9 - 9</strong></span>
+      <span id="message">Ivory places the first stone.</span>
+      <button class="button" id="resetButton" type="button">New game</button>
+    </section>
+
+    <section class="play-panel morris-wrap" aria-label="Nine Men's Morris board">
+      <div class="morris-board" id="board" role="grid" aria-label="24 point Morris board"></div>
+      <img class="asset-preload" src="./assets/morris-board.svg" alt="">
+      <img class="asset-preload" src="./assets/morris-stone.svg" alt="">
+      <img class="asset-preload" src="./assets/mill-glow.svg" alt="">
+    </section>
+
+    <section class="statusbar morris-controls">
+      <span>Ivory: <strong id="ivoryCount">0</strong> on board</span>
+      <span>Green: <strong id="greenCount">0</strong> on board</span>
+      <span class="hint">Tap a point to place or select. A mill lets you remove one rival stone.</span>
+    </section>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const turnLabel = document.querySelector("#turnLabel");
+    const stockLabel = document.querySelector("#stockLabel");
+    const ivoryCount = document.querySelector("#ivoryCount");
+    const greenCount = document.querySelector("#greenCount");
+    const messageEl = document.querySelector("#message");
+    const resetButton = document.querySelector("#resetButton");
+
+    const players = [
+      { name: "Ivory", token: "ivory" },
+      { name: "Green", token: "green" }
+    ];
+    const points = [
+      [6, 6], [50, 6], [94, 6],
+      [20, 20], [50, 20], [80, 20],
+      [34, 34], [50, 34], [66, 34],
+      [6, 50], [20, 50], [34, 50], [66, 50], [80, 50], [94, 50],
+      [34, 66], [50, 66], [66, 66],
+      [20, 80], [50, 80], [80, 80],
+      [6, 94], [50, 94], [94, 94]
+    ];
+    const mills = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [9, 10, 11], [12, 13, 14],
+      [15, 16, 17], [18, 19, 20], [21, 22, 23],
+      [0, 9, 21], [3, 10, 18], [6, 11, 15],
+      [1, 4, 7], [16, 19, 22],
+      [8, 12, 17], [5, 13, 20], [2, 14, 23]
+    ];
+    const links = [
+      [0, 1], [1, 2], [3, 4], [4, 5], [6, 7], [7, 8],
+      [9, 10], [10, 11], [12, 13], [13, 14],
+      [15, 16], [16, 17], [18, 19], [19, 20], [21, 22], [22, 23],
+      [0, 9], [9, 21], [3, 10], [10, 18], [6, 11], [11, 15],
+      [1, 4], [4, 7], [16, 19], [19, 22],
+      [8, 12], [12, 17], [5, 13], [13, 20], [2, 14], [14, 23]
+    ];
+    const adjacent = Array.from({ length: 24 }, () => []);
+    links.forEach(([a, b]) => {
+      adjacent[a].push(b);
+      adjacent[b].push(a);
+    });
+
+    let state;
+
+    function reset() {
+      state = {
+        board: Array(24).fill(null),
+        current: 0,
+        phase: "place",
+        stock: [9, 9],
+        selected: null,
+        message: "Ivory places the first stone.",
+        winner: null
+      };
+      render();
+    }
+
+    function pieces(player = state.current) {
+      return state.board.reduce((total, value) => total + (value === player ? 1 : 0), 0);
+    }
+
+    function isMill(point, player = state.board[point], board = state.board) {
+      if (player === null) return false;
+      return mills.some((line) => line.includes(point) && line.every((idx) => board[idx] === player));
+    }
+
+    function removablePieces(player) {
+      const owned = state.board.map((value, index) => value === player ? index : -1).filter((index) => index >= 0);
+      const loose = owned.filter((point) => !isMill(point, player));
+      return loose.length ? loose : owned;
+    }
+
+    function canFly(player) {
+      return state.stock[player] === 0 && pieces(player) === 3;
+    }
+
+    function hasMove(player) {
+      if (state.stock[player] > 0) return true;
+      const empties = state.board.some((value) => value === null);
+      if (canFly(player)) return empties;
+      return state.board.some((value, point) => value === player && adjacent[point].some((next) => state.board[next] === null));
+    }
+
+    function wouldMakeMill(from, to, player) {
+      const draft = [...state.board];
+      if (from !== null) draft[from] = null;
+      draft[to] = player;
+      return isMill(to, player, draft);
+    }
+
+    function nextTurn() {
+      state.selected = null;
+      state.current = 1 - state.current;
+      if (state.stock[0] === 0 && state.stock[1] === 0) {
+        const opponent = state.current;
+        if (pieces(opponent) < 3 || !hasMove(opponent)) {
+          finish(1 - opponent);
+          return;
+        }
+        state.phase = "move";
+        state.message = `${players[state.current].name} slides a stone${canFly(state.current) ? " or flies from three" : ""}.`;
+      } else {
+        state.phase = "place";
+        state.message = `${players[state.current].name} places a stone.`;
+      }
+      render();
+    }
+
+    function finish(winner) {
+      state.phase = "finished";
+      state.winner = winner;
+      state.selected = null;
+      state.message = `${players[winner].name} wins the mill.`;
+      render();
+    }
+
+    function placeStone(point) {
+      if (state.board[point] !== null) return;
+      state.board[point] = state.current;
+      state.stock[state.current] -= 1;
+      if (isMill(point, state.current) && removablePieces(1 - state.current).length) {
+        state.phase = "remove";
+        state.message = `${players[state.current].name} closed a mill. Remove one rival stone.`;
+      } else {
+        nextTurn();
+      }
+      render();
+    }
+
+    function moveStone(point) {
+      const value = state.board[point];
+      if (value === state.current) {
+        state.selected = state.selected === point ? null : point;
+        state.message = state.selected === null ? "Selection cleared." : `${players[state.current].name} selected a stone.`;
+        render();
+        return;
+      }
+      if (state.selected === null || value !== null) return;
+      const legal = canFly(state.current) || adjacent[state.selected].includes(point);
+      if (!legal) {
+        state.message = "Slide along a line, or fly only when down to three stones.";
+        render();
+        return;
+      }
+      const from = state.selected;
+      const madeMill = wouldMakeMill(from, point, state.current);
+      state.board[from] = null;
+      state.board[point] = state.current;
+      state.selected = null;
+      if (madeMill && removablePieces(1 - state.current).length) {
+        state.phase = "remove";
+        state.message = `${players[state.current].name} made a mill. Remove one rival stone.`;
+      } else {
+        nextTurn();
+      }
+      render();
+    }
+
+    function removeStone(point) {
+      const opponent = 1 - state.current;
+      if (!removablePieces(opponent).includes(point)) {
+        state.message = "Choose a rival stone outside a mill if one is available.";
+        render();
+        return;
+      }
+      state.board[point] = null;
+      if (state.stock[0] === 0 && state.stock[1] === 0 && pieces(opponent) < 3) {
+        finish(state.current);
+      } else {
+        nextTurn();
+      }
+      render();
+    }
+
+    function handlePoint(point) {
+      if (state.phase === "finished") return;
+      if (state.phase === "remove") removeStone(point);
+      else if (state.phase === "place") placeStone(point);
+      else moveStone(point);
+    }
+
+    function pointLabel(point) {
+      const value = state.board[point];
+      const owner = value === null ? "empty" : players[value].name;
+      return `Point ${point + 1}, ${owner}`;
+    }
+
+    function render() {
+      boardEl.innerHTML = "";
+      const removable = state.phase === "remove" ? removablePieces(1 - state.current) : [];
+      points.forEach(([x, y], point) => {
+        const button = document.createElement("button");
+        button.className = "morris-point";
+        button.type = "button";
+        button.style.left = `${x}%`;
+        button.style.top = `${y}%`;
+        button.setAttribute("aria-label", pointLabel(point));
+        button.dataset.point = point;
+        const owner = state.board[point];
+        if (owner !== null) {
+          button.classList.add(players[owner].token);
+          button.textContent = owner === 0 ? "I" : "G";
+        }
+        if (state.selected === point) button.classList.add("selected");
+        if (owner !== null && isMill(point, owner)) button.classList.add("in-mill");
+        if (removable.includes(point)) button.classList.add("removable");
+        button.addEventListener("click", () => handlePoint(point));
+        boardEl.append(button);
+      });
+      turnLabel.textContent = state.winner === null ? players[state.current].name : players[state.winner].name;
+      stockLabel.textContent = `${state.stock[0]} - ${state.stock[1]}`;
+      ivoryCount.textContent = pieces(0);
+      greenCount.textContent = pieces(1);
+      messageEl.textContent = state.message;
+    }
+
+    resetButton.addEventListener("click", reset);
+    reset();
+
+    window.__morrisTest = {
+      reset,
+      handlePoint,
+      removablePieces,
+      isMill,
+      state: () => ({
+        board: [...state.board],
+        current: state.current,
+        phase: state.phase,
+        stock: [...state.stock],
+        selected: state.selected,
+        winner: state.winner,
+        message: state.message
+      })
+    };
+  </script>
+</body>
+</html>

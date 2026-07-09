@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Polished Morris stone">
+  <defs>
+    <radialGradient id="ivory" cx="34%" cy="27%" r="74%">
+      <stop offset="0" stop-color="#fff9df"/>
+      <stop offset="0.62" stop-color="#d8ba73"/>
+      <stop offset="1" stop-color="#7d5428"/>
+    </radialGradient>
+    <radialGradient id="green" cx="34%" cy="27%" r="74%">
+      <stop offset="0" stop-color="#bdf4cf"/>
+      <stop offset="0.58" stop-color="#2f9b63"/>
+      <stop offset="1" stop-color="#123b2a"/>
+    </radialGradient>
+  </defs>
+  <circle cx="80" cy="84" r="56" fill="#000" opacity="0.22"/>
+  <circle cx="80" cy="76" r="54" fill="url(#ivory)" stroke="#3c2817" stroke-width="8"/>
+  <path d="M48 55c16-18 46-21 67-5" fill="none" stroke="#fff7d2" stroke-width="10" stroke-linecap="round" opacity="0.72"/>
+  <circle cx="112" cy="112" r="18" fill="url(#green)" stroke="#173523" stroke-width="5"/>
+</svg>
