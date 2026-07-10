@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pyramid Hopper</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html">Cannon Duel</a>
+        <a href="../royal-ur/index.html">Royal Game of Ur</a>
+        <a href="../solitaire/index.html">Klondike Solitaire</a>
+        <a href="../mahjong-solitaire/index.html">Mahjong Solitaire</a>
+        <a href="../sea-wolf/index.html">Sea Wolf</a>
+        <a href="../mini-golf/index.html">Mini Golf</a>
+        <a href="../color-flood/index.html">Color Flood</a>
+        <a href="../nine-mens-morris/index.html">Nine Men's Morris</a>
+        <a href="../twenty-forty-eight/index.html">2048</a>
+        <a href="./index.html" aria-current="page">Pyramid Hopper</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Pyramid Hopper</h1>
+      <p>Hop across the prism steps, flip every tile to gold, and dodge the roaming spark.</p>
+    </header>
+
+    <section class="statusbar pyramid-hud" role="status">
+      <span>Steps: <strong id="steps">0</strong></span>
+      <span>Gold tiles: <strong id="goldCount">1</strong>/15</span>
+      <span>Lives: <strong id="lives">3</strong></span>
+      <span id="message">Flip every tile before the spark catches you.</span>
+      <button class="button" id="resetButton" type="button">Reset</button>
+    </section>
+
+    <section class="play-panel pyramid-wrap" aria-label="Pyramid Hopper board">
+      <div class="pyramid-board" id="board" role="grid" aria-label="Five row hopping pyramid"></div>
+      <img class="asset-preload" src="./assets/pyramid-tile.svg" alt="">
+      <img class="asset-preload" src="./assets/hopper.svg" alt="">
+      <img class="asset-preload" src="./assets/hazard-spark.svg" alt="">
+    </section>
+
+    <section class="statusbar pyramid-controls" aria-label="Pyramid Hopper controls">
+      <button class="button" type="button" data-hop="up-left">Up Left</button>
+      <button class="button" type="button" data-hop="up-right">Up Right</button>
+      <button class="button" type="button" data-hop="down-left">Down Left</button>
+      <button class="button" type="button" data-hop="down-right">Down Right</button>
+      <span class="hint">Use Q/E/A/D or the buttons. Every safe landing turns a step gold.</span>
+    </section>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const stepsEl = document.querySelector("#steps");
+    const goldCountEl = document.querySelector("#goldCount");
+    const livesEl = document.querySelector("#lives");
+    const messageEl = document.querySelector("#message");
+    const resetButton = document.querySelector("#resetButton");
+    const hopButtons = document.querySelectorAll("[data-hop]");
+
+    const rows = 5;
+    const totalTiles = 15;
+    const hazards = [
+      { row: 4, col: 4 },
+      { row: 3, col: 2 },
+      { row: 4, col: 1 },
+      { row: 2, col: 1 },
+      { row: 3, col: 0 },
+      { row: 4, col: 2 },
+      { row: 3, col: 3 },
+      { row: 4, col: 4 },
+      { row: 2, col: 0 },
+      { row: 1, col: 1 },
+      { row: 2, col: 2 },
+      { row: 3, col: 1 },
+      { row: 4, col: 0 },
+      { row: 3, col: 2 }
+    ];
+    const directions = {
+      "up-left": [-1, -1],
+      "up-right": [-1, 0],
+      "down-left": [1, 0],
+      "down-right": [1, 1]
+    };
+    let state;
+
+    function tileKey(position) {
+      return `${position.row}-${position.col}`;
+    }
+
+    function valid(position) {
+      return position.row >= 0 && position.row < rows && position.col >= 0 && position.col <= position.row;
+    }
+
+    function reset() {
+      state = {
+        player: { row: 0, col: 0 },
+        hazardIndex: 0,
+        hazard: { ...hazards[0] },
+        flipped: new Set(["0-0"]),
+        steps: 0,
+        lives: 3,
+        phase: "playing",
+        message: "Flip every tile before the spark catches you."
+      };
+      render();
+    }
+
+    function moveHazard() {
+      state.hazardIndex = (state.hazardIndex + 1) % hazards.length;
+      state.hazard = { ...hazards[state.hazardIndex] };
+    }
+
+    function hitPlayer() {
+      return state.player.row === state.hazard.row && state.player.col === state.hazard.col;
+    }
+
+    function recoverFromHit() {
+      state.lives -= 1;
+      if (state.lives <= 0) {
+        state.phase = "lost";
+        state.message = "Spark caught you. Reset the pyramid.";
+        return;
+      }
+      state.player = { row: 0, col: 0 };
+      state.flipped.add("0-0");
+      state.message = "Spark hit. Back to the crown step.";
+    }
+
+    function hop(direction) {
+      if (state.phase !== "playing") return false;
+      const delta = directions[direction];
+      if (!delta) return false;
+      const next = { row: state.player.row + delta[0], col: state.player.col + delta[1] };
+      if (!valid(next)) {
+        state.message = "That edge drops into the dark.";
+        render();
+        return false;
+      }
+      state.player = next;
+      state.flipped.add(tileKey(next));
+      state.steps += 1;
+      moveHazard();
+      if (hitPlayer()) {
+        recoverFromHit();
+      } else if (state.flipped.size === totalTiles) {
+        state.phase = "won";
+        state.message = "Full pyramid lit. Clean run.";
+      } else {
+        state.message = "Step flipped. Keep hopping.";
+      }
+      render();
+      return true;
+    }
+
+    function render() {
+      boardEl.innerHTML = "";
+      for (let row = 0; row < rows; row += 1) {
+        for (let col = 0; col <= row; col += 1) {
+          const key = `${row}-${col}`;
+          const tile = document.createElement("button");
+          tile.className = "pyramid-tile";
+          tile.type = "button";
+          tile.role = "gridcell";
+          tile.style.setProperty("--row", row);
+          tile.style.setProperty("--col", col);
+          tile.dataset.row = row;
+          tile.dataset.col = col;
+          if (state.flipped.has(key)) tile.classList.add("flipped");
+          if (state.player.row === row && state.player.col === col) tile.classList.add("player");
+          if (state.hazard.row === row && state.hazard.col === col) tile.classList.add("hazard");
+          tile.setAttribute("aria-label", `Row ${row + 1}, step ${col + 1}${state.flipped.has(key) ? ", gold" : ""}`);
+          tile.addEventListener("click", () => {
+            const dr = row - state.player.row;
+            const dc = col - state.player.col;
+            const entry = Object.entries(directions).find(([, delta]) => delta[0] === dr && delta[1] === dc);
+            if (entry) hop(entry[0]);
+          });
+          boardEl.append(tile);
+        }
+      }
+      stepsEl.textContent = state.steps;
+      goldCountEl.textContent = state.flipped.size;
+      livesEl.textContent = state.lives;
+      messageEl.textContent = state.message;
+      hopButtons.forEach((button) => {
+        const delta = directions[button.dataset.hop];
+        const next = { row: state.player.row + delta[0], col: state.player.col + delta[1] };
+        button.disabled = state.phase !== "playing" || !valid(next);
+      });
+    }
+
+    function keyToHop(key) {
+      return {
+        q: "up-left",
+        Q: "up-left",
+        ArrowUp: "up-left",
+        e: "up-right",
+        E: "up-right",
+        ArrowRight: "up-right",
+        a: "down-left",
+        A: "down-left",
+        ArrowLeft: "down-left",
+        d: "down-right",
+        D: "down-right",
+        ArrowDown: "down-right"
+      }[key];
+    }
+
+    hopButtons.forEach((button) => button.addEventListener("click", () => hop(button.dataset.hop)));
+    resetButton.addEventListener("click", reset);
+    window.addEventListener("keydown", (event) => {
+      const direction = keyToHop(event.key);
+      if (!direction) return;
+      event.preventDefault();
+      hop(direction);
+    });
+
+    window.__pyramidHopperTest = {
+      reset,
+      hop,
+      valid,
+      state: () => ({
+        player: { ...state.player },
+        hazard: { ...state.hazard },
+        flipped: [...state.flipped],
+        steps: state.steps,
+        lives: state.lives,
+        phase: state.phase,
+        message: state.message
+      })
+    };
+
+    reset();
+  </script>
+</body>
+</html>

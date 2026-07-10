@@ -4193,3 +4193,138 @@ canvas.play-panel {
     gap: 7px;
   }
 }
+
+.pyramid-wrap {
+  width: min(100%, calc((100svh - 390px) * 1.18), 500px);
+  aspect-ratio: 1.18;
+  margin: 0 auto;
+  overflow: hidden;
+  border-color: #172d24;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 245, 190, 0.28), transparent 28%),
+    linear-gradient(145deg, #233b31, #07140f 72%);
+}
+
+.pyramid-board {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.pyramid-board::before {
+  position: absolute;
+  inset: 8% 14% 11%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.26), transparent 62%);
+  content: "";
+  transform: translateY(15%);
+}
+
+.pyramid-tile {
+  position: absolute;
+  left: calc(50% + (var(--col) - var(--row) / 2) * 19%);
+  top: calc(9% + var(--row) * 15%);
+  width: 23%;
+  aspect-ratio: 1.395;
+  border: 0;
+  color: transparent;
+  background:
+    url("./games/pyramid-hopper/assets/pyramid-tile.svg") center / contain no-repeat;
+  cursor: pointer;
+  filter: drop-shadow(0 13px 9px rgba(0, 0, 0, 0.26));
+  transform: translateX(-50%);
+  transition: filter 120ms ease, transform 120ms ease;
+}
+
+.pyramid-tile.flipped {
+  filter:
+    hue-rotate(48deg)
+    saturate(1.35)
+    brightness(1.1)
+    drop-shadow(0 13px 9px rgba(0, 0, 0, 0.25));
+}
+
+.pyramid-tile.player::after,
+.pyramid-tile.hazard::before {
+  position: absolute;
+  left: 50%;
+  bottom: 42%;
+  width: 42%;
+  aspect-ratio: 1;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: "";
+  pointer-events: none;
+  transform: translate(-50%, 0);
+}
+
+.pyramid-tile.player::after {
+  width: 45%;
+  background-image: url("./games/pyramid-hopper/assets/hopper.svg");
+  filter: drop-shadow(0 9px 6px rgba(0, 0, 0, 0.28));
+}
+
+.pyramid-tile.hazard::before {
+  width: 36%;
+  background-image: url("./games/pyramid-hopper/assets/hazard-spark.svg");
+  filter: drop-shadow(0 0 9px rgba(213, 156, 42, 0.58));
+}
+
+.pyramid-tile:hover,
+.pyramid-tile:focus-visible {
+  outline: 0;
+  filter:
+    brightness(1.08)
+    drop-shadow(0 15px 10px rgba(0, 0, 0, 0.3));
+  transform: translateX(-50%) translateY(-3px);
+}
+
+.pyramid-hud,
+.pyramid-controls {
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.pyramid-hud #message {
+  flex: 1 1 220px;
+  text-align: center;
+}
+
+.pyramid-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.pyramid-controls .hint {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .pyramid-wrap {
+    width: min(100%, calc(100svh - 430px), 340px);
+  }
+
+  .pyramid-tile {
+    width: 25%;
+    top: calc(10% + var(--row) * 14.8%);
+  }
+
+  .pyramid-hud {
+    align-items: center;
+    flex-direction: row;
+    gap: 7px 10px;
+  }
+
+  .pyramid-hud .button {
+    margin-left: auto;
+    padding: 6px 10px;
+  }
+
+  .pyramid-controls {
+    gap: 7px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

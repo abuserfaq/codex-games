@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 86" role="img" aria-label="glossy pyramid tile">
+  <path d="M60 4 116 36 60 82 4 36Z" fill="#145f46"/>
+  <path d="M60 4 116 36 60 46 4 36Z" fill="#3ca36f"/>
+  <path d="M60 46 116 36 60 82Z" fill="#0d3f31"/>
+  <path d="M4 36 60 46 60 82Z" fill="#1d7050"/>
+  <path d="M60 9 105 35 60 42 15 35Z" fill="#86dfac" opacity=".42"/>
+  <path d="M60 4 116 36 60 82 4 36Z" fill="none" stroke="#082b22" stroke-width="5" stroke-linejoin="round"/>
+</svg>
