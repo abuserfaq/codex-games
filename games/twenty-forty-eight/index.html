@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2048</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html">Cannon Duel</a>
+        <a href="../royal-ur/index.html">Royal Game of Ur</a>
+        <a href="../solitaire/index.html">Klondike Solitaire</a>
+        <a href="../mahjong-solitaire/index.html">Mahjong Solitaire</a>
+        <a href="../sea-wolf/index.html">Sea Wolf</a>
+        <a href="../mini-golf/index.html">Mini Golf</a>
+        <a href="../color-flood/index.html">Color Flood</a>
+        <a href="../nine-mens-morris/index.html">Nine Men's Morris</a>
+        <a href="./index.html" aria-current="page">2048</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>2048</h1>
+      <p>Slide the lacquer tiles, merge equal numbers, and build a glowing 2048 tile.</p>
+    </header>
+
+    <section class="statusbar game-2048-hud" role="status">
+      <span>Score: <strong id="score">0</strong></span>
+      <span>Best tile: <strong id="bestTile">2</strong></span>
+      <span id="message">Use arrows, WASD, buttons, or swipe.</span>
+      <button class="button" id="resetButton" type="button">New board</button>
+    </section>
+
+    <section class="play-panel game-2048-wrap" aria-label="2048 board">
+      <div class="game-2048-board" id="board" role="grid" aria-label="4 by 4 2048 board"></div>
+      <img class="asset-preload" src="./assets/board-lacquer.svg" alt="">
+      <img class="asset-preload" src="./assets/tile-foil.svg" alt="">
+      <img class="asset-preload" src="./assets/merge-spark.svg" alt="">
+    </section>
+
+    <section class="statusbar game-2048-controls" aria-label="2048 controls">
+      <button class="button" type="button" data-move="up">Up</button>
+      <button class="button" type="button" data-move="left">Left</button>
+      <button class="button" type="button" data-move="down">Down</button>
+      <button class="button" type="button" data-move="right">Right</button>
+      <span class="hint">Every move slides all tiles. Equal neighbors merge once per move.</span>
+    </section>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const scoreEl = document.querySelector("#score");
+    const bestTileEl = document.querySelector("#bestTile");
+    const messageEl = document.querySelector("#message");
+    const resetButton = document.querySelector("#resetButton");
+    const moveButtons = document.querySelectorAll("[data-move]");
+
+    const size = 4;
+    const startBoards = [
+      [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+      [0, 0, 4, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0],
+      [2, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+    const spawnSlots = [0, 14, 3, 12, 8, 7, 10, 1, 5, 15, 6, 9, 2, 13, 4, 11];
+    let state;
+
+    function reset(seedIndex = 0) {
+      state = {
+        board: [...startBoards[seedIndex % startBoards.length]],
+        score: 0,
+        seedIndex: seedIndex % startBoards.length,
+        spawnCursor: 0,
+        phase: "playing",
+        message: "Use arrows, WASD, buttons, or swipe."
+      };
+      render();
+    }
+
+    function valueAt(row, col, board = state.board) {
+      return board[row * size + col];
+    }
+
+    function setValue(row, col, value, board = state.board) {
+      board[row * size + col] = value;
+    }
+
+    function emptyCells(board = state.board) {
+      return board.map((value, index) => value === 0 ? index : -1).filter((index) => index >= 0);
+    }
+
+    function bestTile(board = state.board) {
+      return Math.max(...board);
+    }
+
+    function compressLine(line) {
+      const numbers = line.filter(Boolean);
+      const merged = [];
+      let gained = 0;
+      for (let index = 0; index < numbers.length; index += 1) {
+        if (numbers[index] === numbers[index + 1]) {
+          const value = numbers[index] * 2;
+          merged.push(value);
+          gained += value;
+          index += 1;
+        } else {
+          merged.push(numbers[index]);
+        }
+      }
+      while (merged.length < size) merged.push(0);
+      return { line: merged, gained };
+    }
+
+    function linesFor(direction, board = state.board) {
+      const lines = [];
+      for (let fixed = 0; fixed < size; fixed += 1) {
+        const line = [];
+        for (let offset = 0; offset < size; offset += 1) {
+          const row = direction === "up" || direction === "down" ? offset : fixed;
+          const col = direction === "left" || direction === "right" ? offset : fixed;
+          line.push(valueAt(row, col, board));
+        }
+        if (direction === "right" || direction === "down") line.reverse();
+        lines.push(line);
+      }
+      return lines;
+    }
+
+    function boardAfter(direction, board = state.board) {
+      const next = Array(size * size).fill(0);
+      let gained = 0;
+      const lines = linesFor(direction, board);
+      lines.forEach((line, fixed) => {
+        const result = compressLine(line);
+        gained += result.gained;
+        const placed = direction === "right" || direction === "down" ? [...result.line].reverse() : result.line;
+        placed.forEach((value, offset) => {
+          const row = direction === "up" || direction === "down" ? offset : fixed;
+          const col = direction === "left" || direction === "right" ? offset : fixed;
+          setValue(row, col, value, next);
+        });
+      });
+      return { board: next, gained };
+    }
+
+    function sameBoard(a, b) {
+      return a.every((value, index) => value === b[index]);
+    }
+
+    function canMove(board = state.board) {
+      if (emptyCells(board).length) return true;
+      return ["up", "right", "down", "left"].some((direction) => !sameBoard(board, boardAfter(direction, board).board));
+    }
+
+    function spawnTile() {
+      const empties = emptyCells();
+      if (!empties.length) return;
+      for (let step = 0; step < spawnSlots.length; step += 1) {
+        const slot = spawnSlots[(state.spawnCursor + step) % spawnSlots.length];
+        if (state.board[slot] === 0) {
+          state.board[slot] = (state.spawnCursor + step) % 7 === 4 ? 4 : 2;
+          state.spawnCursor = (state.spawnCursor + step + 1) % spawnSlots.length;
+          return;
+        }
+      }
+      state.board[empties[0]] = 2;
+    }
+
+    function move(direction) {
+      if (state.phase === "lost") return false;
+      const result = boardAfter(direction);
+      if (sameBoard(state.board, result.board)) {
+        state.message = "That side is blocked. Try another direction.";
+        render();
+        return false;
+      }
+      state.board = result.board;
+      state.score += result.gained;
+      spawnTile();
+      if (bestTile() >= 2048) {
+        state.phase = "won";
+        state.message = "2048 reached. Keep sliding for a higher score.";
+      } else if (!canMove()) {
+        state.phase = "lost";
+        state.message = "No moves left. Start a new board.";
+      } else {
+        state.message = result.gained ? `Merged for ${result.gained} points.` : "Tiles shifted.";
+      }
+      render();
+      return true;
+    }
+
+    function render() {
+      boardEl.innerHTML = "";
+      state.board.forEach((value, index) => {
+        const cell = document.createElement("button");
+        cell.className = "game-2048-cell";
+        cell.type = "button";
+        cell.role = "gridcell";
+        cell.dataset.value = value;
+        cell.setAttribute("aria-label", value ? `Tile ${value}` : "Empty tile");
+        cell.textContent = value ? value : "";
+        if (value >= 128) cell.classList.add("bright");
+        if (value >= 1024) cell.classList.add("legend");
+        cell.addEventListener("click", () => cell.focus());
+        boardEl.append(cell);
+      });
+      scoreEl.textContent = state.score;
+      bestTileEl.textContent = bestTile();
+      messageEl.textContent = state.message;
+    }
+
+    function directionFromKey(key) {
+      return {
+        ArrowUp: "up",
+        w: "up",
+        W: "up",
+        ArrowRight: "right",
+        d: "right",
+        D: "right",
+        ArrowDown: "down",
+        s: "down",
+        S: "down",
+        ArrowLeft: "left",
+        a: "left",
+        A: "left"
+      }[key];
+    }
+
+    let touchStart = null;
+    boardEl.addEventListener("pointerdown", (event) => {
+      touchStart = { x: event.clientX, y: event.clientY };
+    });
+    boardEl.addEventListener("pointerup", (event) => {
+      if (!touchStart) return;
+      const dx = event.clientX - touchStart.x;
+      const dy = event.clientY - touchStart.y;
+      touchStart = null;
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+      move(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up"));
+    });
+
+    window.addEventListener("keydown", (event) => {
+      const direction = directionFromKey(event.key);
+      if (!direction) return;
+      event.preventDefault();
+      move(direction);
+    });
+
+    moveButtons.forEach((button) => {
+      button.addEventListener("click", () => move(button.dataset.move));
+    });
+    resetButton.addEventListener("click", () => reset(state.seedIndex + 1));
+
+    window.__twentyFortyEightTest = {
+      reset,
+      move,
+      boardAfter,
+      compressLine,
+      canMove,
+      state: () => ({
+        board: [...state.board],
+        score: state.score,
+        phase: state.phase,
+        bestTile: bestTile(),
+        message: state.message
+      })
+    };
+
+    reset();
+  </script>
+</body>
+</html>

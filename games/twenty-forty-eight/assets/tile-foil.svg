@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="polished numbered tile highlight">
+  <defs>
+    <linearGradient id="shine" x1=".16" x2=".82" y1=".08" y2=".92">
+      <stop offset="0" stop-color="#fff8dc" stop-opacity=".72"/>
+      <stop offset=".4" stop-color="#fff8dc" stop-opacity=".16"/>
+      <stop offset="1" stop-color="#000" stop-opacity=".12"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="16" fill="url(#shine)"/>
+  <path fill="#fff7cf" fill-opacity=".48" d="M24 30c20-13 44-17 72-12 6 1 9 8 4 13-17 15-41 19-71 13-7-1-10-10-5-14z"/>
+  <path fill="#000" fill-opacity=".12" d="M20 99c30 11 59 9 88-5v12c-31 19-60 21-88 6z"/>
+</svg>

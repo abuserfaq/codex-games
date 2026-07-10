@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="dark lacquer board texture">
+  <defs>
+    <linearGradient id="wood" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#2f2117"/>
+      <stop offset=".55" stop-color="#4b2f1d"/>
+      <stop offset="1" stop-color="#18120d"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".28" cy=".18" r=".7">
+      <stop offset="0" stop-color="#ffe6a0" stop-opacity=".34"/>
+      <stop offset=".42" stop-color="#d59c2a" stop-opacity=".1"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="34" fill="url(#wood)"/>
+  <rect x="18" y="18" width="476" height="476" rx="24" fill="none" stroke="#f2d68a" stroke-opacity=".28" stroke-width="8"/>
+  <rect x="34" y="34" width="444" height="444" rx="18" fill="url(#glow)"/>
+  <g fill="none" stroke="#fff2bd" stroke-linecap="round" stroke-opacity=".12" stroke-width="5">
+    <path d="M70 94c84-28 170-26 258 8 42 16 78 22 114 13"/>
+    <path d="M46 196c90 19 169 17 237-5 55-17 108-13 161 13"/>
+    <path d="M64 318c102-26 203-19 304 19 36 13 64 15 88 5"/>
+    <path d="M78 417c73-14 141-10 204 13 59 21 111 20 156-4"/>
+  </g>
+</svg>

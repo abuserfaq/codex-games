@@ -4064,3 +4064,132 @@ canvas.play-panel {
     width: clamp(25px, 8.7%, 34px);
   }
 }
+
+.game-2048-wrap {
+  width: min(100%, calc(100svh - 385px), 430px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  padding: clamp(10px, 2.7vw, 16px);
+  border-color: #2f2117;
+  background:
+    url("./games/twenty-forty-eight/assets/board-lacquer.svg") center / cover no-repeat,
+    linear-gradient(145deg, #4b2f1d, #18120d);
+}
+
+.game-2048-board {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(8px, 2.1vw, 13px);
+}
+
+.game-2048-cell {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  aspect-ratio: 1;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(255, 244, 207, 0.34);
+  border-radius: 8px;
+  color: #2a2117;
+  font: 800 clamp(1.35rem, 7svh, 3.2rem) / 1 Arial, sans-serif;
+  background:
+    url("./games/twenty-forty-eight/assets/tile-foil.svg") center / cover no-repeat,
+    var(--tile-bg, rgba(255, 247, 222, 0.16));
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.32),
+    inset 0 -8px 11px rgba(54, 29, 14, 0.2),
+    0 6px 11px rgba(12, 9, 6, 0.22);
+  cursor: default;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.game-2048-cell[data-value="0"] {
+  color: transparent;
+  background: rgba(255, 244, 207, 0.13);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.game-2048-cell[data-value="2"] { --tile-bg: #f6ead3; }
+.game-2048-cell[data-value="4"] { --tile-bg: #edd8af; }
+.game-2048-cell[data-value="8"] { --tile-bg: #e9a45f; color: #fff7e5; }
+.game-2048-cell[data-value="16"] { --tile-bg: #df7a4e; color: #fff7e5; }
+.game-2048-cell[data-value="32"] { --tile-bg: #cf6045; color: #fff7e5; }
+.game-2048-cell[data-value="64"] { --tile-bg: #be463c; color: #fff7e5; }
+.game-2048-cell[data-value="128"] { --tile-bg: #dfbf57; color: #fffdf0; font-size: clamp(1.15rem, 6svh, 2.75rem); }
+.game-2048-cell[data-value="256"] { --tile-bg: #d9ad3f; color: #fffdf0; font-size: clamp(1.15rem, 6svh, 2.75rem); }
+.game-2048-cell[data-value="512"] { --tile-bg: #c9962b; color: #fffdf0; font-size: clamp(1.15rem, 6svh, 2.75rem); }
+.game-2048-cell[data-value="1024"],
+.game-2048-cell[data-value="2048"] {
+  --tile-bg: #176a4a;
+  color: #fffdf0;
+  font-size: clamp(0.95rem, 5.4svh, 2.25rem);
+}
+
+.game-2048-cell.bright::after,
+.game-2048-cell.legend::after {
+  position: absolute;
+  inset: -14%;
+  background: url("./games/twenty-forty-eight/assets/merge-spark.svg") center / 68% no-repeat;
+  content: "";
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.game-2048-cell:hover,
+.game-2048-cell:focus-visible {
+  outline: 2px solid rgba(255, 238, 174, 0.96);
+  outline-offset: 2px;
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.game-2048-hud,
+.game-2048-controls {
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.game-2048-hud #message {
+  flex: 1 1 220px;
+  text-align: center;
+}
+
+.game-2048-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.game-2048-controls .hint {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .game-2048-wrap {
+    width: min(100%, calc(100svh - 430px), 330px);
+    padding: 9px;
+  }
+
+  .game-2048-board {
+    gap: 7px;
+  }
+
+  .game-2048-hud {
+    align-items: center;
+    flex-direction: row;
+    gap: 7px 10px;
+  }
+
+  .game-2048-hud .button {
+    margin-left: auto;
+    padding: 6px 10px;
+  }
+
+  .game-2048-controls {
+    gap: 7px;
+  }
+}

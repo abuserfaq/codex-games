@@ -1,0 +1,8 @@
+{
+  "game": "2048",
+  "assets": [
+    "board-lacquer.svg",
+    "tile-foil.svg",
+    "merge-spark.svg"
+  ]
+}
