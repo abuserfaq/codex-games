@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fox and Geese</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html">Cannon Duel</a>
+        <a href="../royal-ur/index.html">Royal Game of Ur</a>
+        <a href="../solitaire/index.html">Klondike Solitaire</a>
+        <a href="../mahjong-solitaire/index.html">Mahjong Solitaire</a>
+        <a href="../sea-wolf/index.html">Sea Wolf</a>
+        <a href="../mini-golf/index.html">Mini Golf</a>
+        <a href="../color-flood/index.html">Color Flood</a>
+        <a href="../nine-mens-morris/index.html">Nine Men's Morris</a>
+        <a href="../twenty-forty-eight/index.html">2048</a>
+        <a href="../pyramid-hopper/index.html">Pyramid Hopper</a>
+        <a href="./index.html" aria-current="page">Fox and Geese</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Fox and Geese</h1>
+      <p>Slip the fox through the flock, jump geese when they crowd in, and avoid being boxed in.</p>
+    </header>
+
+    <section class="statusbar fox-hud" role="status">
+      <span>Captured: <strong id="captured">0</strong>/7</span>
+      <span>Geese: <strong id="geeseLeft">13</strong></span>
+      <span>Turns: <strong id="turns">0</strong></span>
+      <span id="message">Move the fox. Jump over a goose to capture it.</span>
+      <button class="button" id="resetButton" type="button">Reset</button>
+    </section>
+
+    <section class="play-panel fox-wrap" aria-label="Fox and Geese board">
+      <div class="fox-board" id="board" role="grid" aria-label="Cross board with fox and geese"></div>
+      <img class="asset-preload" src="./assets/board-cloth.svg" alt="">
+      <img class="asset-preload" src="./assets/fox-token.svg" alt="">
+      <img class="asset-preload" src="./assets/goose-token.svg" alt="">
+    </section>
+
+    <section class="statusbar fox-controls" aria-label="Fox and Geese controls">
+      <button class="button" type="button" data-step="-1,-1">Up Left</button>
+      <button class="button" type="button" data-step="-1,0">Up</button>
+      <button class="button" type="button" data-step="-1,1">Up Right</button>
+      <button class="button" type="button" data-step="0,-1">Left</button>
+      <button class="button" type="button" data-step="0,1">Right</button>
+      <button class="button" type="button" data-step="1,-1">Down Left</button>
+      <button class="button" type="button" data-step="1,0">Down</button>
+      <button class="button" type="button" data-step="1,1">Down Right</button>
+      <span class="hint">Click a glowing point or use Q/W/E/A/D/Z/X/C. Geese answer automatically.</span>
+    </section>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const capturedEl = document.querySelector("#captured");
+    const geeseLeftEl = document.querySelector("#geeseLeft");
+    const turnsEl = document.querySelector("#turns");
+    const messageEl = document.querySelector("#message");
+    const resetButton = document.querySelector("#resetButton");
+    const stepButtons = document.querySelectorAll("[data-step]");
+
+    const size = 7;
+    const winCaptures = 7;
+    const dirs = [
+      [-1, -1], [-1, 0], [-1, 1],
+      [0, -1], [0, 1],
+      [1, -1], [1, 0], [1, 1]
+    ];
+    const openingGeese = [
+      [0, 2], [0, 3], [0, 4],
+      [1, 2], [1, 3], [1, 4],
+      [2, 0], [2, 1], [2, 2], [2, 3], [2, 4], [2, 5], [2, 6]
+    ];
+    let state;
+
+    function key(row, col) {
+      return `${row}-${col}`;
+    }
+
+    function isValid(row, col) {
+      return row >= 0 && row < size && col >= 0 && col < size && (row >= 2 && row <= 4 || col >= 2 && col <= 4);
+    }
+
+    function occupied(row, col, geese = state.geese, fox = state.fox) {
+      return fox.row === row && fox.col === col || geese.some((goose) => goose.row === row && goose.col === col);
+    }
+
+    function reset() {
+      state = {
+        fox: { row: 6, col: 3 },
+        geese: openingGeese.map(([row, col]) => ({ row, col })),
+        captured: 0,
+        turns: 0,
+        phase: "playing",
+        message: "Move the fox. Jump over a goose to capture it."
+      };
+      render();
+    }
+
+    function legalFoxMoves() {
+      if (state.phase !== "playing") return [];
+      const moves = [];
+      for (const [dr, dc] of dirs) {
+        const row = state.fox.row + dr;
+        const col = state.fox.col + dc;
+        if (isValid(row, col) && !occupied(row, col)) {
+          moves.push({ row, col, capture: null, jump: false, dr, dc });
+        }
+        const midRow = state.fox.row + dr;
+        const midCol = state.fox.col + dc;
+        const landRow = state.fox.row + dr * 2;
+        const landCol = state.fox.col + dc * 2;
+        const gooseIndex = state.geese.findIndex((goose) => goose.row === midRow && goose.col === midCol);
+        if (gooseIndex >= 0 && isValid(landRow, landCol) && !occupied(landRow, landCol)) {
+          moves.push({ row: landRow, col: landCol, capture: gooseIndex, jump: true, dr, dc });
+        }
+      }
+      return moves;
+    }
+
+    function scoreGooseMove(goose, row, col) {
+      const before = Math.abs(goose.row - state.fox.row) + Math.abs(goose.col - state.fox.col);
+      const after = Math.abs(row - state.fox.row) + Math.abs(col - state.fox.col);
+      return (before - after) * 10 + row - Math.abs(3 - col);
+    }
+
+    function moveGeese() {
+      const options = [];
+      state.geese.forEach((goose, index) => {
+        for (const [dr, dc] of [[1, 0], [0, -1], [0, 1], [-1, 0]]) {
+          const row = goose.row + dr;
+          const col = goose.col + dc;
+          if (!isValid(row, col) || occupied(row, col)) continue;
+          options.push({ index, row, col, score: scoreGooseMove(goose, row, col) });
+        }
+      });
+      if (!options.length) return;
+      options.sort((a, b) => b.score - a.score || b.row - a.row || Math.abs(a.col - state.fox.col) - Math.abs(b.col - state.fox.col));
+      const best = options[0];
+      state.geese[best.index] = { row: best.row, col: best.col };
+    }
+
+    function finishIfNeeded() {
+      if (state.captured >= winCaptures) {
+        state.phase = "won";
+        state.message = "The fox slipped the ring. Clean hunt.";
+        return true;
+      }
+      if (!legalFoxMoves().length) {
+        state.phase = "lost";
+        state.message = "The geese boxed the fox in.";
+        return true;
+      }
+      return false;
+    }
+
+    function moveFoxTo(row, col) {
+      if (state.phase !== "playing") return false;
+      const move = legalFoxMoves().find((item) => item.row === row && item.col === col);
+      if (!move) {
+        state.message = "Choose a glowing point next to the fox.";
+        render();
+        return false;
+      }
+      state.fox = { row, col };
+      if (move.capture !== null) {
+        state.geese.splice(move.capture, 1);
+        state.captured += 1;
+        state.message = "Goose captured. Keep the escape lane open.";
+      } else {
+        state.message = "The flock shifts closer.";
+      }
+      state.turns += 1;
+      if (!finishIfNeeded()) {
+        moveGeese();
+        finishIfNeeded();
+      }
+      render();
+      return true;
+    }
+
+    function moveFoxBy(dr, dc) {
+      const jump = legalFoxMoves().find((item) => item.dr === dr && item.dc === dc && item.jump);
+      const step = legalFoxMoves().find((item) => item.dr === dr && item.dc === dc && !item.jump);
+      const move = jump || step;
+      if (!move) return false;
+      return moveFoxTo(move.row, move.col);
+    }
+
+    function render() {
+      const legalKeys = new Map(legalFoxMoves().map((move) => [key(move.row, move.col), move]));
+      boardEl.innerHTML = "";
+      for (let row = 0; row < size; row += 1) {
+        for (let col = 0; col < size; col += 1) {
+          const cell = document.createElement("button");
+          cell.className = "fox-cell";
+          cell.type = "button";
+          cell.role = "gridcell";
+          cell.style.setProperty("--row", row);
+          cell.style.setProperty("--col", col);
+          if (!isValid(row, col)) {
+            cell.classList.add("void");
+            cell.disabled = true;
+            boardEl.append(cell);
+            continue;
+          }
+          const goose = state.geese.some((item) => item.row === row && item.col === col);
+          const fox = state.fox.row === row && state.fox.col === col;
+          const legal = legalKeys.get(key(row, col));
+          if (goose) cell.classList.add("goose");
+          if (fox) cell.classList.add("fox");
+          if (legal) cell.classList.add(legal.jump ? "jump" : "legal");
+          cell.setAttribute("aria-label", `Row ${row + 1}, column ${col + 1}${fox ? ", fox" : goose ? ", goose" : legal ? ", legal fox move" : ""}`);
+          cell.disabled = !legal;
+          cell.addEventListener("click", () => moveFoxTo(row, col));
+          boardEl.append(cell);
+        }
+      }
+      capturedEl.textContent = state.captured;
+      geeseLeftEl.textContent = state.geese.length;
+      turnsEl.textContent = state.turns;
+      messageEl.textContent = state.message;
+      stepButtons.forEach((button) => {
+        const [dr, dc] = button.dataset.step.split(",").map(Number);
+        button.disabled = state.phase !== "playing" || !legalFoxMoves().some((move) => move.dr === dr && move.dc === dc);
+      });
+    }
+
+    function keyToStep(eventKey) {
+      return {
+        q: [-1, -1],
+        Q: [-1, -1],
+        w: [-1, 0],
+        W: [-1, 0],
+        ArrowUp: [-1, 0],
+        e: [-1, 1],
+        E: [-1, 1],
+        a: [0, -1],
+        A: [0, -1],
+        ArrowLeft: [0, -1],
+        d: [0, 1],
+        D: [0, 1],
+        ArrowRight: [0, 1],
+        z: [1, -1],
+        Z: [1, -1],
+        x: [1, 0],
+        X: [1, 0],
+        ArrowDown: [1, 0],
+        c: [1, 1],
+        C: [1, 1]
+      }[eventKey];
+    }
+
+    stepButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const [dr, dc] = button.dataset.step.split(",").map(Number);
+        moveFoxBy(dr, dc);
+      });
+    });
+    resetButton.addEventListener("click", reset);
+    window.addEventListener("keydown", (event) => {
+      const step = keyToStep(event.key);
+      if (!step) return;
+      event.preventDefault();
+      moveFoxBy(step[0], step[1]);
+    });
+
+    window.__foxAndGeeseTest = {
+      reset,
+      moveFoxTo,
+      moveFoxBy,
+      legalFoxMoves,
+      seed(position) {
+        state = {
+          fox: { ...position.fox },
+          geese: position.geese.map((goose) => ({ ...goose })),
+          captured: position.captured || 0,
+          turns: position.turns || 0,
+          phase: position.phase || "playing",
+          message: position.message || "Test position."
+        };
+        render();
+      },
+      state: () => ({
+        fox: { ...state.fox },
+        geese: state.geese.map((goose) => ({ ...goose })),
+        captured: state.captured,
+        turns: state.turns,
+        phase: state.phase,
+        message: state.message
+      })
+    };
+
+    reset();
+  </script>
+</body>
+</html>

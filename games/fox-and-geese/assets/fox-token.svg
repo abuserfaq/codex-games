@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="fox token">
+  <defs>
+    <radialGradient id="shine" cx=".34" cy=".22" r=".8">
+      <stop offset="0" stop-color="#ffe5a8"/>
+      <stop offset=".42" stop-color="#d66a32"/>
+      <stop offset="1" stop-color="#6e2419"/>
+    </radialGradient>
+  </defs>
+  <circle cx="64" cy="66" r="50" fill="url(#shine)" stroke="#2a1710" stroke-width="6"/>
+  <path d="M29 45 21 14l31 20M99 45l8-31-31 20" fill="#c7532c" stroke="#2a1710" stroke-linejoin="round" stroke-width="6"/>
+  <path d="M35 49c8-13 49-13 58 0l-9 33c-5 16-35 16-40 0Z" fill="#f09a48" stroke="#2a1710" stroke-linejoin="round" stroke-width="5"/>
+  <path d="M49 77h30l-15 18Z" fill="#fff1c9" stroke="#2a1710" stroke-linejoin="round" stroke-width="4"/>
+  <circle cx="48" cy="58" r="5" fill="#16110d"/>
+  <circle cx="80" cy="58" r="5" fill="#16110d"/>
+  <path d="M64 68 56 80h16Z" fill="#16110d"/>
+</svg>

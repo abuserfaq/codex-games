@@ -1,0 +1,8 @@
+{
+  "game": "Fox and Geese",
+  "assets": [
+    "board-cloth.svg",
+    "fox-token.svg",
+    "goose-token.svg"
+  ]
+}

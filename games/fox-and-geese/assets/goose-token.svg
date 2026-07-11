@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="goose token">
+  <defs>
+    <radialGradient id="body" cx=".35" cy=".22" r=".82">
+      <stop offset="0" stop-color="#fffdf0"/>
+      <stop offset=".58" stop-color="#d9e6dc"/>
+      <stop offset="1" stop-color="#82968b"/>
+    </radialGradient>
+  </defs>
+  <circle cx="64" cy="66" r="50" fill="url(#body)" stroke="#223329" stroke-width="6"/>
+  <path d="M54 78c-4-21 0-42 16-54 11 10 9 26 1 39 12 2 21 9 26 20-11 13-31 19-43-5Z" fill="#eef5ee" stroke="#223329" stroke-linejoin="round" stroke-width="5"/>
+  <path d="M69 25c10 3 17 8 21 15l-18 4Z" fill="#d59c2a" stroke="#223329" stroke-linejoin="round" stroke-width="4"/>
+  <circle cx="71" cy="36" r="4" fill="#111916"/>
+  <path d="M33 83c12 8 28 12 49 10-16 14-42 15-58 3Z" fill="#b9cabe" stroke="#223329" stroke-linejoin="round" stroke-width="4"/>
+</svg>

@@ -4328,3 +4328,136 @@ canvas.play-panel {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.fox-wrap {
+  width: min(100%, calc(100svh - 390px), 430px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  padding: clamp(12px, 2.8vw, 18px);
+  border-color: #172d24;
+  background:
+    url("./games/fox-and-geese/assets/board-cloth.svg") center / cover no-repeat,
+    linear-gradient(145deg, #284b38, #0c2019);
+}
+
+.fox-board {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: repeat(7, minmax(0, 1fr));
+  gap: clamp(4px, 1.2vw, 8px);
+}
+
+.fox-cell {
+  position: relative;
+  min-width: 0;
+  border: 1px solid rgba(255, 241, 194, 0.3);
+  border-radius: 50%;
+  color: transparent;
+  background:
+    radial-gradient(circle, rgba(255, 244, 207, 0.28) 0 28%, rgba(9, 22, 17, 0.72) 31% 54%, rgba(255, 244, 207, 0.18) 57%);
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.16),
+    0 4px 9px rgba(0, 0, 0, 0.23);
+  cursor: default;
+}
+
+.fox-cell::before,
+.fox-cell::after {
+  position: absolute;
+  inset: -6px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: "";
+  pointer-events: none;
+}
+
+.fox-cell.goose::after {
+  background-image: url("./games/fox-and-geese/assets/goose-token.svg");
+  filter: drop-shadow(0 8px 6px rgba(0, 0, 0, 0.26));
+}
+
+.fox-cell.fox::after {
+  background-image: url("./games/fox-and-geese/assets/fox-token.svg");
+  filter: drop-shadow(0 9px 7px rgba(0, 0, 0, 0.32));
+}
+
+.fox-cell.legal,
+.fox-cell.jump {
+  border-color: rgba(255, 232, 144, 0.95);
+  background:
+    radial-gradient(circle, rgba(255, 220, 92, 0.72) 0 25%, rgba(23, 106, 74, 0.72) 30% 56%, rgba(255, 244, 207, 0.28) 59%);
+  cursor: pointer;
+}
+
+.fox-cell.jump {
+  background:
+    radial-gradient(circle, rgba(255, 152, 93, 0.78) 0 25%, rgba(201, 79, 61, 0.72) 30% 55%, rgba(255, 244, 207, 0.28) 59%);
+}
+
+.fox-cell.legal:hover,
+.fox-cell.legal:focus-visible,
+.fox-cell.jump:hover,
+.fox-cell.jump:focus-visible {
+  outline: 2px solid rgba(255, 238, 174, 0.96);
+  outline-offset: 3px;
+  filter: brightness(1.08);
+}
+
+.fox-cell.void {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.fox-hud,
+.fox-controls {
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.fox-hud #message {
+  flex: 1 1 220px;
+  text-align: center;
+}
+
+.fox-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.fox-controls .hint {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .fox-wrap {
+    width: min(100%, calc(100svh - 430px), 330px);
+    padding: 10px;
+  }
+
+  .fox-board {
+    gap: 5px;
+  }
+
+  .fox-hud {
+    align-items: center;
+    flex-direction: row;
+    gap: 7px 10px;
+  }
+
+  .fox-hud .button {
+    margin-left: auto;
+    padding: 6px 10px;
+  }
+
+  .fox-controls {
+    gap: 7px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
