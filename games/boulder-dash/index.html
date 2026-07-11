@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Boulder Dash Pocket</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html">Cannon Duel</a>
+        <a href="../royal-ur/index.html">Royal Game of Ur</a>
+        <a href="../solitaire/index.html">Klondike Solitaire</a>
+        <a href="../mahjong-solitaire/index.html">Mahjong Solitaire</a>
+        <a href="../sea-wolf/index.html">Sea Wolf</a>
+        <a href="../mini-golf/index.html">Mini Golf</a>
+        <a href="../color-flood/index.html">Color Flood</a>
+        <a href="../nine-mens-morris/index.html">Nine Men's Morris</a>
+        <a href="../twenty-forty-eight/index.html">2048</a>
+        <a href="../pyramid-hopper/index.html">Pyramid Hopper</a>
+        <a href="../fox-and-geese/index.html">Fox and Geese</a>
+        <a href="./index.html" aria-current="page">Boulder Dash Pocket</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Boulder Dash Pocket</h1>
+      <p>Dig through amber dirt, gather six crystals, and slip out before the cave starts dropping stones.</p>
+    </header>
+
+    <section class="statusbar boulder-hud" role="status">
+      <span>Crystals: <strong id="crystals">0</strong>/6</span>
+      <span>Moves: <strong id="moves">0</strong></span>
+      <span id="message">Collect all crystals, then reach the lit exit.</span>
+      <button class="button" id="resetButton" type="button">Reset</button>
+    </section>
+
+    <section class="play-panel boulder-wrap" aria-label="Boulder Dash Pocket board">
+      <div class="boulder-board" id="board" role="grid" aria-label="Ten by ten crystal cave"></div>
+      <img class="asset-preload" src="./assets/cave-wall.svg" alt="">
+      <img class="asset-preload" src="./assets/crystal.svg" alt="">
+      <img class="asset-preload" src="./assets/boulder.svg" alt="">
+    </section>
+
+    <section class="statusbar boulder-controls" aria-label="Boulder Dash Pocket controls">
+      <button class="button" type="button" data-move="up">Up</button>
+      <button class="button" type="button" data-move="left">Left</button>
+      <button class="button" type="button" data-move="down">Down</button>
+      <button class="button" type="button" data-move="right">Right</button>
+      <span class="hint">Use arrows, WASD, or buttons. Boulders fall after you move.</span>
+    </section>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const crystalsEl = document.querySelector("#crystals");
+    const movesEl = document.querySelector("#moves");
+    const messageEl = document.querySelector("#message");
+    const resetButton = document.querySelector("#resetButton");
+    const moveButtons = document.querySelectorAll("[data-move]");
+
+    const width = 10;
+    const height = 10;
+    const targetCrystals = 6;
+    const tiles = {
+      wall: "#",
+      dirt: ".",
+      empty: " ",
+      boulder: "O",
+      crystal: "*",
+      exit: "E"
+    };
+    const layout = [
+      "##########",
+      "#P..*...E#",
+      "#.O###.O.#",
+      "#....*...#",
+      "#.O...O..#",
+      "#..##..*.#",
+      "#.*..O...#",
+      "#..O..*..#",
+      "#...*....#",
+      "##########"
+    ];
+    const deltas = {
+      up: { row: -1, col: 0 },
+      down: { row: 1, col: 0 },
+      left: { row: 0, col: -1 },
+      right: { row: 0, col: 1 }
+    };
+    let state;
+
+    function cloneLevel() {
+      const grid = layout.map((row) => row.split(""));
+      let player = { row: 1, col: 1 };
+      for (let row = 0; row < height; row += 1) {
+        for (let col = 0; col < width; col += 1) {
+          if (grid[row][col] === "P") {
+            player = { row, col };
+            grid[row][col] = tiles.empty;
+          }
+        }
+      }
+      return { grid, player };
+    }
+
+    function reset() {
+      const level = cloneLevel();
+      state = {
+        grid: level.grid,
+        player: level.player,
+        crystals: 0,
+        moves: 0,
+        phase: "playing",
+        message: "Collect all crystals, then reach the lit exit."
+      };
+      render();
+    }
+
+    function inside(row, col) {
+      return row >= 0 && row < height && col >= 0 && col < width;
+    }
+
+    function tileAt(row, col) {
+      return inside(row, col) ? state.grid[row][col] : tiles.wall;
+    }
+
+    function setTile(row, col, tile) {
+      state.grid[row][col] = tile;
+    }
+
+    function canEnter(tile) {
+      return tile === tiles.empty || tile === tiles.dirt || tile === tiles.crystal || tile === tiles.exit;
+    }
+
+    function applyGravity() {
+      let fell = false;
+      for (let row = height - 2; row >= 1; row -= 1) {
+        for (let col = 1; col < width - 1; col += 1) {
+          if (state.grid[row][col] !== tiles.boulder) continue;
+          const below = tileAt(row + 1, col);
+          if (below === tiles.empty) {
+            setTile(row, col, tiles.empty);
+            setTile(row + 1, col, tiles.boulder);
+            fell = true;
+            if (state.player.row === row + 1 && state.player.col === col) {
+              state.phase = "lost";
+              state.message = "A boulder dropped onto your helmet. Reset the cave.";
+            }
+          } else if (below === tiles.boulder && tileAt(row, col + 1) === tiles.empty && tileAt(row + 1, col + 1) === tiles.empty) {
+            setTile(row, col, tiles.empty);
+            setTile(row + 1, col + 1, tiles.boulder);
+            fell = true;
+          } else if (below === tiles.boulder && tileAt(row, col - 1) === tiles.empty && tileAt(row + 1, col - 1) === tiles.empty) {
+            setTile(row, col, tiles.empty);
+            setTile(row + 1, col - 1, tiles.boulder);
+            fell = true;
+          }
+        }
+      }
+      return fell;
+    }
+
+    function move(direction) {
+      if (state.phase !== "playing") return false;
+      const delta = deltas[direction];
+      if (!delta) return false;
+      const next = { row: state.player.row + delta.row, col: state.player.col + delta.col };
+      const target = tileAt(next.row, next.col);
+      if (target === tiles.wall || target === tiles.boulder) {
+        state.message = target === tiles.boulder ? "Boulders are too heavy to push here." : "Solid cave wall.";
+        render();
+        return false;
+      }
+      if (target === tiles.exit && state.crystals < targetCrystals) {
+        state.message = `${targetCrystals - state.crystals} crystals still lock the exit.`;
+        render();
+        return false;
+      }
+      if (!canEnter(target)) return false;
+      state.player = next;
+      if (target === tiles.crystal) {
+        state.crystals += 1;
+        setTile(next.row, next.col, tiles.empty);
+      } else if (target === tiles.dirt) {
+        setTile(next.row, next.col, tiles.empty);
+      } else if (target === tiles.exit) {
+        state.phase = "won";
+        state.message = `Escaped with ${state.crystals} crystals in ${state.moves + 1} moves.`;
+      }
+      state.moves += 1;
+      if (state.phase === "playing") {
+        const fell = applyGravity();
+        if (state.phase === "playing") {
+          state.message = state.crystals >= targetCrystals
+            ? "Exit is open. Reach the lamp on the right."
+            : fell
+              ? "Stone shifted. Keep a roof over your head."
+              : "Tunnel opened. Keep digging.";
+        }
+      }
+      render();
+      return true;
+    }
+
+    function render() {
+      boardEl.innerHTML = "";
+      for (let row = 0; row < height; row += 1) {
+        for (let col = 0; col < width; col += 1) {
+          const cell = document.createElement("button");
+          const tile = state.player.row === row && state.player.col === col ? "player" : state.grid[row][col];
+          cell.className = `boulder-cell ${classForTile(tile)}`;
+          cell.type = "button";
+          cell.role = "gridcell";
+          cell.dataset.row = row;
+          cell.dataset.col = col;
+          cell.setAttribute("aria-label", labelForTile(tile, row, col));
+          cell.addEventListener("click", () => {
+            const dr = row - state.player.row;
+            const dc = col - state.player.col;
+            const entry = Object.entries(deltas).find(([, value]) => value.row === dr && value.col === dc);
+            if (entry) move(entry[0]);
+          });
+          boardEl.append(cell);
+        }
+      }
+      crystalsEl.textContent = state.crystals;
+      movesEl.textContent = state.moves;
+      messageEl.textContent = state.message;
+      moveButtons.forEach((button) => {
+        button.disabled = state.phase !== "playing";
+      });
+    }
+
+    function classForTile(tile) {
+      return {
+        "#": "wall",
+        ".": "dirt",
+        " ": "empty",
+        "O": "rock",
+        "*": "crystal",
+        "E": state.crystals >= targetCrystals ? "exit open" : "exit",
+        player: "player"
+      }[tile] || "empty";
+    }
+
+    function labelForTile(tile, row, col) {
+      const names = {
+        "#": "cave wall",
+        ".": "diggable dirt",
+        " ": "empty tunnel",
+        "O": "falling boulder",
+        "*": "crystal",
+        "E": state.crystals >= targetCrystals ? "open exit" : "locked exit",
+        player: "miner"
+      };
+      return `${names[tile] || "cell"} at row ${row + 1}, column ${col + 1}`;
+    }
+
+    function keyToMove(key) {
+      return {
+        ArrowUp: "up",
+        ArrowDown: "down",
+        ArrowLeft: "left",
+        ArrowRight: "right",
+        w: "up",
+        W: "up",
+        s: "down",
+        S: "down",
+        a: "left",
+        A: "left",
+        d: "right",
+        D: "right"
+      }[key];
+    }
+
+    moveButtons.forEach((button) => button.addEventListener("click", () => move(button.dataset.move)));
+    resetButton.addEventListener("click", reset);
+    window.addEventListener("keydown", (event) => {
+      const direction = keyToMove(event.key);
+      if (!direction) return;
+      event.preventDefault();
+      move(direction);
+    });
+
+    window.__boulderDashTest = {
+      reset,
+      move,
+      applyGravity,
+      state: () => ({
+        grid: state.grid.map((row) => [...row]),
+        player: { ...state.player },
+        crystals: state.crystals,
+        moves: state.moves,
+        phase: state.phase,
+        message: state.message
+      })
+    };
+
+    reset();
+  </script>
+</body>
+</html>

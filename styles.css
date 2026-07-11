@@ -4456,7 +4456,193 @@ canvas.play-panel {
     padding: 6px 10px;
   }
 
-  .fox-controls {
+.fox-controls {
+    gap: 7px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.boulder-wrap {
+  width: min(100%, calc(100svh - 390px), 470px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  padding: clamp(10px, 2.2vw, 16px);
+  border-color: #13242b;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(52, 87, 94, 0.42), transparent 57%),
+    linear-gradient(145deg, #172a31, #081015);
+}
+
+.boulder-board {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  grid-template-rows: repeat(10, minmax(0, 1fr));
+  gap: clamp(2px, 0.7vw, 5px);
+}
+
+.boulder-cell {
+  position: relative;
+  min-width: 0;
+  border: 0;
+  border-radius: 5px;
+  color: transparent;
+  background: #162126;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.boulder-cell.wall {
+  background:
+    url("./games/boulder-dash/assets/cave-wall.svg") center / cover no-repeat;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.boulder-cell.dirt {
+  background:
+    radial-gradient(circle at 28% 28%, rgba(255, 211, 119, 0.5) 0 8%, transparent 9%),
+    radial-gradient(circle at 70% 62%, rgba(112, 66, 36, 0.48) 0 12%, transparent 13%),
+    linear-gradient(145deg, #c38646, #7a4725);
+}
+
+.boulder-cell.empty {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(72, 139, 146, 0.15), transparent 55%),
+    #0f1a1e;
+}
+
+.boulder-cell.rock::after,
+.boulder-cell.crystal::after,
+.boulder-cell.player::after,
+.boulder-cell.exit::after {
+  position: absolute;
+  inset: 8%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: "";
+  pointer-events: none;
+}
+
+.boulder-cell.rock {
+  background:
+    radial-gradient(circle at 50% 45%, rgba(209, 182, 128, 0.18), transparent 53%),
+    #0f1a1e;
+}
+
+.boulder-cell.rock::after {
+  background-image: url("./games/boulder-dash/assets/boulder.svg");
+  filter: drop-shadow(0 7px 5px rgba(0, 0, 0, 0.34));
+}
+
+.boulder-cell.crystal {
+  background:
+    radial-gradient(circle, rgba(72, 206, 255, 0.26), transparent 62%),
+    #10202a;
+}
+
+.boulder-cell.crystal::after {
+  inset: 3%;
+  background-image: url("./games/boulder-dash/assets/crystal.svg");
+  filter: drop-shadow(0 0 9px rgba(90, 218, 255, 0.68));
+}
+
+.boulder-cell.exit {
+  background:
+    linear-gradient(145deg, #34260f, #111817);
+}
+
+.boulder-cell.exit::after {
+  inset: 18%;
+  border: 2px solid rgba(214, 166, 69, 0.85);
+  border-radius: 50% 50% 9px 9px;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255, 222, 123, 0.72), transparent 28%),
+    linear-gradient(180deg, rgba(77, 47, 16, 0.2), rgba(10, 12, 9, 0.88));
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.6);
+}
+
+.boulder-cell.exit.open::after {
+  border-color: rgba(99, 220, 124, 0.95);
+  background:
+    radial-gradient(circle at 50% 38%, rgba(140, 255, 156, 0.86), transparent 33%),
+    linear-gradient(180deg, rgba(43, 111, 57, 0.24), rgba(8, 29, 18, 0.88));
+  box-shadow:
+    inset 0 0 16px rgba(0, 0, 0, 0.56),
+    0 0 18px rgba(92, 224, 117, 0.5);
+}
+
+.boulder-cell.player {
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 222, 92, 0.26), transparent 52%),
+    #0f1a1e;
+}
+
+.boulder-cell.player::after {
+  inset: 13%;
+  border-radius: 50% 50% 42% 42%;
+  background:
+    radial-gradient(circle at 50% 16%, #ffe28c 0 18%, transparent 19%),
+    radial-gradient(circle at 37% 36%, #f9d8b5 0 15%, transparent 16%),
+    linear-gradient(180deg, #2c8a63 0 58%, #19543d 59% 100%);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.18),
+    0 7px 6px rgba(0, 0, 0, 0.32);
+}
+
+.boulder-cell:hover,
+.boulder-cell:focus-visible {
+  outline: 2px solid rgba(255, 227, 143, 0.86);
+  outline-offset: 2px;
+  filter: brightness(1.08);
+}
+
+.boulder-hud,
+.boulder-controls {
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.boulder-hud #message {
+  flex: 1 1 240px;
+  text-align: center;
+}
+
+.boulder-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.boulder-controls .hint {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .boulder-wrap {
+    width: min(100%, calc(100svh - 430px), 340px);
+    padding: 9px;
+  }
+
+  .boulder-board {
+    gap: 3px;
+  }
+
+  .boulder-hud {
+    align-items: center;
+    flex-direction: row;
+    gap: 7px 10px;
+  }
+
+  .boulder-hud .button {
+    margin-left: auto;
+    padding: 6px 10px;
+  }
+
+  .boulder-controls {
     gap: 7px;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

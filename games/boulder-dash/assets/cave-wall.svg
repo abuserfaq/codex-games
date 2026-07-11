@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Layered slate cave wall">
+  <defs>
+    <linearGradient id="wall" x1="10" y1="4" x2="88" y2="94" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#46525a"/>
+      <stop offset=".46" stop-color="#27343a"/>
+      <stop offset="1" stop-color="#151d22"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="0" y2="96" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7b878a" stop-opacity=".9"/>
+      <stop offset=".55" stop-color="#303c40" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#0c1215" stop-opacity=".8"/>
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" rx="12" fill="url(#wall)"/>
+  <path d="M8 24h28l10-12h42v16H63L52 42H8zM0 64h31l9-10h56v18H70L58 84H0z" fill="url(#edge)" opacity=".82"/>
+  <path d="M17 16h12M42 30h21M17 50h18M51 63h28M22 79h24" fill="none" stroke="#b9c7c8" stroke-opacity=".2" stroke-width="3" stroke-linecap="round"/>
+  <path d="M8 92 92 8" fill="none" stroke="#0c1114" stroke-opacity=".25" stroke-width="5"/>
+</svg>
