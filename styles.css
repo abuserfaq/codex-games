@@ -228,6 +228,133 @@ canvas.play-panel {
   color: #ffffff;
 }
 
+.hex-wrap {
+  position: relative;
+  width: min(100%, calc(100svh - 250px), 500px);
+  aspect-ratio: 1.12 / 1;
+  margin: 0 auto;
+  padding: 16px 14px 12px;
+  overflow: hidden;
+  background:
+    linear-gradient(140deg, rgba(255,255,255,.78), rgba(255,255,255,.18)),
+    url("./games/hex/assets/hex-board.svg") center / cover no-repeat;
+  touch-action: manipulation;
+}
+
+.hex-wrap::before,
+.hex-wrap::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  opacity: .85;
+}
+
+.hex-wrap::before {
+  inset: 18px auto 18px 9px;
+  width: 8px;
+  border-radius: 6px;
+  background: linear-gradient(#d84f3f, #98312d);
+  box-shadow: calc(min(100%, calc(100svh - 250px), 500px) - 25px) 0 0 #a93530;
+}
+
+.hex-wrap::after {
+  inset: 9px 24px auto 24px;
+  height: 8px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #2c76bd, #174d82);
+  box-shadow: 0 calc(min(100%, calc((100svh - 250px) / 1.12), 446px) - 25px) 0 #174d82;
+}
+
+.hex-board {
+  --hex-size: min(11.25vw, 52px, calc((100svh - 292px) / 7));
+  position: relative;
+  z-index: 1;
+  width: calc(var(--hex-size) * 10);
+  height: calc(var(--hex-size) * 7.9);
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.hex-cell {
+  position: absolute;
+  left: calc((var(--col) + var(--row) * .5) * var(--hex-size));
+  top: calc(var(--row) * var(--hex-size) * .84);
+  width: var(--hex-size);
+  height: calc(var(--hex-size) * .94);
+  border: 2px solid rgba(31, 58, 45, .36);
+  clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0 50%);
+  background:
+    radial-gradient(circle at 33% 26%, rgba(255,255,255,.9), rgba(255,255,255,0) 30%),
+    linear-gradient(145deg, #f8f4df, #c9d5b8);
+  box-shadow: inset 0 -5px 10px rgba(43, 65, 48, .18), 0 4px 8px rgba(23, 36, 29, .16);
+  cursor: pointer;
+}
+
+.hex-cell:hover:not(:disabled),
+.hex-cell:focus-visible {
+  border-color: #176a4a;
+  outline: 2px solid rgba(23, 106, 74, .22);
+  outline-offset: 2px;
+  transform: translateY(-1px);
+}
+
+.hex-cell.red {
+  border-color: #8f2a25;
+  background: url("./games/hex/assets/stone-red.svg") center / 105% 105% no-repeat;
+}
+
+.hex-cell.blue {
+  border-color: #194d80;
+  background: url("./games/hex/assets/stone-blue.svg") center / 105% 105% no-repeat;
+}
+
+.hex-cell:disabled {
+  cursor: default;
+}
+
+.hex-hud {
+  align-items: center;
+}
+
+.hex-hud .red {
+  color: #b23a30;
+}
+
+.hex-hud .blue {
+  color: #1f66a5;
+}
+
+.hex-controls {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hex-side {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 9px;
+  background: #fff;
+  font-weight: 700;
+}
+
+.hex-side.red {
+  color: #b23a30;
+}
+
+.hex-side.blue {
+  color: #1f66a5;
+}
+
+@media (max-width: 520px) {
+  .hex-wrap {
+    padding: 12px 8px 10px;
+  }
+
+  .hex-board {
+    --hex-size: min(12.2vw, calc((100svh - 312px) / 7));
+  }
+}
+
 .ttt-board {
   width: min(100%, calc(100svh - 205px), 420px);
   display: grid;
@@ -4645,5 +4772,33 @@ canvas.play-panel {
   .boulder-controls {
     gap: 7px;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .hex-wrap {
+    width: min(100%, calc(100svh - 430px), 340px);
+    padding: 9px 8px 8px;
+  }
+
+  .hex-board {
+    --hex-size: min(10.6vw, calc((100svh - 460px) / 6.2));
+  }
+
+  .hex-hud,
+  .hex-controls {
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 7px 9px;
+  }
+
+  .hex-hud .button {
+    margin-left: auto;
+  }
+
+  .hex-controls .hint {
+    flex-basis: 100%;
+    text-align: center;
   }
 }

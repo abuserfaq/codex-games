@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Reversi</title>
+  <title>Hex</title>
   <link rel="stylesheet" href="../../styles.css">
 </head>
 <body>
@@ -32,7 +32,7 @@
         <a href="../pac-man/index.html">Pac-Man</a>
         <a href="../missile-command/index.html">Missile Command</a>
         <a href="../sokoban/index.html">Sokoban</a>
-        <a href="./index.html" aria-current="page">Reversi</a>
+        <a href="../reversi/index.html">Reversi</a>
         <a href="../qix/index.html">Qix Claim</a>
         <a href="../lights-out/index.html">Lights Out</a>
         <a href="../mastermind/index.html">Mastermind</a>
@@ -67,165 +67,163 @@
         <a href="../pyramid-hopper/index.html">Pyramid Hopper</a>
         <a href="../fox-and-geese/index.html">Fox and Geese</a>
         <a href="../boulder-dash/index.html">Boulder Dash Pocket</a>
-        <a href="../hex/index.html">Hex</a>
+        <a href="./index.html" aria-current="page">Hex</a>
       </div>
     </nav>
 
     <header class="game-header">
-      <h1>Reversi</h1>
-      <p>Place discs to trap and flip the other color.</p>
+      <h1>Hex</h1>
+      <p>Claim a chain across the board: red links west to east, blue links north to south.</p>
     </header>
 
-    <section class="play-panel reversi-wrap" aria-label="Reversi game board">
-      <div class="reversi-board" id="board"></div>
+    <section class="statusbar hex-hud" role="status">
+      <span>Turn: <strong id="turn">Red</strong></span>
+      <span>Moves: <strong id="moves">0</strong></span>
+      <span id="message">Red starts. Touch any open cell.</span>
+      <button class="button" id="resetButton" type="button">Reset</button>
     </section>
 
-    <div class="statusbar" role="status">
-      <span id="score">Dark 2 · Light 2</span>
-      <span id="message">Dark to move.</span>
-      <button class="button" id="restart" type="button">Restart</button>
-    </div>
+    <section class="play-panel hex-wrap" aria-label="Hex board">
+      <div class="hex-board" id="board" role="grid" aria-label="Seven by seven Hex board"></div>
+      <img class="asset-preload" src="./assets/hex-board.svg" alt="">
+      <img class="asset-preload" src="./assets/stone-red.svg" alt="">
+      <img class="asset-preload" src="./assets/stone-blue.svg" alt="">
+    </section>
 
-    <p class="hint">Click a glowing square. A legal move must trap at least one line of rival discs.</p>
+    <section class="statusbar hex-controls" aria-label="Hex controls">
+      <span class="hex-side red">Red: west-east</span>
+      <span class="hex-side blue">Blue: north-south</span>
+      <span class="hint">Click or tap an empty hex. A connected path wins instantly.</span>
+    </section>
   </main>
 
   <script>
     const boardEl = document.querySelector("#board");
-    const scoreEl = document.querySelector("#score");
+    const turnEl = document.querySelector("#turn");
+    const movesEl = document.querySelector("#moves");
     const messageEl = document.querySelector("#message");
-    const restartButton = document.querySelector("#restart");
-    const size = 8;
-    const empty = 0;
-    const dark = 1;
-    const light = 2;
-    const dirs = [
-      [-1, -1], [0, -1], [1, -1],
-      [-1, 0], [1, 0],
-      [-1, 1], [0, 1], [1, 1]
+    const resetButton = document.querySelector("#resetButton");
+
+    const size = 7;
+    const players = {
+      red: { label: "Red", next: "blue", goal: "west-east" },
+      blue: { label: "Blue", next: "red", goal: "north-south" }
+    };
+    const neighbors = [
+      [-1, 0], [-1, 1], [0, -1],
+      [0, 1], [1, -1], [1, 0]
     ];
-    let board;
-    let player;
-    let finished;
+    let grid;
+    let turn;
+    let moves;
+    let phase;
 
     function reset() {
-      board = Array.from({ length: size }, () => Array(size).fill(empty));
-      board[3][3] = light;
-      board[3][4] = dark;
-      board[4][3] = dark;
-      board[4][4] = light;
-      player = dark;
-      finished = false;
+      grid = Array.from({ length: size }, () => Array(size).fill(""));
+      turn = "red";
+      moves = 0;
+      phase = "playing";
       render();
+      updateHud();
     }
 
-    function inside(row, col) {
+    function inBounds(row, col) {
       return row >= 0 && row < size && col >= 0 && col < size;
     }
 
-    function opponent(side = player) {
-      return side === dark ? light : dark;
-    }
+    function hasConnection(player) {
+      const queue = [];
+      const seen = new Set();
 
-    function flipsFor(row, col, side = player) {
-      if (board[row][col] !== empty) return [];
-      const rival = opponent(side);
-      const captured = [];
-
-      dirs.forEach(([dc, dr]) => {
-        const line = [];
-        let r = row + dr;
-        let c = col + dc;
-        while (inside(r, c) && board[r][c] === rival) {
-          line.push([r, c]);
-          r += dr;
-          c += dc;
-        }
-        if (line.length && inside(r, c) && board[r][c] === side) {
-          captured.push(...line);
-        }
-      });
-
-      return captured;
-    }
-
-    function legalMoves(side = player) {
-      const moves = [];
-      for (let row = 0; row < size; row++) {
-        for (let col = 0; col < size; col++) {
-          if (flipsFor(row, col, side).length) moves.push([row, col]);
+      for (let i = 0; i < size; i += 1) {
+        const row = player === "red" ? i : 0;
+        const col = player === "red" ? 0 : i;
+        if (grid[row][col] === player) {
+          queue.push([row, col]);
+          seen.add(`${row},${col}`);
         }
       }
-      return moves;
+
+      while (queue.length) {
+        const [row, col] = queue.shift();
+        if ((player === "red" && col === size - 1) || (player === "blue" && row === size - 1)) {
+          return true;
+        }
+
+        for (const [dr, dc] of neighbors) {
+          const nextRow = row + dr;
+          const nextCol = col + dc;
+          const key = `${nextRow},${nextCol}`;
+          if (inBounds(nextRow, nextCol) && !seen.has(key) && grid[nextRow][nextCol] === player) {
+            seen.add(key);
+            queue.push([nextRow, nextCol]);
+          }
+        }
+      }
+      return false;
     }
 
-    function countDiscs() {
-      return board.flat().reduce((score, disc) => {
-        if (disc === dark) score.dark += 1;
-        if (disc === light) score.light += 1;
-        return score;
-      }, { dark: 0, light: 0 });
+    function play(row, col) {
+      if (phase !== "playing" || !inBounds(row, col) || grid[row][col]) return false;
+
+      const player = turn;
+      grid[row][col] = player;
+      moves += 1;
+
+      if (hasConnection(player)) {
+        phase = "won";
+        messageEl.textContent = `${players[player].label} connects ${players[player].goal}.`;
+      } else {
+        turn = players[player].next;
+        messageEl.textContent = `${players[turn].label} to move.`;
+      }
+
+      render();
+      updateHud();
+      return true;
+    }
+
+    function updateHud() {
+      turnEl.textContent = phase === "won" ? "Finished" : players[turn].label;
+      turnEl.className = phase === "won" ? "" : turn;
+      movesEl.textContent = moves;
     }
 
     function render() {
-      const moves = legalMoves();
-      const moveKeys = new Set(moves.map(([row, col]) => `${row},${col}`));
       boardEl.innerHTML = "";
-
-      for (let row = 0; row < size; row++) {
-        for (let col = 0; col < size; col++) {
+      for (let row = 0; row < size; row += 1) {
+        for (let col = 0; col < size; col += 1) {
           const cell = document.createElement("button");
-          const disc = board[row][col];
+          cell.className = `hex-cell ${grid[row][col] || "open"}`;
           cell.type = "button";
-          cell.className = "reversi-cell";
           cell.dataset.row = row;
           cell.dataset.col = col;
-          cell.setAttribute("aria-label", `Row ${row + 1}, column ${col + 1}`);
-          if (disc === dark) cell.classList.add("dark");
-          if (disc === light) cell.classList.add("light");
-          if (!finished && moveKeys.has(`${row},${col}`)) cell.classList.add("legal");
+          cell.style.setProperty("--row", row);
+          cell.style.setProperty("--col", col);
+          cell.setAttribute("role", "gridcell");
+          cell.setAttribute("aria-label", `Row ${row + 1}, column ${col + 1}${grid[row][col] ? `, ${grid[row][col]}` : ""}`);
+          cell.disabled = phase !== "playing" || Boolean(grid[row][col]);
           cell.addEventListener("click", () => play(row, col));
           boardEl.append(cell);
         }
       }
-
-      updateStatus(moves.length);
     }
 
-    function updateStatus(moveCount) {
-      const score = countDiscs();
-      scoreEl.textContent = `Dark ${score.dark} · Light ${score.light}`;
-
-      if (finished) {
-        if (score.dark === score.light) messageEl.textContent = "Draw.";
-        else messageEl.textContent = score.dark > score.light ? "Dark wins." : "Light wins.";
-        return;
-      }
-
-      messageEl.textContent = moveCount
-        ? `${player === dark ? "Dark" : "Light"} to move.`
-        : `${player === dark ? "Dark" : "Light"} has no move.`;
-    }
-
-    function play(row, col) {
-      if (finished) return;
-      const captured = flipsFor(row, col);
-      if (!captured.length) return;
-
-      board[row][col] = player;
-      captured.forEach(([r, c]) => {
-        board[r][c] = player;
-      });
-
-      player = opponent();
-      if (!legalMoves().length) {
-        player = opponent();
-        if (!legalMoves().length) finished = true;
-      }
-      render();
-    }
-
-    restartButton.addEventListener("click", reset);
+    resetButton.addEventListener("click", reset);
     reset();
+
+    window.__hexTest = {
+      reset,
+      play,
+      state: () => ({
+        grid: grid.map((row) => row.slice()),
+        turn,
+        moves,
+        phase,
+        redConnected: hasConnection("red"),
+        blueConnected: hasConnection("blue")
+      })
+    };
   </script>
 </body>
 </html>

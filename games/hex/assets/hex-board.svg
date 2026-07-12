@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120" role="img" aria-label="engraved hex board texture">
+  <defs>
+    <linearGradient id="felt" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7fbf2"/>
+      <stop offset=".52" stop-color="#dbe9dc"/>
+      <stop offset="1" stop-color="#b9cfbf"/>
+    </linearGradient>
+    <pattern id="grain" width="12" height="12" patternUnits="userSpaceOnUse">
+      <path d="M0 10 L12 2 M-3 4 L4 -3 M8 15 L15 8" stroke="#8aa28f" stroke-width=".7" opacity=".32"/>
+    </pattern>
+  </defs>
+  <rect width="160" height="120" rx="14" fill="url(#felt)"/>
+  <rect width="160" height="120" rx="14" fill="url(#grain)" opacity=".55"/>
+  <path d="M24 20 H136 L148 60 L136 100 H24 L12 60 Z" fill="none" stroke="#1d5f48" stroke-width="4" opacity=".55"/>
+  <path d="M36 32 H124 L133 60 L124 88 H36 L27 60 Z" fill="none" stroke="#ffffff" stroke-width="2" opacity=".7"/>
+</svg>
