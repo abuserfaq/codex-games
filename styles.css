@@ -4802,3 +4802,123 @@ canvas.play-panel {
     text-align: center;
   }
 }
+
+.cycles-wrap {
+  width: min(100%, calc(100svh - 390px), 470px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  padding: clamp(10px, 2svh, 15px);
+  border-color: #092a31;
+  background:
+    url("./games/light-cycles/assets/arena-grid.svg") center / cover no-repeat,
+    linear-gradient(145deg, #06191d, #0b2b32);
+  box-shadow:
+    0 16px 34px rgba(4, 18, 22, 0.25),
+    inset 0 0 0 1px rgba(126, 231, 255, 0.2);
+}
+
+.cycles-board {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(15, minmax(0, 1fr));
+  grid-template-rows: repeat(15, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.cycles-cell {
+  position: relative;
+  min-width: 0;
+  border-radius: 4px;
+  background: rgba(4, 22, 27, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(126, 231, 255, 0.08);
+}
+
+.cycles-cell.player,
+.cycles-cell.player-head {
+  background:
+    linear-gradient(135deg, rgba(238, 255, 250, 0.58), rgba(63, 235, 211, 0.96)),
+    #1cdcc7;
+  box-shadow:
+    0 0 9px rgba(67, 246, 220, 0.76),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.38);
+}
+
+.cycles-cell.rival,
+.cycles-cell.rival-head {
+  background:
+    linear-gradient(135deg, rgba(255, 245, 190, 0.58), rgba(255, 180, 62, 0.96)),
+    #ef9d27;
+  box-shadow:
+    0 0 9px rgba(255, 186, 70, 0.76),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.34);
+}
+
+.cycles-cell.player-head::after,
+.cycles-cell.rival-head::after {
+  position: absolute;
+  inset: -42%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: "";
+  filter: drop-shadow(0 6px 5px rgba(0, 0, 0, 0.34));
+  pointer-events: none;
+}
+
+.cycles-cell.player-head::after {
+  background-image: url("./games/light-cycles/assets/cycle-cyan.svg");
+}
+
+.cycles-cell.rival-head::after {
+  background-image: url("./games/light-cycles/assets/cycle-amber.svg");
+}
+
+.cycles-hud,
+.cycles-controls {
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.cycles-hud #message {
+  flex: 1 1 230px;
+  text-align: center;
+}
+
+.cycles-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.cycles-controls .hint {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .cycles-wrap {
+    width: min(100%, calc(100svh - 430px), 340px);
+    padding: 9px;
+  }
+
+  .cycles-board {
+    gap: 1px;
+  }
+
+  .cycles-hud {
+    align-items: center;
+    flex-direction: row;
+    gap: 7px 10px;
+  }
+
+  .cycles-hud .button {
+    margin-left: auto;
+    padding: 6px 10px;
+  }
+
+  .cycles-controls {
+    gap: 7px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

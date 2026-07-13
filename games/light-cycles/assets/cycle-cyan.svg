@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="cyan light cycle">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dcfff8"/>
+      <stop offset=".42" stop-color="#47f0d5"/>
+      <stop offset="1" stop-color="#078b8f"/>
+    </linearGradient>
+  </defs>
+  <path d="M48 8 76 48 48 88 20 48Z" fill="#07232a" stroke="#d9fff8" stroke-width="5"/>
+  <path d="M48 18 66 48 48 78 30 48Z" fill="url(#body)"/>
+  <path d="M48 25 58 48 48 71 38 48Z" fill="#f5fffd" opacity=".72"/>
+  <circle cx="48" cy="48" r="8" fill="#043b46"/>
+</svg>
