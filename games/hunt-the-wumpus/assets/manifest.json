@@ -1,0 +1,8 @@
+{
+  "game": "Hunt the Wumpus",
+  "assets": [
+    "cave-map.svg",
+    "wumpus-eye.svg",
+    "hunter-arrow.svg"
+  ]
+}

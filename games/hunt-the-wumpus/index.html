@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hunt the Wumpus</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html">Cannon Duel</a>
+        <a href="../royal-ur/index.html">Royal Game of Ur</a>
+        <a href="../solitaire/index.html">Klondike Solitaire</a>
+        <a href="../mahjong-solitaire/index.html">Mahjong Solitaire</a>
+        <a href="../sea-wolf/index.html">Sea Wolf</a>
+        <a href="../mini-golf/index.html">Mini Golf</a>
+        <a href="../color-flood/index.html">Color Flood</a>
+        <a href="../nine-mens-morris/index.html">Nine Men's Morris</a>
+        <a href="../twenty-forty-eight/index.html">2048</a>
+        <a href="../pyramid-hopper/index.html">Pyramid Hopper</a>
+        <a href="../fox-and-geese/index.html">Fox and Geese</a>
+        <a href="../boulder-dash/index.html">Boulder Dash Pocket</a>
+        <a href="../hex/index.html">Hex</a>
+        <a href="../light-cycles/index.html">Light Cycles</a>
+        <a href="./index.html" aria-current="page">Hunt the Wumpus</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Hunt the Wumpus</h1>
+      <p>Read the cave signs, step carefully, and spend your single arrow on the monster room.</p>
+    </header>
+
+    <section class="statusbar wumpus-hud" role="status">
+      <span>Room: <strong id="room">1</strong></span>
+      <span>Arrow: <strong id="arrow">ready</strong></span>
+      <span>Moves: <strong id="moves">0</strong></span>
+      <button class="button" id="resetButton" type="button">Reset</button>
+    </section>
+
+    <section class="statusbar wumpus-message">
+      <span id="message">Move through a tunnel. Toggle shoot when the stench gives it away.</span>
+    </section>
+
+    <section class="play-panel wumpus-wrap" aria-label="Hunt the Wumpus cave">
+      <div class="wumpus-map" id="map" aria-label="Cave rooms"></div>
+      <img class="asset-preload" src="./assets/cave-map.svg" alt="">
+      <img class="asset-preload" src="./assets/wumpus-eye.svg" alt="">
+      <img class="asset-preload" src="./assets/hunter-arrow.svg" alt="">
+    </section>
+
+    <section class="statusbar wumpus-controls" aria-label="Hunt the Wumpus controls">
+      <button class="button" id="shootButton" type="button">Shoot mode</button>
+      <div class="wumpus-tunnels" id="tunnels"></div>
+      <span class="hint">Choose a connected room. Keys 1-3 pick tunnels, Space toggles shoot, R resets.</span>
+    </section>
+  </main>
+
+  <script>
+    const mapEl = document.querySelector("#map");
+    const tunnelsEl = document.querySelector("#tunnels");
+    const roomEl = document.querySelector("#room");
+    const arrowEl = document.querySelector("#arrow");
+    const movesEl = document.querySelector("#moves");
+    const messageEl = document.querySelector("#message");
+    const resetButton = document.querySelector("#resetButton");
+    const shootButton = document.querySelector("#shootButton");
+
+    const cave = {
+      1: [2, 5, 6],
+      2: [1, 3, 7],
+      3: [2, 4, 8],
+      4: [3, 5, 9],
+      5: [1, 4, 10],
+      6: [1, 7, 10],
+      7: [2, 6, 8],
+      8: [3, 7, 9],
+      9: [4, 8, 10],
+      10: [5, 6, 9]
+    };
+    const roomPositions = {
+      1: [50, 10],
+      2: [78, 26],
+      3: [78, 58],
+      4: [50, 78],
+      5: [22, 58],
+      6: [22, 26],
+      7: [50, 34],
+      8: [62, 50],
+      9: [50, 62],
+      10: [38, 50]
+    };
+    const edges = [];
+    Object.entries(cave).forEach(([room, exits]) => {
+      exits.forEach((exit) => {
+        const key = [Number(room), exit].sort((a, b) => a - b).join("-");
+        if (!edges.some((edge) => edge.key === key)) {
+          edges.push({ key, from: Number(room), to: exit });
+        }
+      });
+    });
+
+    let state;
+
+    function reset() {
+      state = {
+        room: 1,
+        wumpus: 8,
+        pits: [4, 10],
+        arrows: 1,
+        moves: 0,
+        shootMode: false,
+        phase: "playing",
+        message: "The cave is quiet. Pick a tunnel."
+      };
+      render();
+    }
+
+    function clues(room = state.room) {
+      const near = cave[room];
+      const signs = [];
+      if (near.includes(state.wumpus)) signs.push("stench");
+      if (near.some((exit) => state.pits.includes(exit))) signs.push("draft");
+      return signs;
+    }
+
+    function describeRoom() {
+      const signs = clues();
+      if (!signs.length) return "No stench, no draft. The tunnels feel safe for now.";
+      if (signs.length === 2) return "You smell the Wumpus and feel a cold draft nearby.";
+      return signs[0] === "stench" ? "A rank stench seeps from a nearby tunnel." : "A cold draft rises from a nearby pit.";
+    }
+
+    function setEnded(message) {
+      state.phase = "ended";
+      state.shootMode = false;
+      state.message = message;
+    }
+
+    function moveTo(room) {
+      if (state.phase !== "playing" || !cave[state.room].includes(room)) return false;
+      state.room = room;
+      state.moves += 1;
+      if (room === state.wumpus) {
+        setEnded("The Wumpus was waiting in the dark. Reset and try the hunt again.");
+      } else if (state.pits.includes(room)) {
+        setEnded("The floor vanishes into a pit. The hunt is over.");
+      } else {
+        state.message = describeRoom();
+      }
+      render();
+      return true;
+    }
+
+    function shoot(room) {
+      if (state.phase !== "playing" || state.arrows < 1 || !cave[state.room].includes(room)) return false;
+      state.arrows = 0;
+      state.moves += 1;
+      if (room === state.wumpus) {
+        setEnded("Clean shot. The Wumpus drops before it reaches the tunnel.");
+      } else {
+        setEnded("The arrow clatters into stone. The Wumpus wakes, and the cave goes silent.");
+      }
+      render();
+      return true;
+    }
+
+    function chooseTunnel(room) {
+      return state.shootMode ? shoot(room) : moveTo(room);
+    }
+
+    function toggleShoot() {
+      if (state.phase !== "playing" || state.arrows < 1) return false;
+      state.shootMode = !state.shootMode;
+      state.message = state.shootMode ? "Shoot mode: choose the neighboring room hiding the Wumpus." : describeRoom();
+      render();
+      return true;
+    }
+
+    function renderMap() {
+      const lines = edges.map(({ from, to }) => {
+        const [x1, y1] = roomPositions[from];
+        const [x2, y2] = roomPositions[to];
+        return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" />`;
+      }).join("");
+      const rooms = Object.keys(cave).map((roomKey) => {
+        const room = Number(roomKey);
+        const [left, top] = roomPositions[room];
+        const classes = ["wumpus-room"];
+        if (room === state.room) classes.push("current");
+        if (cave[state.room].includes(room)) classes.push("neighbor");
+        if (state.phase === "ended" && room === state.wumpus) classes.push("wumpus");
+        if (state.phase === "ended" && state.pits.includes(room)) classes.push("pit");
+        return `<button class="${classes.join(" ")}" style="left:${left}%;top:${top}%" type="button" data-room="${room}" aria-label="Room ${room}">${room}</button>`;
+      }).join("");
+      mapEl.innerHTML = `<svg class="wumpus-lines" viewBox="0 0 100 88" aria-hidden="true">${lines}</svg>${rooms}`;
+      mapEl.querySelectorAll("[data-room]").forEach((button) => {
+        button.addEventListener("click", () => chooseTunnel(Number(button.dataset.room)));
+      });
+    }
+
+    function renderControls() {
+      const label = state.shootMode ? "Shoot" : "Move";
+      tunnelsEl.innerHTML = cave[state.room].map((room, index) => (
+        `<button class="button" type="button" data-target="${room}">${label} ${room}<small>${index + 1}</small></button>`
+      )).join("");
+      tunnelsEl.querySelectorAll("[data-target]").forEach((button) => {
+        button.addEventListener("click", () => chooseTunnel(Number(button.dataset.target)));
+      });
+    }
+
+    function render() {
+      roomEl.textContent = state.room;
+      arrowEl.textContent = state.arrows ? (state.shootMode ? "aiming" : "ready") : "spent";
+      movesEl.textContent = state.moves;
+      messageEl.textContent = state.message;
+      shootButton.classList.toggle("active", state.shootMode);
+      shootButton.disabled = state.phase !== "playing" || state.arrows < 1;
+      renderMap();
+      renderControls();
+    }
+
+    resetButton.addEventListener("click", reset);
+    shootButton.addEventListener("click", toggleShoot);
+    document.addEventListener("keydown", (event) => {
+      if (event.key.toLowerCase() === "r") reset();
+      if (event.code === "Space") {
+        event.preventDefault();
+        toggleShoot();
+      }
+      if (/^[1-3]$/.test(event.key)) {
+        const target = cave[state.room][Number(event.key) - 1];
+        if (target) chooseTunnel(target);
+      }
+    });
+
+    reset();
+
+    window.__wumpusTest = {
+      reset,
+      moveTo,
+      shoot,
+      toggleShoot,
+      clues,
+      state: () => JSON.parse(JSON.stringify(state)),
+      cave: () => JSON.parse(JSON.stringify(cave))
+    };
+  </script>
+</body>
+</html>

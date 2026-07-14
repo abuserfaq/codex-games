@@ -4922,3 +4922,179 @@ canvas.play-panel {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.wumpus-wrap {
+  position: relative;
+  width: min(100%, calc(100svh - 390px), 470px);
+  aspect-ratio: 1.24 / 1;
+  margin: 0 auto;
+  padding: clamp(12px, 2svh, 18px);
+  border-color: #2e261e;
+  background:
+    linear-gradient(145deg, rgba(255, 248, 218, 0.24), rgba(18, 24, 19, 0.26)),
+    url("./games/hunt-the-wumpus/assets/cave-map.svg") center / cover no-repeat,
+    #121813;
+  box-shadow:
+    0 16px 34px rgba(28, 23, 18, 0.24),
+    inset 0 0 0 1px rgba(240, 198, 113, 0.22);
+}
+
+.wumpus-map {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.wumpus-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  stroke: rgba(250, 223, 150, 0.6);
+  stroke-linecap: round;
+  stroke-width: 1.25;
+}
+
+.wumpus-room {
+  position: absolute;
+  display: grid;
+  width: clamp(34px, 8.2%, 45px);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  place-items: center;
+  border: 2px solid rgba(250, 232, 184, 0.82);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 30%, rgba(255, 245, 198, 0.92), rgba(185, 139, 66, 0.86) 48%, rgba(84, 58, 35, 0.94) 100%);
+  color: #17130f;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow:
+    0 8px 15px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+.wumpus-room.neighbor {
+  border-color: #f0d179;
+  box-shadow:
+    0 0 0 4px rgba(213, 156, 42, 0.24),
+    0 8px 15px rgba(0, 0, 0, 0.32);
+}
+
+.wumpus-room.current {
+  border-color: #dff7ea;
+  background:
+    radial-gradient(circle at 38% 30%, #f5fff8, #5bc58a 52%, #176a4a 100%);
+  color: #082315;
+  box-shadow:
+    0 0 0 5px rgba(23, 106, 74, 0.34),
+    0 10px 18px rgba(0, 0, 0, 0.34);
+}
+
+.wumpus-room.wumpus::after,
+.wumpus-room.pit::after {
+  position: absolute;
+  inset: -18%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: "";
+  filter: drop-shadow(0 7px 5px rgba(0, 0, 0, 0.42));
+  pointer-events: none;
+}
+
+.wumpus-room.wumpus::after {
+  background-image: url("./games/hunt-the-wumpus/assets/wumpus-eye.svg");
+}
+
+.wumpus-room.pit::after {
+  inset: 12%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 45%, #030303 0 32%, #25160f 33% 61%, transparent 62%),
+    radial-gradient(circle, rgba(255, 224, 145, 0.2), transparent 68%);
+}
+
+.wumpus-hud,
+.wumpus-message,
+.wumpus-controls {
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.wumpus-message {
+  justify-content: center;
+  text-align: center;
+}
+
+.wumpus-controls {
+  display: grid;
+  grid-template-columns: minmax(90px, auto) 1fr;
+}
+
+.wumpus-controls .button.active {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #ffffff;
+}
+
+.wumpus-tunnels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.wumpus-tunnels .button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.wumpus-tunnels small {
+  display: inline-grid;
+  min-width: 17px;
+  min-height: 17px;
+  place-items: center;
+  border: 1px solid rgba(83, 97, 91, 0.26);
+  border-radius: 50%;
+  background: var(--surface-alt);
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1;
+}
+
+.wumpus-controls .hint {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .wumpus-wrap {
+    width: min(100%, calc(100svh - 450px), 340px);
+    padding: 9px;
+  }
+
+  .wumpus-hud {
+    align-items: center;
+    flex-direction: row;
+    gap: 7px 10px;
+  }
+
+  .wumpus-hud .button {
+    margin-left: auto;
+    padding: 6px 10px;
+  }
+
+  .wumpus-controls {
+    gap: 7px;
+    grid-template-columns: 1fr;
+  }
+
+  .wumpus-tunnels {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

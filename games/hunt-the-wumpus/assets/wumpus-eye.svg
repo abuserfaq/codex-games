@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Wumpus eye">
+  <defs>
+    <radialGradient id="eye" cx="50%" cy="45%" r="52%">
+      <stop offset="0" stop-color="#ffeab4"/>
+      <stop offset=".45" stop-color="#d59c2a"/>
+      <stop offset="1" stop-color="#8c2d26"/>
+    </radialGradient>
+  </defs>
+  <path d="M8 64c18-30 38-45 56-45s38 15 56 45c-18 30-38 45-56 45S26 94 8 64Z" fill="#351914"/>
+  <path d="M18 64c15-21 31-31 46-31s31 10 46 31c-15 21-31 31-46 31S33 85 18 64Z" fill="url(#eye)"/>
+  <circle cx="64" cy="64" r="18" fill="#151515"/>
+  <circle cx="58" cy="55" r="7" fill="#fff8d7"/>
+</svg>
