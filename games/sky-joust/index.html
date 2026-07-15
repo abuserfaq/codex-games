@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sky Joust</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html">Cannon Duel</a>
+        <a href="../royal-ur/index.html">Royal Game of Ur</a>
+        <a href="../solitaire/index.html">Klondike Solitaire</a>
+        <a href="../mahjong-solitaire/index.html">Mahjong Solitaire</a>
+        <a href="../sea-wolf/index.html">Sea Wolf</a>
+        <a href="../mini-golf/index.html">Mini Golf</a>
+        <a href="../color-flood/index.html">Color Flood</a>
+        <a href="../nine-mens-morris/index.html">Nine Men's Morris</a>
+        <a href="../twenty-forty-eight/index.html">2048</a>
+        <a href="../pyramid-hopper/index.html">Pyramid Hopper</a>
+        <a href="../fox-and-geese/index.html">Fox and Geese</a>
+        <a href="../boulder-dash/index.html">Boulder Dash Pocket</a>
+        <a href="../hex/index.html">Hex</a>
+        <a href="../light-cycles/index.html">Light Cycles</a>
+        <a href="../hunt-the-wumpus/index.html">Hunt the Wumpus</a>
+        <a href="./index.html" aria-current="page">Sky Joust</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Sky Joust</h1>
+      <p>Flap above the gold rider and make the cleaner lance hit before time runs out.</p>
+    </header>
+
+    <section class="statusbar joust-hud" role="status">
+      <span>Score: <strong id="score">0</strong></span>
+      <span>Round: <strong id="round">1</strong></span>
+      <span>Time: <strong id="time">45</strong></span>
+      <button class="button" id="resetButton" type="button">Reset</button>
+    </section>
+
+    <section class="play-panel joust-wrap" aria-label="Sky Joust arena">
+      <div class="joust-arena" id="arena">
+        <div class="joust-rider player" id="player" aria-label="Blue rider"></div>
+        <div class="joust-rider rival" id="rival" aria-label="Gold rider"></div>
+        <div class="joust-spark" id="spark"></div>
+      </div>
+      <img class="asset-preload" src="./assets/arena-moon.svg" alt="">
+      <img class="asset-preload" src="./assets/rider-blue.svg" alt="">
+      <img class="asset-preload" src="./assets/rider-gold.svg" alt="">
+      <img class="asset-preload" src="./assets/lance-spark.svg" alt="">
+    </section>
+
+    <section class="statusbar joust-controls" aria-label="Sky Joust controls">
+      <button class="button" id="leftButton" type="button">Left</button>
+      <button class="button" id="flapButton" type="button">Flap</button>
+      <button class="button" id="rightButton" type="button">Right</button>
+      <span class="hint" id="message">Arrows steer. Space flaps. Win a clash by being above the rival.</span>
+    </section>
+  </main>
+
+  <script>
+    const playerEl = document.querySelector("#player");
+    const rivalEl = document.querySelector("#rival");
+    const sparkEl = document.querySelector("#spark");
+    const scoreEl = document.querySelector("#score");
+    const roundEl = document.querySelector("#round");
+    const timeEl = document.querySelector("#time");
+    const messageEl = document.querySelector("#message");
+    const resetButton = document.querySelector("#resetButton");
+    const leftButton = document.querySelector("#leftButton");
+    const rightButton = document.querySelector("#rightButton");
+    const flapButton = document.querySelector("#flapButton");
+
+    const arena = { width: 640, height: 430, riderW: 68, riderH: 44 };
+    const platforms = [
+      { x: 54, y: 284, w: 206, h: 12 },
+      { x: 380, y: 284, w: 206, h: 12 },
+      { x: 156, y: 206, w: 328, h: 12 }
+    ];
+
+    let state;
+    let keys = { left: false, right: false, flap: false };
+    let lastTime = 0;
+    let rafId = 0;
+
+    function reset() {
+      state = {
+        phase: "playing",
+        score: 0,
+        round: 1,
+        time: 45,
+        elapsed: 0,
+        message: "Take the high line. A cleaner upper lance wins the clash.",
+        player: { x: 116, y: 148, vx: 0, vy: 0, face: 1, grounded: false },
+        rival: { x: 456, y: 154, vx: -74, vy: 0, face: -1, grounded: false },
+        spark: { active: false, x: 0, y: 0 }
+      };
+      lastTime = 0;
+      render();
+      startLoop();
+    }
+
+    function startLoop() {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function tick(now) {
+      if (!lastTime) lastTime = now;
+      const dt = Math.min((now - lastTime) / 1000, 0.033);
+      lastTime = now;
+      step(dt);
+      render();
+      if (state.phase === "playing") {
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    function applyPlatform(rider) {
+      rider.grounded = false;
+      for (const platform of platforms) {
+        const lastBottom = rider.y + arena.riderH - rider.vy * 0.016;
+        const bottom = rider.y + arena.riderH;
+        const withinX = rider.x + arena.riderW > platform.x + 6 && rider.x < platform.x + platform.w - 6;
+        if (withinX && rider.vy >= 0 && lastBottom <= platform.y + 6 && bottom >= platform.y) {
+          rider.y = platform.y - arena.riderH;
+          rider.vy = 0;
+          rider.grounded = true;
+        }
+      }
+    }
+
+    function moveRider(rider, dt) {
+      rider.vy += 520 * dt;
+      rider.x += rider.vx * dt;
+      rider.y += rider.vy * dt;
+      if (rider.x < -arena.riderW) rider.x = arena.width;
+      if (rider.x > arena.width) rider.x = -arena.riderW;
+      if (rider.y < 16) {
+        rider.y = 16;
+        rider.vy = 0;
+      }
+      if (rider.y > arena.height - arena.riderH - 26) {
+        rider.y = arena.height - arena.riderH - 26;
+        rider.vy = 0;
+        rider.grounded = true;
+      }
+      applyPlatform(rider);
+    }
+
+    function updateRival(dt) {
+      const rival = state.rival;
+      const player = state.player;
+      const desired = player.x < rival.x ? -92 : 92;
+      rival.vx += (desired - rival.vx) * Math.min(1, dt * 2.2);
+      rival.face = rival.vx < 0 ? -1 : 1;
+      if ((rival.grounded && player.y < rival.y + 8) || rival.y > 272) {
+        rival.vy = -235;
+      }
+    }
+
+    function rectanglesOverlap(a, b) {
+      return a.x < b.x + arena.riderW &&
+        a.x + arena.riderW > b.x &&
+        a.y < b.y + arena.riderH &&
+        a.y + arena.riderH > b.y;
+    }
+
+    function resolveClash() {
+      if (!rectanglesOverlap(state.player, state.rival)) return;
+      state.spark = {
+        active: true,
+        x: (state.player.x + state.rival.x) / 2 + 18,
+        y: (state.player.y + state.rival.y) / 2
+      };
+      const playerAbove = state.player.y + 9 < state.rival.y;
+      const rivalAbove = state.rival.y + 9 < state.player.y;
+      if (playerAbove) {
+        state.score += 1;
+        state.round += 1;
+        state.message = "Clean upper lance. The gold rider falls away.";
+        resetRound(1);
+      } else if (rivalAbove) {
+        state.phase = "ended";
+        state.message = "The gold rider had the height. Reset for another tilt.";
+      } else {
+        state.message = "Even clash. Circle out and take the higher lane.";
+        state.player.vx = -state.player.face * 125;
+        state.rival.vx = -state.rival.face * 125;
+        state.player.vy = -120;
+        state.rival.vy = -120;
+      }
+    }
+
+    function resetRound(direction) {
+      const round = state.round;
+      const score = state.score;
+      const time = Math.max(16, state.time);
+      state.player = { x: 112, y: 148, vx: 0, vy: -60, face: 1, grounded: false };
+      state.rival = { x: 464, y: 150, vx: -78 - round * 5, vy: -20, face: -1, grounded: false };
+      state.round = round;
+      state.score = score;
+      state.time = time;
+      state.elapsed = 0;
+      state.phase = "playing";
+      if (direction < 0) state.rival.x = 408;
+    }
+
+    function step(dt) {
+      if (state.phase !== "playing") return;
+      state.elapsed += dt;
+      state.time = Math.max(0, 45 - Math.floor(state.elapsed));
+      if (state.time <= 0) {
+        state.phase = "ended";
+        state.message = state.score > 0 ? "The bell rings. You keep the high-score tilt." : "The bell rings before a winning lance.";
+        return;
+      }
+      const player = state.player;
+      const steer = (keys.left ? -1 : 0) + (keys.right ? 1 : 0);
+      player.vx += (steer * 165 - player.vx) * Math.min(1, dt * 6);
+      if (steer) player.face = steer;
+      if (keys.flap) {
+        player.vy = Math.min(player.vy, -220);
+        keys.flap = false;
+      }
+      updateRival(dt);
+      moveRider(player, dt);
+      moveRider(state.rival, dt);
+      resolveClash();
+    }
+
+    function renderRider(element, rider, isPlayer) {
+      element.style.left = `${rider.x / arena.width * 100}%`;
+      element.style.top = `${rider.y / arena.height * 100}%`;
+      const flip = rider.face < 0 ? "scaleX(-1)" : "scaleX(1)";
+      element.style.transform = `${flip} translateY(${Math.sin((state.elapsed + rider.x) * 8) * 1.4}px)`;
+      element.classList.toggle("grounded", rider.grounded);
+      element.classList.toggle("player", isPlayer);
+      element.classList.toggle("rival", !isPlayer);
+    }
+
+    function render() {
+      scoreEl.textContent = state.score;
+      roundEl.textContent = state.round;
+      timeEl.textContent = state.time;
+      messageEl.textContent = state.message;
+      renderRider(playerEl, state.player, true);
+      renderRider(rivalEl, state.rival, false);
+      sparkEl.classList.toggle("active", state.spark.active);
+      sparkEl.style.left = `${state.spark.x / arena.width * 100}%`;
+      sparkEl.style.top = `${state.spark.y / arena.height * 100}%`;
+    }
+
+    function press(direction, value) {
+      keys[direction] = value;
+    }
+
+    function flap() {
+      keys.flap = true;
+      return true;
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") press("left", true);
+      if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") press("right", true);
+      if (event.code === "Space" || event.key === "ArrowUp" || event.key.toLowerCase() === "w") {
+        event.preventDefault();
+        flap();
+      }
+      if (event.key.toLowerCase() === "r") reset();
+    });
+
+    document.addEventListener("keyup", (event) => {
+      if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") press("left", false);
+      if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") press("right", false);
+    });
+
+    function bindHold(button, direction) {
+      button.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        press(direction, true);
+        button.setPointerCapture?.(event.pointerId);
+      });
+      button.addEventListener("pointerup", () => press(direction, false));
+      button.addEventListener("pointercancel", () => press(direction, false));
+      button.addEventListener("pointerleave", () => press(direction, false));
+    }
+
+    bindHold(leftButton, "left");
+    bindHold(rightButton, "right");
+    flapButton.addEventListener("click", flap);
+    resetButton.addEventListener("click", reset);
+
+    reset();
+
+    window.__skyJoustTest = {
+      reset,
+      step,
+      flap,
+      press,
+      state: () => JSON.parse(JSON.stringify(state)),
+      forceClash(playerY, rivalY) {
+        state.player.x = 300;
+        state.rival.x = 320;
+        state.player.y = playerY;
+        state.rival.y = rivalY;
+        resolveClash();
+        render();
+        return JSON.parse(JSON.stringify(state));
+      }
+    };
+  </script>
+</body>
+</html>

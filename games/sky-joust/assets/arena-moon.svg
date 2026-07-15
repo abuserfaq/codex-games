@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 430" role="img" aria-label="Moonlit joust arena">
+  <defs>
+    <radialGradient id="sky" cx="50%" cy="22%" r="72%">
+      <stop offset="0" stop-color="#24485c"/>
+      <stop offset=".58" stop-color="#102833"/>
+      <stop offset="1" stop-color="#071318"/>
+    </radialGradient>
+    <linearGradient id="rail" x1="0" x2="1">
+      <stop offset="0" stop-color="#d5b15c"/>
+      <stop offset=".5" stop-color="#fff0a8"/>
+      <stop offset="1" stop-color="#9c6f2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="430" fill="url(#sky)"/>
+  <circle cx="506" cy="78" r="42" fill="#f4df9b"/>
+  <circle cx="491" cy="67" r="42" fill="#24485c" opacity=".32"/>
+  <g opacity=".55" fill="#f8e8b0">
+    <circle cx="82" cy="66" r="2"/>
+    <circle cx="148" cy="108" r="1.6"/>
+    <circle cx="237" cy="54" r="1.5"/>
+    <circle cx="350" cy="92" r="2"/>
+    <circle cx="428" cy="39" r="1.5"/>
+    <circle cx="578" cy="136" r="1.8"/>
+  </g>
+  <path d="M0 344 C78 314 150 316 222 342 C291 367 374 364 443 333 C516 300 590 304 640 326 L640 430 L0 430 Z" fill="#0c251d"/>
+  <path d="M0 371 C98 342 183 350 269 374 C351 397 423 382 491 353 C557 326 606 331 640 347 L640 430 L0 430 Z" fill="#123327"/>
+  <g stroke="url(#rail)" stroke-linecap="round" stroke-width="10" opacity=".94">
+    <path d="M54 284 H260"/>
+    <path d="M380 284 H586"/>
+    <path d="M156 206 H484"/>
+  </g>
+  <g stroke="#0a1814" stroke-width="5" opacity=".48">
+    <path d="M84 286 v36"/>
+    <path d="M232 286 v32"/>
+    <path d="M407 286 v31"/>
+    <path d="M556 286 v35"/>
+    <path d="M188 208 v27"/>
+    <path d="M452 208 v27"/>
+  </g>
+</svg>

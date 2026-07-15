@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" role="img" aria-label="Joust collision spark">
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M40 5 L47 29 L72 18 L55 39 L75 54 L49 50 L42 75 L33 51 L8 62 L25 41 L5 26 L31 31 Z" fill="#f6d35f" stroke="#6d3f15" stroke-width="3"/>
+    <path d="M40 20 L44 34 L59 29 L49 41 L61 50 L46 48 L41 63 L35 48 L20 53 L31 41 L19 32 L35 35 Z" fill="#fff5b8" stroke="#d8892b" stroke-width="2"/>
+  </g>
+</svg>

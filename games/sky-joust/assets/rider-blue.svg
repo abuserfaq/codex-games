@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 62" role="img" aria-label="Blue joust rider">
+  <path d="M11 39 C24 21 52 18 79 31 C64 38 49 49 20 48 C15 47 11 44 11 39 Z" fill="#58c9d7"/>
+  <path d="M21 35 C36 25 56 26 77 33 C58 33 40 39 24 47 C20 45 19 40 21 35 Z" fill="#dff8fb" opacity=".34"/>
+  <path d="M54 17 l12 7 l-8 8 l-13-6 Z" fill="#164a56"/>
+  <circle cx="57" cy="15" r="8" fill="#f0d18a"/>
+  <path d="M51 11 C55 4 65 7 68 14 C63 12 57 12 51 11 Z" fill="#1a2e35"/>
+  <path d="M8 40 C3 34 3 26 9 18 C16 27 19 35 17 45 Z" fill="#1aaec4"/>
+  <path d="M25 48 C21 55 13 57 7 53 C13 49 18 46 25 48 Z" fill="#0e7184"/>
+  <path d="M82 32 l11 -4 l-8 10 Z" fill="#f6e2a5"/>
+</svg>
