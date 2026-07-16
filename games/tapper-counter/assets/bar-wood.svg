@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 430" role="img" aria-label="polished wooden bar">
+  <defs>
+    <linearGradient id="wall" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#f6dfad"/>
+      <stop offset=".52" stop-color="#d89a52"/>
+      <stop offset="1" stop-color="#7b422a"/>
+    </linearGradient>
+    <linearGradient id="rail" x1="0" x2="1">
+      <stop offset="0" stop-color="#5e2e21"/>
+      <stop offset=".35" stop-color="#b96c32"/>
+      <stop offset=".7" stop-color="#e1a34d"/>
+      <stop offset="1" stop-color="#6c3524"/>
+    </linearGradient>
+    <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#31180f" flood-opacity=".28"/>
+    </filter>
+  </defs>
+  <rect width="640" height="430" rx="18" fill="url(#wall)"/>
+  <path d="M0 0h640v140H0z" fill="#301b19" opacity=".24"/>
+  <g opacity=".28" stroke="#fff2c4" stroke-width="2">
+    <path d="M28 44h96M182 62h142M396 42h176"/>
+    <path d="M48 342h118M238 363h152M462 340h120"/>
+  </g>
+  <g filter="url(#soft)">
+    <rect x="42" y="82" width="554" height="42" rx="18" fill="url(#rail)"/>
+    <rect x="42" y="162" width="554" height="42" rx="18" fill="url(#rail)"/>
+    <rect x="42" y="242" width="554" height="42" rx="18" fill="url(#rail)"/>
+    <rect x="42" y="322" width="554" height="42" rx="18" fill="url(#rail)"/>
+  </g>
+  <g opacity=".42" stroke="#f9d98a" stroke-width="3">
+    <path d="M68 96c84 16 154-18 238 0s154 8 268-8"/>
+    <path d="M72 176c86-18 162 18 248 0s170-8 252 10"/>
+    <path d="M68 256c118 16 202-18 314 0 70 11 126 10 194-4"/>
+    <path d="M74 336c88-14 162 18 248 0 94-20 156-8 250 9"/>
+  </g>
+  <g opacity=".5" fill="#321912">
+    <circle cx="108" cy="112" r="5"/>
+    <circle cx="444" cy="96" r="4"/>
+    <circle cx="236" cy="188" r="5"/>
+    <circle cx="528" cy="262" r="4"/>
+    <circle cx="154" cy="344" r="5"/>
+  </g>
+</svg>

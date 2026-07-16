@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 76" role="img" aria-label="counter patron">
+  <defs>
+    <linearGradient id="coat" x1="0" x2="1">
+      <stop offset="0" stop-color="#1f6f59"/>
+      <stop offset=".55" stop-color="#114837"/>
+      <stop offset="1" stop-color="#08261f"/>
+    </linearGradient>
+    <radialGradient id="face" cx=".42" cy=".34" r=".72">
+      <stop offset="0" stop-color="#ffe0a2"/>
+      <stop offset=".72" stop-color="#bd7042"/>
+      <stop offset="1" stop-color="#6b3327"/>
+    </radialGradient>
+  </defs>
+  <path d="M14 72c3-23 8-35 21-35s20 12 23 35z" fill="url(#coat)" stroke="#1a1714" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="35" cy="24" r="17" fill="url(#face)" stroke="#1a1714" stroke-width="3"/>
+  <path d="M18 21c4-16 26-22 35-3-10-5-19-3-32 4z" fill="#2b1b16"/>
+  <path d="M25 31c7 5 14 5 21 0" fill="none" stroke="#37180f" stroke-width="3" stroke-linecap="round"/>
+  <path d="M20 59h30" stroke="#f3c35c" stroke-width="4" stroke-linecap="round"/>
+</svg>

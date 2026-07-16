@@ -5237,3 +5237,128 @@ canvas.play-panel {
     gap: 7px;
   }
 }
+
+.tapper-wrap {
+  position: relative;
+  width: min(100%, calc((100svh - 392px) * 1.49), 560px);
+  aspect-ratio: 1.49 / 1;
+  margin: 0 auto;
+  overflow: hidden;
+  border-color: #3a2317;
+  background:
+    linear-gradient(180deg, rgba(255, 248, 214, 0.2), rgba(61, 24, 11, 0.08)),
+    url("./games/tapper-counter/assets/bar-wood.svg") center / cover no-repeat,
+    #a76335;
+  box-shadow:
+    0 16px 34px rgba(77, 38, 19, 0.23),
+    inset 0 0 0 1px rgba(255, 237, 179, 0.34);
+}
+
+.tapper-board {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.tapper-board::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    linear-gradient(90deg, rgba(47, 22, 14, 0.26), transparent 18%, transparent 72%, rgba(58, 24, 12, 0.24)),
+    radial-gradient(circle at 18% 14%, rgba(255, 240, 184, 0.32), transparent 28%);
+  pointer-events: none;
+}
+
+.tapper-bartender {
+  position: absolute;
+  z-index: 3;
+  left: 7.4%;
+  width: 9%;
+  aspect-ratio: 1 / 1.35;
+  border: 2px solid #1f1712;
+  border-radius: 8px 8px 5px 5px;
+  background:
+    radial-gradient(circle at 50% 14%, #ffe1a6 0 14%, #5c2c1e 15% 22%, transparent 23%),
+    linear-gradient(90deg, #f8f1d8 0 46%, #1e6d58 47% 100%);
+  box-shadow: 0 8px 9px rgba(50, 23, 10, 0.34);
+  transform: translate(-50%, -46%);
+  transition: top 120ms ease;
+}
+
+.tapper-bartender::after {
+  position: absolute;
+  right: -24%;
+  top: 38%;
+  width: 56%;
+  height: 15%;
+  border-radius: 99px;
+  background: #f6e9bf;
+  box-shadow: 0 0 0 2px #251811;
+  content: "";
+}
+
+.tapper-mug,
+.tapper-patron {
+  position: absolute;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  filter: drop-shadow(0 8px 7px rgba(54, 23, 10, 0.36));
+  pointer-events: none;
+  will-change: left, top;
+}
+
+.tapper-mug {
+  z-index: 4;
+  width: 8.5%;
+  aspect-ratio: 64 / 48;
+  background-image: url("./games/tapper-counter/assets/mug.svg");
+  transform: translate(-50%, -50%);
+}
+
+.tapper-patron {
+  z-index: 2;
+  width: 9.5%;
+  aspect-ratio: 70 / 76;
+  background-image: url("./games/tapper-counter/assets/patron.svg");
+  transform: translate(-50%, -58%) scaleX(-1);
+}
+
+.tapper-hud,
+.tapper-controls {
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.tapper-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.tapper-controls .hint {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .tapper-wrap {
+    width: min(100%, calc((100svh - 430px) * 1.49), 340px);
+  }
+
+  .tapper-hud {
+    align-items: center;
+    flex-direction: row;
+    gap: 7px 10px;
+  }
+
+  .tapper-hud .button {
+    margin-left: auto;
+    padding: 6px 10px;
+  }
+
+  .tapper-controls {
+    gap: 7px;
+  }
+}

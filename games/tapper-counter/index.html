@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tapper Counter</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html">Cannon Duel</a>
+        <a href="../royal-ur/index.html">Royal Game of Ur</a>
+        <a href="../solitaire/index.html">Klondike Solitaire</a>
+        <a href="../mahjong-solitaire/index.html">Mahjong Solitaire</a>
+        <a href="../sea-wolf/index.html">Sea Wolf</a>
+        <a href="../mini-golf/index.html">Mini Golf</a>
+        <a href="../color-flood/index.html">Color Flood</a>
+        <a href="../nine-mens-morris/index.html">Nine Men's Morris</a>
+        <a href="../twenty-forty-eight/index.html">2048</a>
+        <a href="../pyramid-hopper/index.html">Pyramid Hopper</a>
+        <a href="../fox-and-geese/index.html">Fox and Geese</a>
+        <a href="../boulder-dash/index.html">Boulder Dash Pocket</a>
+        <a href="../hex/index.html">Hex</a>
+        <a href="../light-cycles/index.html">Light Cycles</a>
+        <a href="../hunt-the-wumpus/index.html">Hunt the Wumpus</a>
+        <a href="../sky-joust/index.html">Sky Joust</a>
+        <a href="./index.html" aria-current="page">Tapper Counter</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Tapper Counter</h1>
+      <p>Slide between four polished counters and send mugs before the patrons reach your side.</p>
+    </header>
+
+    <section class="statusbar tapper-hud" role="status">
+      <span>Score: <strong id="score">0</strong></span>
+      <span>Lives: <strong id="lives">3</strong></span>
+      <span>Wave: <strong id="wave">1</strong></span>
+      <button class="button" id="resetButton" type="button">Reset</button>
+    </section>
+
+    <section class="play-panel tapper-wrap" aria-label="Tapper Counter bar">
+      <div class="tapper-board" id="board">
+        <div class="tapper-bartender" id="bartender" aria-label="Bartender"></div>
+      </div>
+      <img class="asset-preload" src="./assets/bar-wood.svg" alt="">
+      <img class="asset-preload" src="./assets/mug.svg" alt="">
+      <img class="asset-preload" src="./assets/patron.svg" alt="">
+    </section>
+
+    <section class="statusbar tapper-controls" aria-label="Tapper Counter controls">
+      <button class="button" id="upButton" type="button">Up</button>
+      <button class="button" id="serveButton" type="button">Serve</button>
+      <button class="button" id="downButton" type="button">Down</button>
+      <span class="hint" id="message">Arrow keys change lanes. Space serves a mug.</span>
+    </section>
+  </main>
+
+  <script>
+    const boardEl = document.querySelector("#board");
+    const bartenderEl = document.querySelector("#bartender");
+    const scoreEl = document.querySelector("#score");
+    const livesEl = document.querySelector("#lives");
+    const waveEl = document.querySelector("#wave");
+    const messageEl = document.querySelector("#message");
+    const resetButton = document.querySelector("#resetButton");
+    const upButton = document.querySelector("#upButton");
+    const downButton = document.querySelector("#downButton");
+    const serveButton = document.querySelector("#serveButton");
+
+    const lanes = [86, 166, 246, 326];
+    const arena = { width: 640, height: 430 };
+    const laneStartX = 74;
+    const patronStartX = 562;
+    let state;
+    let rafId = 0;
+    let lastTime = 0;
+
+    function reset() {
+      state = {
+        phase: "playing",
+        score: 0,
+        lives: 3,
+        wave: 1,
+        lane: 1,
+        elapsed: 0,
+        nextSpawn: 0.45,
+        mugs: [],
+        patrons: [
+          { lane: 0, x: 500, speed: 27 },
+          { lane: 2, x: 544, speed: 25 }
+        ],
+        message: "Keep every counter moving. Serve before they crowd the taps."
+      };
+      lastTime = 0;
+      render();
+      startLoop();
+    }
+
+    function startLoop() {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function tick(now) {
+      if (!lastTime) lastTime = now;
+      const dt = Math.min((now - lastTime) / 1000, 0.034);
+      lastTime = now;
+      step(dt);
+      render();
+      if (state.phase === "playing") rafId = requestAnimationFrame(tick);
+    }
+
+    function changeLane(direction) {
+      if (state.phase !== "playing") return false;
+      state.lane = Math.max(0, Math.min(lanes.length - 1, state.lane + direction));
+      state.message = `Lane ${state.lane + 1}. Serve clean and keep the counter clear.`;
+      render();
+      return true;
+    }
+
+    function serve() {
+      if (state.phase !== "playing") return false;
+      if (state.mugs.some((mug) => mug.lane === state.lane && mug.x < 150)) {
+        state.message = "Let the last mug clear your hand first.";
+        return false;
+      }
+      state.mugs.push({ lane: state.lane, x: laneStartX + 34, speed: 238 });
+      state.message = `Mug sliding down lane ${state.lane + 1}.`;
+      render();
+      return true;
+    }
+
+    function spawnPatron() {
+      const crowded = [0, 1, 2, 3].filter((lane) => state.patrons.filter((patron) => patron.lane === lane).length < 2);
+      if (!crowded.length) return;
+      const lane = crowded[(state.wave + Math.floor(state.elapsed * 2)) % crowded.length];
+      state.patrons.push({
+        lane,
+        x: patronStartX,
+        speed: 23 + state.wave * 4 + lane
+      });
+    }
+
+    function loseLife(reason) {
+      state.lives -= 1;
+      state.message = reason;
+      state.mugs = [];
+      state.patrons = state.patrons.filter((patron) => patron.x > 120);
+      if (state.lives <= 0) {
+        state.phase = "ended";
+        state.message = `${reason} Reset for another shift.`;
+      }
+    }
+
+    function resolveHits() {
+      const keptMugs = [];
+      for (const mug of state.mugs) {
+        const hit = state.patrons.find((patron) =>
+          patron.lane === mug.lane &&
+          mug.x + 34 >= patron.x &&
+          mug.x <= patron.x + 42
+        );
+        if (hit) {
+          state.score += 10;
+          hit.x = Math.min(patronStartX + 34, hit.x + 112);
+          hit.speed += 2;
+          state.message = "Clean serve. The patron slides back from the rail.";
+          if (hit.x >= patronStartX) {
+            state.score += 15;
+            state.patrons = state.patrons.filter((patron) => patron !== hit);
+            state.message = "Table cleared. Keep the rhythm.";
+          }
+        } else {
+          keptMugs.push(mug);
+        }
+      }
+      state.mugs = keptMugs;
+    }
+
+    function step(dt) {
+      if (state.phase !== "playing") return;
+      state.elapsed += dt;
+      state.wave = 1 + Math.floor(state.score / 80);
+      state.nextSpawn -= dt;
+      if (state.nextSpawn <= 0) {
+        spawnPatron();
+        state.nextSpawn = Math.max(0.95, 2.6 - state.wave * 0.2);
+      }
+      for (const mug of state.mugs) mug.x += mug.speed * dt;
+      for (const patron of state.patrons) patron.x -= patron.speed * dt;
+      resolveHits();
+      state.mugs = state.mugs.filter((mug) => {
+        if (mug.x <= arena.width - 32) return true;
+        loseLife("A mug shattered past the end of the counter.");
+        return false;
+      });
+      const intruder = state.patrons.find((patron) => patron.x <= 96);
+      if (intruder) loseLife("A thirsty patron reached the taps.");
+    }
+
+    function makeSprite(className) {
+      const element = document.createElement("div");
+      element.className = className;
+      return element;
+    }
+
+    function render() {
+      scoreEl.textContent = state.score;
+      livesEl.textContent = state.lives;
+      waveEl.textContent = state.wave;
+      messageEl.textContent = state.message;
+      bartenderEl.style.top = `${lanes[state.lane] / arena.height * 100}%`;
+      boardEl.querySelectorAll(".tapper-mug, .tapper-patron").forEach((node) => node.remove());
+      for (const patron of state.patrons) {
+        const element = makeSprite("tapper-patron");
+        element.style.left = `${patron.x / arena.width * 100}%`;
+        element.style.top = `${lanes[patron.lane] / arena.height * 100}%`;
+        boardEl.append(element);
+      }
+      for (const mug of state.mugs) {
+        const element = makeSprite("tapper-mug");
+        element.style.left = `${mug.x / arena.width * 100}%`;
+        element.style.top = `${(lanes[mug.lane] + 7) / arena.height * 100}%`;
+        boardEl.append(element);
+      }
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowUp" || event.key.toLowerCase() === "w") {
+        event.preventDefault();
+        changeLane(-1);
+      }
+      if (event.key === "ArrowDown" || event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        changeLane(1);
+      }
+      if (event.code === "Space" || event.key === "ArrowRight") {
+        event.preventDefault();
+        serve();
+      }
+      if (event.key.toLowerCase() === "r") reset();
+    });
+
+    upButton.addEventListener("click", () => changeLane(-1));
+    downButton.addEventListener("click", () => changeLane(1));
+    serveButton.addEventListener("click", serve);
+    resetButton.addEventListener("click", reset);
+
+    reset();
+
+    window.__tapperCounterTest = {
+      reset,
+      step,
+      serve,
+      changeLane,
+      state: () => JSON.parse(JSON.stringify(state)),
+      setLane(lane) {
+        state.lane = lane;
+        render();
+      },
+      placePatron(lane, x) {
+        state.patrons = [{ lane, x, speed: 0 }];
+        render();
+      }
+    };
+  </script>
+</body>
+</html>
