@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 118" role="img" aria-label="Reflective roadside post">
+  <defs>
+    <linearGradient id="post" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".45" stop-color="#dfe8e2"/>
+      <stop offset="1" stop-color="#798984"/>
+    </linearGradient>
+    <filter id="glow" x="-45%" y="-25%" width="190%" height="150%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <path d="M14 112 20 8h8l6 104z" fill="#17201d" opacity=".48"/>
+  <path d="M16 106 21 9c.2-4.2 5.6-4.2 6 0l5 97c.4 7.6-16.4 7.6-16 0z" fill="url(#post)" stroke="#14221e" stroke-width="3"/>
+  <path d="M18 33h12l.7 17H17.3z" fill="#f4c63e" filter="url(#glow)"/>
+  <path d="M18.8 61h10.4l.5 13H18.3z" fill="#f5f7ed" opacity=".88"/>
+</svg>

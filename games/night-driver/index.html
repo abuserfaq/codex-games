@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Night Driver</title>
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Навигация по играм">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html">Cannon Duel</a>
+        <a href="../royal-ur/index.html">Royal Game of Ur</a>
+        <a href="../solitaire/index.html">Klondike Solitaire</a>
+        <a href="../mahjong-solitaire/index.html">Mahjong Solitaire</a>
+        <a href="../sea-wolf/index.html">Sea Wolf</a>
+        <a href="../mini-golf/index.html">Mini Golf</a>
+        <a href="../color-flood/index.html">Color Flood</a>
+        <a href="../nine-mens-morris/index.html">Nine Men's Morris</a>
+        <a href="../twenty-forty-eight/index.html">2048</a>
+        <a href="../pyramid-hopper/index.html">Pyramid Hopper</a>
+        <a href="../fox-and-geese/index.html">Fox and Geese</a>
+        <a href="../boulder-dash/index.html">Boulder Dash Pocket</a>
+        <a href="../hex/index.html">Hex</a>
+        <a href="../light-cycles/index.html">Light Cycles</a>
+        <a href="../hunt-the-wumpus/index.html">Hunt the Wumpus</a>
+        <a href="../sky-joust/index.html">Sky Joust</a>
+        <a href="../tapper-counter/index.html">Tapper Counter</a>
+        <a href="./index.html" aria-current="page">Night Driver</a>
+      </div>
+    </nav>
+
+    <header class="game-header">
+      <h1>Night Driver</h1>
+      <p>Hold the wheel through glowing roadside gates and finish the midnight run.</p>
+    </header>
+
+    <section class="statusbar night-hud" role="status">
+      <span>Distance: <strong id="distance">0</strong>m</span>
+      <span>Lives: <strong id="lives">3</strong></span>
+      <span>Speed: <strong id="speed">1</strong></span>
+      <button class="button" id="resetButton" type="button">Reset</button>
+    </section>
+
+    <section class="play-panel night-wrap" aria-label="Night Driver road">
+      <div class="night-road" id="road">
+        <div class="night-horizon"></div>
+        <div class="night-post left" id="leftPost"></div>
+        <div class="night-post right" id="rightPost"></div>
+        <div class="night-car" id="car"></div>
+        <div class="night-wheel" id="wheel" aria-hidden="true"></div>
+      </div>
+      <img class="asset-preload" src="./assets/road-glow.svg" alt="">
+      <img class="asset-preload" src="./assets/road-post.svg" alt="">
+      <img class="asset-preload" src="./assets/dash-wheel.svg" alt="">
+    </section>
+
+    <section class="statusbar night-controls" aria-label="Night Driver controls">
+      <button class="button" id="leftButton" type="button">Left</button>
+      <button class="button" id="rightButton" type="button">Right</button>
+      <span class="hint" id="message">Arrow keys or buttons steer. Stay centered between the reflector posts.</span>
+    </section>
+  </main>
+
+  <script>
+    const carEl = document.querySelector("#car");
+    const wheelEl = document.querySelector("#wheel");
+    const leftPostEl = document.querySelector("#leftPost");
+    const rightPostEl = document.querySelector("#rightPost");
+    const distanceEl = document.querySelector("#distance");
+    const livesEl = document.querySelector("#lives");
+    const speedEl = document.querySelector("#speed");
+    const messageEl = document.querySelector("#message");
+    const resetButton = document.querySelector("#resetButton");
+    const leftButton = document.querySelector("#leftButton");
+    const rightButton = document.querySelector("#rightButton");
+
+    const road = { min: -1, max: 1, finish: 500 };
+    const gateSeeds = [-0.36, 0.18, 0.42, -0.2, -0.48, 0.08, 0.34, -0.12];
+    let state;
+    let keys = { left: false, right: false };
+    let rafId = 0;
+    let lastTime = 0;
+
+    function reset() {
+      state = {
+        phase: "playing",
+        carX: 0,
+        steer: 0,
+        distance: 0,
+        lives: 3,
+        speed: 1,
+        gateIndex: 0,
+        gateDepth: 0.12,
+        message: "The first gate is lit. Keep the wheel calm."
+      };
+      lastTime = 0;
+      render();
+      startLoop();
+    }
+
+    function startLoop() {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function tick(now) {
+      if (!lastTime) lastTime = now;
+      const dt = Math.min((now - lastTime) / 1000, 0.034);
+      lastTime = now;
+      step(dt);
+      render();
+      if (state.phase === "playing") {
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    function currentGateCenter() {
+      return gateSeeds[state.gateIndex % gateSeeds.length];
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function passGate() {
+      const center = currentGateCenter();
+      const safeWidth = 0.58;
+      const delta = Math.abs(state.carX - center);
+      if (delta > safeWidth) {
+        state.lives -= 1;
+        state.message = "Reflector clipped. Correct the line before the next gate.";
+        state.carX = clamp(state.carX + (center - state.carX) * 0.38, road.min, road.max);
+        if (state.lives <= 0) {
+          state.phase = "ended";
+          state.message = "The road wins this run. Reset for another night drive.";
+        }
+      } else {
+        state.distance += 50;
+        state.speed = Math.min(5, 1 + Math.floor(state.distance / 110));
+        state.message = state.distance >= road.finish
+          ? "Finish lights ahead. The midnight run is clean."
+          : "Clean gate. Hold the rhythm into the next pair.";
+        if (state.distance >= road.finish) {
+          state.phase = "won";
+        }
+      }
+      state.gateIndex += 1;
+      state.gateDepth = 0.12;
+    }
+
+    function step(dt) {
+      if (state.phase !== "playing") return;
+      const input = (keys.left ? -1 : 0) + (keys.right ? 1 : 0);
+      state.steer += (input - state.steer) * Math.min(1, dt * 7);
+      state.carX = clamp(state.carX + state.steer * dt * (0.72 + state.speed * 0.1), road.min, road.max);
+      state.gateDepth += dt * (0.58 + state.speed * 0.12);
+      if (state.gateDepth >= 1) passGate();
+    }
+
+    function postStyle(side) {
+      const center = currentGateCenter();
+      const width = 0.66;
+      const sideOffset = side === "left" ? -width : width;
+      const depth = state.gateDepth;
+      const perspective = depth * depth;
+      const x = 50 + (center + sideOffset) * (13 + perspective * 34);
+      const y = 35 + perspective * 58;
+      const scale = 0.18 + perspective * 1.18;
+      return { x, y, scale };
+    }
+
+    function applyPost(element, side) {
+      const p = postStyle(side);
+      element.style.left = `${p.x}%`;
+      element.style.top = `${p.y}%`;
+      element.style.transform = `translate(-50%, -50%) scale(${p.scale})`;
+      element.style.opacity = `${0.4 + state.gateDepth * 0.6}`;
+    }
+
+    function render() {
+      distanceEl.textContent = state.distance;
+      livesEl.textContent = state.lives;
+      speedEl.textContent = state.speed;
+      messageEl.textContent = state.message;
+      carEl.style.left = `${50 + state.carX * 26}%`;
+      carEl.style.transform = `translateX(-50%) rotate(${state.steer * 6}deg)`;
+      wheelEl.style.transform = `translateX(-50%) rotate(${state.steer * 24}deg)`;
+      applyPost(leftPostEl, "left");
+      applyPost(rightPostEl, "right");
+      leftPostEl.classList.toggle("danger", state.gateDepth > 0.76);
+      rightPostEl.classList.toggle("danger", state.gateDepth > 0.76);
+    }
+
+    function press(direction, value) {
+      keys[direction] = value;
+      return true;
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") press("left", true);
+      if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") press("right", true);
+      if (event.key.toLowerCase() === "r") reset();
+    });
+
+    document.addEventListener("keyup", (event) => {
+      if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") press("left", false);
+      if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") press("right", false);
+    });
+
+    function bindHold(button, direction) {
+      button.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        press(direction, true);
+        button.setPointerCapture?.(event.pointerId);
+      });
+      button.addEventListener("pointerup", () => press(direction, false));
+      button.addEventListener("pointercancel", () => press(direction, false));
+      button.addEventListener("pointerleave", () => press(direction, false));
+    }
+
+    bindHold(leftButton, "left");
+    bindHold(rightButton, "right");
+    resetButton.addEventListener("click", reset);
+
+    reset();
+
+    window.__nightDriverTest = {
+      reset,
+      step,
+      press,
+      state: () => JSON.parse(JSON.stringify(state)),
+      setCarX(value) {
+        state.carX = clamp(value, road.min, road.max);
+        render();
+      },
+      forceGate(depth = 0.99) {
+        state.gateDepth = depth;
+        step(0.04);
+        render();
+        return JSON.parse(JSON.stringify(state));
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 430" role="img" aria-label="Night road glow">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#071016"/>
+      <stop offset=".58" stop-color="#102027"/>
+      <stop offset="1" stop-color="#050809"/>
+    </linearGradient>
+    <radialGradient id="haze" cx=".5" cy=".37" r=".62">
+      <stop offset="0" stop-color="#ffe3a0" stop-opacity=".28"/>
+      <stop offset=".45" stop-color="#74d5ff" stop-opacity=".12"/>
+      <stop offset="1" stop-color="#050809" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="640" height="430" fill="url(#sky)"/>
+  <rect width="640" height="430" fill="url(#haze)"/>
+  <path d="M0 286c78-34 168-55 320-55s242 21 320 55v144H0z" fill="#07100f"/>
+  <path d="M248 430 309 246h22l61 184z" fill="#151a17"/>
+  <path d="M284 430 313 249h14l29 181z" fill="#29342f" opacity=".86"/>
+  <path d="M0 242h640" stroke="#ffe2a1" stroke-opacity=".24" stroke-width="2"/>
+  <path d="M212 430 302 249M428 430 338 249" fill="none" stroke="#f6f2d0" stroke-opacity=".2" stroke-width="5"/>
+  <path d="M244 430 309 249M396 430 331 249" fill="none" stroke="#ffffff" stroke-opacity=".18" stroke-width="2"/>
+  <g stroke="#f8d476" stroke-opacity=".28">
+    <path d="M48 265h86"/>
+    <path d="M506 265h86"/>
+    <path d="M8 304h116"/>
+    <path d="M516 304h116"/>
+  </g>
+</svg>
