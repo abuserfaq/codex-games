@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 96" role="img" aria-label="tiny arcade climber">
+  <path d="M20 90c7-6 24-6 32 0" fill="none" stroke="#20140e" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="36" cy="19" r="13" fill="#ffd7a3" stroke="#1d1410" stroke-width="4"/>
+  <path d="M23 19c4-13 25-14 29 0-7-5-20-5-29 0z" fill="#3b251a"/>
+  <path d="M25 35h22l7 31H18z" fill="#2871a7" stroke="#1d1410" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M21 43 8 56M51 43l13 13" fill="none" stroke="#ffd7a3" stroke-width="7" stroke-linecap="round"/>
+  <path d="M27 65 22 86M45 65l5 21" fill="none" stroke="#1d1410" stroke-width="8" stroke-linecap="round"/>
+  <path d="M28 66h16" stroke="#f1d46a" stroke-width="5" stroke-linecap="round"/>
+</svg>

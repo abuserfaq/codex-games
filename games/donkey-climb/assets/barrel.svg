@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 72" role="img" aria-label="rolling wooden barrel">
+  <defs>
+    <linearGradient id="wood" x1="0" x2="1">
+      <stop offset="0" stop-color="#7a3b1f"/>
+      <stop offset=".5" stop-color="#d38a45"/>
+      <stop offset="1" stop-color="#6c2f1b"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="48" cy="36" rx="40" ry="29" fill="#4b2116" opacity=".28"/>
+  <rect x="16" y="12" width="64" height="48" rx="22" fill="url(#wood)" stroke="#2a1712" stroke-width="4"/>
+  <path d="M28 13v46M48 12v48M68 13v46" stroke="#5b2619" stroke-width="4" opacity=".65"/>
+  <path d="M16 24h64M16 48h64" stroke="#f4bd6f" stroke-width="4" opacity=".55"/>
+  <ellipse cx="23" cy="36" rx="10" ry="21" fill="#3a1a12" opacity=".38"/>
+  <ellipse cx="73" cy="36" rx="10" ry="21" fill="#f3b768" opacity=".24"/>
+</svg>

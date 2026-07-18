@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-label="painted riveted scaffold">
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#1b3142"/>
+      <stop offset=".58" stop-color="#304e55"/>
+      <stop offset="1" stop-color="#182920"/>
+    </linearGradient>
+    <linearGradient id="beam" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ef8b49"/>
+      <stop offset=".48" stop-color="#b54832"/>
+      <stop offset="1" stop-color="#6f2b2a"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="420" fill="url(#sky)"/>
+  <path d="M0 332c80-28 146-34 214-17 90 23 180-11 253-4 66 7 111 33 173 20v89H0z" fill="#17231d" opacity=".78"/>
+  <g fill="none" stroke="url(#beam)" stroke-width="18" stroke-linecap="round">
+    <path d="M48 356h544M54 286h532M48 216h544M54 146h532M48 76h544"/>
+    <path d="M94 356 546 76M92 76l454 280"/>
+  </g>
+  <g fill="#ffd394" opacity=".75">
+    <circle cx="95" cy="356" r="5"/><circle cx="545" cy="356" r="5"/>
+    <circle cx="105" cy="286" r="5"/><circle cx="535" cy="286" r="5"/>
+    <circle cx="95" cy="216" r="5"/><circle cx="545" cy="216" r="5"/>
+    <circle cx="105" cy="146" r="5"/><circle cx="535" cy="146" r="5"/>
+    <circle cx="95" cy="76" r="5"/><circle cx="545" cy="76" r="5"/>
+  </g>
+  <g opacity=".2" stroke="#f9d07d" stroke-width="2">
+    <path d="M40 48h560M34 390h572"/>
+  </g>
+</svg>

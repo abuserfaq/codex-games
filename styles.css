@@ -5517,3 +5517,162 @@ canvas.play-panel {
     gap: 7px;
   }
 }
+
+.climb-wrap {
+  position: relative;
+  width: min(100%, calc((100svh - 392px) * 1.49), 560px);
+  aspect-ratio: 1.49 / 1;
+  margin: 0 auto;
+  overflow: hidden;
+  border-color: #2d2018;
+  background:
+    linear-gradient(180deg, rgba(255, 230, 159, 0.12), rgba(13, 25, 25, 0.16)),
+    url("./games/donkey-climb/assets/scaffold.svg") center / cover no-repeat,
+    #1c3140;
+  box-shadow:
+    0 16px 34px rgba(39, 22, 16, 0.24),
+    inset 0 0 0 1px rgba(255, 215, 140, 0.24);
+  touch-action: manipulation;
+}
+
+.climb-board {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  grid-template-rows: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+  padding: clamp(10px, 2svh, 15px);
+}
+
+.climb-cell {
+  position: relative;
+  min-width: 0;
+  border: 1px solid rgba(255, 226, 163, 0.2);
+  border-radius: 5px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.04)),
+    rgba(17, 27, 26, 0.24);
+  cursor: pointer;
+}
+
+.climb-cell::before {
+  position: absolute;
+  left: -5%;
+  right: -5%;
+  bottom: 9%;
+  height: 9%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #7d302a, #df7a40, #7d302a);
+  box-shadow: 0 2px 0 rgba(28, 14, 10, 0.45);
+  content: "";
+  pointer-events: none;
+}
+
+.climb-cell.ladder::after {
+  position: absolute;
+  inset: 8% 29% 11%;
+  border-left: 4px solid #efc16f;
+  border-right: 4px solid #efc16f;
+  background:
+    linear-gradient(#efc16f, #efc16f) center 18% / 100% 4px no-repeat,
+    linear-gradient(#efc16f, #efc16f) center 48% / 100% 4px no-repeat,
+    linear-gradient(#efc16f, #efc16f) center 78% / 100% 4px no-repeat;
+  content: "";
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.26));
+  pointer-events: none;
+}
+
+.climb-cell.goal {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 238, 158, 0.68), transparent 48%),
+    rgba(54, 89, 75, 0.38);
+}
+
+.climb-cell.goal::before {
+  background: linear-gradient(90deg, #96651f, #ffd166, #96651f);
+}
+
+.climb-cell.barrel,
+.climb-cell.player {
+  z-index: 1;
+}
+
+.climb-cell.barrel::after,
+.climb-cell.player::after {
+  position: absolute;
+  inset: 5%;
+  z-index: 2;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: "";
+  pointer-events: none;
+}
+
+.climb-cell.barrel::after {
+  background-image: url("./games/donkey-climb/assets/barrel.svg");
+  filter: drop-shadow(0 7px 6px rgba(28, 13, 8, 0.42));
+}
+
+.climb-cell.player::after {
+  inset: -10% 7% 4%;
+  background-image: url("./games/donkey-climb/assets/climber.svg");
+  filter: drop-shadow(0 8px 7px rgba(15, 14, 12, 0.38));
+}
+
+.climb-cell:hover,
+.climb-cell:focus-visible {
+  outline: 2px solid rgba(255, 219, 129, 0.82);
+  outline-offset: 2px;
+  filter: brightness(1.08);
+}
+
+.climb-hud,
+.climb-controls {
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.climb-hud #message {
+  flex: 1 1 230px;
+  text-align: center;
+}
+
+.climb-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.climb-controls .hint {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .climb-wrap {
+    width: min(100%, calc((100svh - 430px) * 1.49), 340px);
+  }
+
+  .climb-board {
+    gap: 2px;
+    padding: 9px;
+  }
+
+  .climb-hud {
+    align-items: center;
+    flex-direction: row;
+    gap: 7px 10px;
+  }
+
+  .climb-hud .button {
+    margin-left: auto;
+    padding: 6px 10px;
+  }
+
+  .climb-controls {
+    gap: 7px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

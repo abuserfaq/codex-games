@@ -1,0 +1,8 @@
+{
+  "name": "Donkey Climb assets",
+  "assets": [
+    "scaffold.svg",
+    "barrel.svg",
+    "climber.svg"
+  ]
+}
