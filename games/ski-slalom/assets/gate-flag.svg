@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 54 132" role="img" aria-label="slalom gate flag">
+  <defs>
+    <linearGradient id="flag" x1="0" x2="1">
+      <stop offset="0" stop-color="#1b7fd7"/>
+      <stop offset="1" stop-color="#53c2ff"/>
+    </linearGradient>
+  </defs>
+  <path d="M18 12 L18 122" stroke="#22343a" stroke-width="6" stroke-linecap="round"/>
+  <path d="M21 17 C33 11 42 17 50 13 L50 47 C39 52 31 45 21 50Z" fill="url(#flag)" stroke="#112a34" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M18 36 L9 119" stroke="#22343a" stroke-width="3" stroke-linecap="round" opacity=".58"/>
+  <ellipse cx="18" cy="124" rx="13" ry="5" fill="#93bac3" opacity=".62"/>
+</svg>

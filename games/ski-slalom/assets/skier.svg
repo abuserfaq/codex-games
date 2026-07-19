@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 112" role="img" aria-label="red skier">
+  <defs>
+    <linearGradient id="suit" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ff7567"/>
+      <stop offset=".52" stop-color="#d83c37"/>
+      <stop offset="1" stop-color="#8d211f"/>
+    </linearGradient>
+    <linearGradient id="ski" x1="0" x2="1">
+      <stop offset="0" stop-color="#173b46"/>
+      <stop offset="1" stop-color="#4a7f8d"/>
+    </linearGradient>
+  </defs>
+  <path d="M22 94 C37 101 60 101 75 94" fill="none" stroke="url(#ski)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M13 104 C31 109 63 109 85 103" fill="none" stroke="#102933" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="48" cy="20" r="13" fill="#f7d9a9" stroke="#1d2423" stroke-width="4"/>
+  <path d="M35 18 C41 5 57 5 64 17 C56 14 45 14 35 18Z" fill="#19445d"/>
+  <path d="M34 37 L62 37 L69 67 C64 77 54 82 43 79 C33 76 27 67 28 57Z" fill="url(#suit)" stroke="#1d2423" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M32 44 L16 65" fill="none" stroke="#1d2423" stroke-width="6" stroke-linecap="round"/>
+  <path d="M64 44 L82 64" fill="none" stroke="#1d2423" stroke-width="6" stroke-linecap="round"/>
+  <path d="M38 75 L31 96" fill="none" stroke="#1d2423" stroke-width="6" stroke-linecap="round"/>
+  <path d="M58 75 L67 96" fill="none" stroke="#1d2423" stroke-width="6" stroke-linecap="round"/>
+  <path d="M18 57 L8 98" fill="none" stroke="#314d55" stroke-width="3" stroke-linecap="round"/>
+  <path d="M78 57 L90 98" fill="none" stroke="#314d55" stroke-width="3" stroke-linecap="round"/>
+  <path d="M41 41 L56 41 L58 62 L39 62Z" fill="#ffffff" opacity=".32"/>
+</svg>

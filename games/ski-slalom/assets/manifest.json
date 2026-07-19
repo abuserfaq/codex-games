@@ -1,0 +1,8 @@
+{
+  "game": "Ski Slalom",
+  "assets": [
+    "snow-field.svg",
+    "skier.svg",
+    "gate-flag.svg"
+  ]
+}

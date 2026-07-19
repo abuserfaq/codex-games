@@ -5676,3 +5676,138 @@ canvas.play-panel {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.ski-wrap {
+  position: relative;
+  width: min(100%, calc((100svh - 392px) * 1.49), 560px);
+  aspect-ratio: 1.49 / 1;
+  margin: 0 auto;
+  overflow: hidden;
+  border-color: #27434a;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(130, 181, 192, 0.08)),
+    url("./games/ski-slalom/assets/snow-field.svg") center / cover no-repeat,
+    #eaf6f7;
+  box-shadow:
+    0 16px 34px rgba(42, 86, 96, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.78);
+  touch-action: none;
+}
+
+.ski-slope {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.ski-slope::before {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.42), transparent 18%, transparent 82%, rgba(91, 146, 158, 0.16)),
+    radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.9), transparent 32%);
+  content: "";
+  pointer-events: none;
+}
+
+.ski-track {
+  position: absolute;
+  left: 50%;
+  bottom: 2%;
+  width: 44%;
+  height: 74%;
+  border-radius: 50% 50% 0 0;
+  background:
+    linear-gradient(90deg, transparent 0 24%, rgba(102, 159, 170, 0.22) 25% 27%, transparent 28% 72%, rgba(102, 159, 170, 0.22) 73% 75%, transparent 76%),
+    linear-gradient(180deg, transparent, rgba(118, 165, 174, 0.14));
+  opacity: 0.58;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.ski-gate {
+  position: absolute;
+  z-index: 3;
+  width: 7.4%;
+  aspect-ratio: 54 / 132;
+  background: url("./games/ski-slalom/assets/gate-flag.svg") center / contain no-repeat;
+  filter: drop-shadow(0 7px 6px rgba(38, 70, 78, 0.24));
+  transform-origin: 50% 92%;
+  will-change: left, top, transform, opacity;
+}
+
+.ski-gate.near {
+  filter:
+    drop-shadow(0 8px 7px rgba(38, 70, 78, 0.34))
+    saturate(1.08);
+}
+
+.ski-skier {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  top: 72%;
+  width: 11.6%;
+  aspect-ratio: 96 / 112;
+  background: url("./games/ski-slalom/assets/skier.svg") center / contain no-repeat;
+  filter: drop-shadow(0 10px 8px rgba(48, 75, 78, 0.3));
+  transform-origin: 50% 76%;
+  will-change: left, transform;
+}
+
+.ski-shadow {
+  position: absolute;
+  z-index: 4;
+  top: 80%;
+  left: 50%;
+  width: 15%;
+  height: 5%;
+  border-radius: 50%;
+  background: rgba(78, 123, 132, 0.22);
+  filter: blur(2px);
+  will-change: left, transform;
+}
+
+.ski-hud,
+.ski-controls {
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.ski-hud #message {
+  flex: 1 1 230px;
+  text-align: center;
+}
+
+.ski-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ski-controls .hint {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .ski-wrap {
+    width: min(100%, calc((100svh - 430px) * 1.49), 340px);
+  }
+
+  .ski-hud {
+    align-items: center;
+    flex-direction: row;
+    gap: 7px 10px;
+  }
+
+  .ski-hud .button {
+    margin-left: auto;
+    padding: 6px 10px;
+  }
+
+  .ski-controls {
+    gap: 7px;
+  }
+}

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Night Driver</title>
+  <title>Ski Slalom</title>
   <link rel="stylesheet" href="../../styles.css">
 </head>
 <body>
@@ -72,75 +72,86 @@
         <a href="../hunt-the-wumpus/index.html">Hunt the Wumpus</a>
         <a href="../sky-joust/index.html">Sky Joust</a>
         <a href="../tapper-counter/index.html">Tapper Counter</a>
-        <a href="./index.html" aria-current="page">Night Driver</a>
+        <a href="../night-driver/index.html">Night Driver</a>
         <a href="../donkey-climb/index.html">Donkey Climb</a>
-        <a href="../ski-slalom/index.html">Ski Slalom</a>
+        <a href="./index.html" aria-current="page">Ski Slalom</a>
       </div>
     </nav>
 
     <header class="game-header">
-      <h1>Night Driver</h1>
-      <p>Hold the wheel through glowing roadside gates and finish the midnight run.</p>
+      <h1>Ski Slalom</h1>
+      <p>Carve between paired flags, keep the line clean, and finish the short alpine run.</p>
     </header>
 
-    <section class="statusbar night-hud" role="status">
-      <span>Distance: <strong id="distance">0</strong>m</span>
-      <span>Lives: <strong id="lives">3</strong></span>
+    <section class="statusbar ski-hud" role="status">
+      <span>Gates: <strong id="gates">0</strong>/12</span>
+      <span>Misses: <strong id="misses">0</strong>/3</span>
       <span>Speed: <strong id="speed">1</strong></span>
       <button class="button" id="resetButton" type="button">Reset</button>
     </section>
 
-    <section class="play-panel night-wrap" aria-label="Night Driver road">
-      <div class="night-road" id="road">
-        <div class="night-horizon"></div>
-        <div class="night-post left" id="leftPost"></div>
-        <div class="night-post right" id="rightPost"></div>
-        <div class="night-car" id="car"></div>
-        <div class="night-wheel" id="wheel" aria-hidden="true"></div>
+    <section class="play-panel ski-wrap" aria-label="Ski Slalom slope">
+      <div class="ski-slope" id="slope">
+        <div class="ski-track"></div>
+        <div class="ski-gate left" id="leftGate"></div>
+        <div class="ski-gate right" id="rightGate"></div>
+        <div class="ski-shadow" id="shadow"></div>
+        <div class="ski-skier" id="skier"></div>
       </div>
-      <img class="asset-preload" src="./assets/road-glow.svg" alt="">
-      <img class="asset-preload" src="./assets/road-post.svg" alt="">
-      <img class="asset-preload" src="./assets/dash-wheel.svg" alt="">
+      <img class="asset-preload" src="./assets/snow-field.svg" alt="">
+      <img class="asset-preload" src="./assets/skier.svg" alt="">
+      <img class="asset-preload" src="./assets/gate-flag.svg" alt="">
     </section>
 
-    <section class="statusbar night-controls" aria-label="Night Driver controls">
+    <section class="statusbar ski-controls" aria-label="Ski Slalom controls">
       <button class="button" id="leftButton" type="button">Left</button>
       <button class="button" id="rightButton" type="button">Right</button>
-      <span class="hint" id="message">Arrow keys or buttons steer. Stay centered between the reflector posts.</span>
+      <span class="hint" id="message">Arrow keys or buttons steer. Pass between every flag pair.</span>
     </section>
   </main>
 
   <script>
-    const carEl = document.querySelector("#car");
-    const wheelEl = document.querySelector("#wheel");
-    const leftPostEl = document.querySelector("#leftPost");
-    const rightPostEl = document.querySelector("#rightPost");
-    const distanceEl = document.querySelector("#distance");
-    const livesEl = document.querySelector("#lives");
+    const skierEl = document.querySelector("#skier");
+    const shadowEl = document.querySelector("#shadow");
+    const leftGateEl = document.querySelector("#leftGate");
+    const rightGateEl = document.querySelector("#rightGate");
+    const gatesEl = document.querySelector("#gates");
+    const missesEl = document.querySelector("#misses");
     const speedEl = document.querySelector("#speed");
     const messageEl = document.querySelector("#message");
     const resetButton = document.querySelector("#resetButton");
     const leftButton = document.querySelector("#leftButton");
     const rightButton = document.querySelector("#rightButton");
 
-    const road = { min: -1, max: 1, finish: 500 };
-    const gateSeeds = [-0.36, 0.18, 0.42, -0.2, -0.48, 0.08, 0.34, -0.12];
+    const course = {
+      min: -1,
+      max: 1,
+      finish: 12,
+      centers: [-0.42, 0.28, -0.18, 0.48, -0.52, 0.08, 0.38, -0.3]
+    };
     let state;
     let keys = { left: false, right: false };
     let rafId = 0;
     let lastTime = 0;
 
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function currentGateCenter() {
+      return course.centers[state.gateIndex % course.centers.length];
+    }
+
     function reset() {
       state = {
         phase: "playing",
-        carX: 0,
-        steer: 0,
-        distance: 0,
-        lives: 3,
-        speed: 1,
+        skierX: 0,
+        carve: 0,
         gateIndex: 0,
-        gateDepth: 0.12,
-        message: "The first gate is lit. Keep the wheel calm."
+        gateY: 0.08,
+        speed: 1,
+        misses: 0,
+        message: "First flags are set. Carve a quiet line through the center."
       };
       lastTime = 0;
       render();
@@ -158,86 +169,78 @@
       lastTime = now;
       step(dt);
       render();
-      if (state.phase === "playing") {
-        rafId = requestAnimationFrame(tick);
-      }
+      if (state.phase === "playing") rafId = requestAnimationFrame(tick);
     }
 
-    function currentGateCenter() {
-      return gateSeeds[state.gateIndex % gateSeeds.length];
-    }
-
-    function clamp(value, min, max) {
-      return Math.max(min, Math.min(max, value));
-    }
-
-    function passGate() {
+    function scoreGate() {
       const center = currentGateCenter();
-      const safeWidth = 0.58;
-      const delta = Math.abs(state.carX - center);
-      if (delta > safeWidth) {
-        state.lives -= 1;
-        state.message = "Reflector clipped. Correct the line before the next gate.";
-        state.carX = clamp(state.carX + (center - state.carX) * 0.38, road.min, road.max);
-        if (state.lives <= 0) {
-          state.phase = "ended";
-          state.message = "The road wins this run. Reset for another night drive.";
-        }
+      const safeWidth = 0.44;
+      const clean = Math.abs(state.skierX - center) <= safeWidth;
+      if (clean) {
+        state.message = "Clean gate. Keep the skis light for the next pair.";
       } else {
-        state.distance += 50;
-        state.speed = Math.min(5, 1 + Math.floor(state.distance / 110));
-        state.message = state.distance >= road.finish
-          ? "Finish lights ahead. The midnight run is clean."
-          : "Clean gate. Hold the rhythm into the next pair.";
-        if (state.distance >= road.finish) {
-          state.phase = "won";
+        state.misses += 1;
+        state.message = "Flag missed. Lean back toward the marked corridor.";
+        state.skierX = clamp(state.skierX + (center - state.skierX) * 0.32, course.min, course.max);
+        if (state.misses >= 3) {
+          state.phase = "ended";
+          state.message = "Too many missed gates. Reset for another run.";
         }
       }
-      state.gateIndex += 1;
-      state.gateDepth = 0.12;
+
+      if (state.phase === "playing") {
+        state.gateIndex += 1;
+        state.speed = Math.min(5, 1 + Math.floor(state.gateIndex / 3));
+        state.gateY = 0.08;
+        if (state.gateIndex >= course.finish) {
+          state.phase = "won";
+          state.message = "Finish line crossed with the final spray of snow.";
+        }
+      }
     }
 
     function step(dt) {
       if (state.phase !== "playing") return;
       const input = (keys.left ? -1 : 0) + (keys.right ? 1 : 0);
-      state.steer += (input - state.steer) * Math.min(1, dt * 7);
-      state.carX = clamp(state.carX + state.steer * dt * (0.72 + state.speed * 0.1), road.min, road.max);
-      state.gateDepth += dt * (0.58 + state.speed * 0.12);
-      if (state.gateDepth >= 1) passGate();
+      state.carve += (input - state.carve) * Math.min(1, dt * 7);
+      state.skierX = clamp(state.skierX + state.carve * dt * (0.78 + state.speed * 0.12), course.min, course.max);
+      state.gateY += dt * (0.52 + state.speed * 0.1);
+      if (state.gateY >= 1) scoreGate();
     }
 
-    function postStyle(side) {
+    function gateStyle(side) {
       const center = currentGateCenter();
-      const width = 0.66;
+      const width = 0.54;
       const sideOffset = side === "left" ? -width : width;
-      const depth = state.gateDepth;
-      const perspective = depth * depth;
-      const x = 50 + (center + sideOffset) * (13 + perspective * 34);
-      const y = 35 + perspective * 58;
-      const scale = 0.18 + perspective * 1.18;
+      const depth = state.gateY;
+      const slopeX = center + sideOffset + (depth - 0.5) * 0.08;
+      const x = 50 + slopeX * 29;
+      const y = 12 + depth * 78;
+      const scale = 0.48 + depth * 0.68;
       return { x, y, scale };
     }
 
-    function applyPost(element, side) {
-      const p = postStyle(side);
+    function applyGate(element, side) {
+      const p = gateStyle(side);
       element.style.left = `${p.x}%`;
       element.style.top = `${p.y}%`;
-      element.style.transform = `translate(-50%, -50%) scale(${p.scale})`;
-      element.style.opacity = `${0.4 + state.gateDepth * 0.6}`;
+      element.style.transform = `translate(-50%, -50%) scale(${p.scale}) ${side === "right" ? "scaleX(-1)" : ""}`;
+      element.style.opacity = `${0.44 + state.gateY * 0.56}`;
+      element.classList.toggle("near", state.gateY > 0.72);
     }
 
     function render() {
-      distanceEl.textContent = state.distance;
-      livesEl.textContent = state.lives;
+      gatesEl.textContent = state.gateIndex;
+      missesEl.textContent = state.misses;
       speedEl.textContent = state.speed;
       messageEl.textContent = state.message;
-      carEl.style.left = `${50 + state.carX * 26}%`;
-      carEl.style.transform = `translateX(-50%) rotate(${state.steer * 6}deg)`;
-      wheelEl.style.transform = `translateX(-50%) rotate(${state.steer * 24}deg)`;
-      applyPost(leftPostEl, "left");
-      applyPost(rightPostEl, "right");
-      leftPostEl.classList.toggle("danger", state.gateDepth > 0.76);
-      rightPostEl.classList.toggle("danger", state.gateDepth > 0.76);
+      const x = 50 + state.skierX * 29;
+      skierEl.style.left = `${x}%`;
+      skierEl.style.transform = `translate(-50%, -50%) rotate(${state.carve * 13}deg)`;
+      shadowEl.style.left = `${x}%`;
+      shadowEl.style.transform = `translate(-50%, -50%) scaleX(${1 + Math.abs(state.carve) * 0.18})`;
+      applyGate(leftGateEl, "left");
+      applyGate(rightGateEl, "right");
     }
 
     function press(direction, value) {
@@ -273,20 +276,24 @@
 
     reset();
 
-    window.__nightDriverTest = {
+    window.__skiSlalomTest = {
       reset,
       step,
       press,
       state: () => JSON.parse(JSON.stringify(state)),
-      setCarX(value) {
-        state.carX = clamp(value, road.min, road.max);
+      setSkierX(value) {
+        state.skierX = clamp(value, course.min, course.max);
         render();
       },
       forceGate(depth = 0.99) {
-        state.gateDepth = depth;
+        state.gateY = depth;
         step(0.04);
         render();
         return JSON.parse(JSON.stringify(state));
+      },
+      stop() {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = 0;
       }
     };
   </script>
