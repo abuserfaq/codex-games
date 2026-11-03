@@ -1,0 +1,4 @@
+{
+  "game": "Bomb Squad",
+  "assets": ["arena-felt.svg", "bomb-orb.svg", "blast-star.svg"]
+}

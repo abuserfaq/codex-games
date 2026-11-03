@@ -12,6 +12,20 @@
   --shadow: 0 14px 34px rgba(20, 35, 28, 0.1);
 }
 
+/* Bomb Squad: compact copper-and-emerald demolition arena. */
+.bomb-wrap { width:min(100%,calc((100svh - 392px)*1.22),560px); aspect-ratio:1.22/1; margin:0 auto; overflow:hidden; border-color:#173a35; background:url("./games/bomb-squad/assets/arena-felt.svg") center/cover no-repeat,#0d4037; box-shadow:0 16px 34px rgba(6,38,35,.26),inset 0 0 0 1px rgba(255,223,142,.24); }
+.bomb-board { display:grid; width:100%; height:100%; grid-template-columns:repeat(11,minmax(0,1fr)); grid-template-rows:repeat(9,minmax(0,1fr)); gap:3px; padding:clamp(9px,2svh,15px); }
+.bomb-cell { position:relative; min-width:0; border:1px solid rgba(245,216,143,.16); border-radius:5px; background:rgba(3,28,27,.23); cursor:pointer; }
+.bomb-cell.wall { border-color:#624728; background:linear-gradient(135deg,#5d4126 0 48%,#392617 49% 100%); box-shadow:inset 0 0 0 2px rgba(247,205,119,.13); }
+.bomb-cell.crate { border-color:#86572c; background:repeating-linear-gradient(90deg,rgba(255,214,132,.18) 0 2px,transparent 2px 12px),linear-gradient(145deg,#b47638,#70421f); box-shadow:inset 0 0 0 2px rgba(45,24,11,.25); }
+.bomb-cell.key::after,.bomb-cell.exit::after,.bomb-cell.player::after,.bomb-cell.bomb::after,.bomb-cell.blast::after { position:absolute; inset:11%; background-position:center; background-repeat:no-repeat; background-size:contain; content:""; pointer-events:none; }
+.bomb-cell.key::after { content:"◆"; display:grid; place-items:center; color:#ffe184; font-size:clamp(15px,3vw,27px); text-shadow:0 2px 0 #815420; }
+.bomb-cell.exit { background:radial-gradient(circle,#493b25 0 34%,#162f2c 35%); }.bomb-cell.exit::after { inset:24% 18%; border:2px solid #a7793a; border-radius:3px; background:linear-gradient(90deg,#4a351f 0 48%,#73522b 49%); }.bomb-cell.exit.open { box-shadow:0 0 0 2px rgba(255,222,119,.35),0 0 15px rgba(255,220,113,.42); }
+.bomb-cell.player::after { inset:16% 25% 9%; border:2px solid #0f2d2a; border-radius:50% 50% 28% 28%; background:radial-gradient(circle at 50% 23%,#ffe2ad 0 17%,#8a3329 18% 34%,transparent 35%),linear-gradient(90deg,#e1c36d 0 48%,#2e8890 49%); box-shadow:0 5px 7px rgba(0,0,0,.32); }.bomb-cell.bomb::after { background-image:url("./games/bomb-squad/assets/bomb-orb.svg"); animation:bomb-fuse .48s ease-in-out infinite alternate; }.bomb-cell.blast::after { inset:-16%; z-index:3; background-image:url("./games/bomb-squad/assets/blast-star.svg"); animation:bomb-burst .31s ease-out both; }
+@keyframes bomb-fuse { to { transform:scale(1.12); filter:drop-shadow(0 0 7px #ffd464); } } @keyframes bomb-burst { from { opacity:0; transform:scale(.3) rotate(-20deg); } 45% { opacity:1; transform:scale(1.1) rotate(7deg); } to { opacity:.76; transform:scale(.92); } }
+.bomb-hud,.bomb-controls { flex-wrap:wrap; flex-direction:row; justify-content:center; }.bomb-controls { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); }.bomb-controls .hint { grid-column:1/-1; text-align:center; }.bomb-place { background:var(--gold); border-color:#a87114; color:#281a06; }
+@media (max-width:560px) { .bomb-wrap{width:min(100%,calc((100svh - 430px)*1.22),340px)} .bomb-board{gap:2px;padding:8px}.bomb-hud{gap:7px 10px}.bomb-hud .button{margin-left:auto;padding:6px 10px}.bomb-controls{gap:6px;grid-template-columns:repeat(3,minmax(0,1fr))}.bomb-place{grid-column:2}.bomb-controls .hint{font-size:12px} }
+
 * {
   box-sizing: border-box;
 }
@@ -5810,4 +5824,18 @@ canvas.play-panel {
   .ski-controls {
     gap: 7px;
   }
+}
+
+@media (max-width: 620px) {
+  .game-shell:has(.bomb-wrap) { padding-top: 12px; }
+  .game-shell:has(.bomb-wrap) .topbar { margin-bottom: 12px; }
+  .game-shell:has(.bomb-wrap) .game-header { margin-bottom: 6px; }
+  .game-shell:has(.bomb-wrap) .game-header h1 { margin-bottom: 2px; font-size: 25px; }
+  .game-shell:has(.bomb-wrap) .game-header p { font-size: 13px; }
+  .bomb-hud { align-items: center; flex-direction: row; gap: 5px 10px; min-height: 0; padding: 6px 9px; }
+  .bomb-hud .button { margin-left: auto; padding: 5px 9px; }
+  .bomb-wrap { width: min(100%, calc((100svh - 334px) * 1.22), 292px); }
+  .bomb-controls { align-items: center; flex-direction: row; padding: 6px 8px; }
+  .bomb-controls .button { padding: 6px 8px; }
+  .bomb-controls .hint { display: none; }
 }

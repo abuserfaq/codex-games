@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bomb Squad</title>
+  <link rel="icon" href="./assets/bomb-orb.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <main class="shell game-shell">
+    <nav class="topbar" aria-label="Game navigation">
+      <a class="brand" href="../../index.html">Каталог игр</a>
+      <div class="menu">
+        <a href="../tic-tac-toe.html">Крестики-нолики</a>
+        <a href="../snake/index.html">Змейка</a>
+        <a href="../pong/index.html">Pong</a>
+        <a href="../breakout/index.html">Breakout</a>
+        <a href="../minesweeper/index.html">Сапер</a>
+        <a href="../space-invaders/index.html">Space Invaders</a>
+        <a href="../15-puzzle/index.html">15 Puzzle</a>
+        <a href="../memory-match/index.html">Memory Match</a>
+        <a href="../simon/index.html">Simon</a>
+        <a href="../frogger/index.html">Frogger</a>
+        <a href="../hangman/index.html">Hangman</a>
+        <a href="../asteroids/index.html">Asteroids</a>
+        <a href="../tetris/index.html">Tetris</a>
+        <a href="../whac-a-mole/index.html">Whac-A-Mole</a>
+        <a href="../lunar-lander/index.html">Lunar Lander</a>
+        <a href="../connect-four/index.html">Connect Four</a>
+        <a href="../centipede/index.html">Centipede</a>
+        <a href="../kaboom/index.html">Kaboom!</a>
+        <a href="../pac-man/index.html">Pac-Man</a>
+        <a href="../missile-command/index.html">Missile Command</a>
+        <a href="../sokoban/index.html">Sokoban</a>
+        <a href="../reversi/index.html">Reversi</a>
+        <a href="../qix/index.html">Qix Claim</a>
+        <a href="../lights-out/index.html">Lights Out</a>
+        <a href="../mastermind/index.html">Mastermind</a>
+        <a href="../pipe-dream/index.html">Pipe Dream</a>
+        <a href="../dots-and-boxes/index.html">Dots and Boxes</a>
+        <a href="../same-game/index.html">SameGame</a>
+        <a href="../nim-sticks/index.html">Nim Sticks</a>
+        <a href="../peg-solitaire/index.html">Peg Solitaire</a>
+        <a href="../battleship-radar/index.html">Battleship Radar</a>
+        <a href="../hanoi/index.html">Tower of Hanoi</a>
+        <a href="../mancala/index.html">Mancala</a>
+        <a href="../blackjack-21/index.html">Blackjack 21</a>
+        <a href="../yahtzee/index.html">Yahtzee</a>
+        <a href="../nonogram/index.html">Nonogram</a>
+        <a href="../word-search/index.html">Word Search</a>
+        <a href="../rush-hour/index.html">Rush Hour</a>
+        <a href="../gem-swap/index.html">Gem Swap</a>
+        <a href="../pocket-pinball/index.html">Pocket Pinball</a>
+        <a href="../marble-maze/index.html">Marble Maze</a>
+        <a href="../shut-the-box/index.html">Shut the Box</a>
+        <a href="../checkers/index.html">Checkers</a>
+        <a href="../domino-trail/index.html">Domino Trail</a>
+        <a href="../cannon-duel/index.html">Cannon Duel</a>
+        <a href="../royal-ur/index.html">Royal Game of Ur</a>
+        <a href="../solitaire/index.html">Klondike Solitaire</a>
+        <a href="../mahjong-solitaire/index.html">Mahjong Solitaire</a>
+        <a href="../sea-wolf/index.html">Sea Wolf</a>
+        <a href="../mini-golf/index.html">Mini Golf</a>
+        <a href="../color-flood/index.html">Color Flood</a>
+        <a href="../nine-mens-morris/index.html">Nine Men's Morris</a>
+        <a href="../twenty-forty-eight/index.html">2048</a>
+        <a href="../pyramid-hopper/index.html">Pyramid Hopper</a>
+        <a href="../fox-and-geese/index.html">Fox and Geese</a>
+        <a href="../boulder-dash/index.html">Boulder Dash Pocket</a>
+        <a href="../hex/index.html">Hex</a>
+        <a href="../light-cycles/index.html">Light Cycles</a>
+        <a href="../hunt-the-wumpus/index.html">Hunt the Wumpus</a>
+        <a href="../sky-joust/index.html">Sky Joust</a>
+        <a href="../tapper-counter/index.html">Tapper Counter</a>
+        <a href="../night-driver/index.html">Night Driver</a>
+        <a href="../donkey-climb/index.html">Donkey Climb</a>
+        <a href="../ski-slalom/index.html">Ski Slalom</a>
+        <a href="./index.html" aria-current="page">Bomb Squad</a>
+      </div>
+    </nav>
+    <header class="game-header">
+      <h1>Bomb Squad</h1>
+      <p>Plant one precise charge, crack the crates, take the key, and reach the brass hatch.</p>
+    </header>
+    <section class="statusbar bomb-hud" role="status">
+      <span>Crates: <strong id="crates">0</strong></span><span>Keys: <strong id="keys">0</strong>/1</span><span>Lives: <strong id="lives">3</strong></span>
+      <button class="button" id="resetButton" type="button">Reset</button>
+    </section>
+    <section class="play-panel bomb-wrap" aria-label="Bomb Squad arena">
+      <div class="bomb-board" id="board" role="grid" aria-label="Bomb Squad eleven by nine arena"></div>
+      <img class="asset-preload" src="./assets/arena-felt.svg" alt=""><img class="asset-preload" src="./assets/bomb-orb.svg" alt=""><img class="asset-preload" src="./assets/blast-star.svg" alt="">
+    </section>
+    <section class="statusbar bomb-controls" aria-label="Bomb Squad controls">
+      <button class="button" data-move="up" type="button">Up</button><button class="button" data-move="left" type="button">Left</button><button class="button bomb-place" id="bombButton" type="button">Plant bomb</button><button class="button" data-move="right" type="button">Right</button><button class="button" data-move="down" type="button">Down</button>
+      <span class="hint" id="message">Arrows/WASD move. Space plants a charge; step away before it flashes.</span>
+    </section>
+  </main>
+  <script>
+    const boardEl = document.querySelector('#board'), cratesEl = document.querySelector('#crates'), keysEl = document.querySelector('#keys'), livesEl = document.querySelector('#lives'), messageEl = document.querySelector('#message');
+    const width = 11, height = 9;
+    const layout = ['###########','#P.C.C.C.E#','#...#.#...#','#C.C.C.C.C#','#.#.#.#.#.#','#C.C.K.C.C#','#...#.#...#','#C.C.C.C.C#','###########'];
+    const vectors = {up:[0,-1], down:[0,1], left:[-1,0], right:[1,0]};
+    let state, timer;
+    function reset(){ clearTimeout(timer); const grid=layout.map(r=>r.split('')); let player={x:1,y:1}, crates=0; grid.forEach((r,y)=>r.forEach((v,x)=>{if(v==='P'){player={x,y};r[x]=' ';} if(v==='C')crates++;})); state={grid,player,crates,keys:0,lives:3,bomb:null,blast:[],phase:'playing',message:'Crack crates, reach the key, then unlock the hatch.'}; render(); }
+    function at(x,y){return state.grid[y]?.[x] ?? '#';}
+    function set(x,y,v){state.grid[y][x]=v;}
+    function move(direction){ if(state.phase!=='playing')return false; const [dx,dy]=vectors[direction]||[]; if(dx===undefined)return false; const x=state.player.x+dx,y=state.player.y+dy,cell=at(x,y); if(cell==='#'||cell==='C'){state.message=cell==='C'?'A crate needs a charge.':'Copper wall.';render();return false;} if(cell==='E'&&state.keys<1){state.message='The hatch is locked; reach the key first.';render();return false;} state.player={x,y}; if(cell==='K'){state.keys=1;set(x,y,' ');state.message='Key secured. Head for the brass hatch.';} if(cell==='E'){state.phase='won';state.message='Arena cleared — key in hand, hatch open.';} render();return true; }
+    function plant(){if(state.phase!=='playing'||state.bomb){state.message=state.bomb?'Only one charge at a time.':'Reset to enter another arena.';render();return false;} state.bomb={...state.player};state.message='Fuse lit — move two tiles away.';timer=setTimeout(detonate,850);render();return true;}
+    function detonate(){if(!state.bomb)return; const {x,y}=state.bomb; state.bomb=null; const blast=[[x,y]]; for(const [dx,dy] of Object.values(vectors)){for(let n=1;n<=2;n++){const nx=x+dx*n,ny=y+dy*n,cell=at(nx,ny);if(cell==='#')break;blast.push([nx,ny]);if(cell==='C'){set(nx,ny,' ');state.crates--;break;}}} state.blast=blast; const hurt=blast.some(([bx,by])=>bx===state.player.x&&by===state.player.y);if(hurt){state.lives--;state.message=state.lives?'Too close! Find clear floor.':'The squad is out of helmets. Reset the arena.';if(!state.lives)state.phase='lost';}else state.message=state.keys?'Hatch is ready.':'Good blast. Keep hunting the hidden key.'; render(); setTimeout(()=>{state.blast=[];render();},300);}
+    function cellClass(v,x,y){if(state.player.x===x&&state.player.y===y)return 'player';if(state.blast.some(([bx,by])=>bx===x&&by===y))return 'blast';if(state.bomb?.x===x&&state.bomb?.y===y)return 'bomb';return ({'#':'wall','C':'crate','K':'key','E':state.keys?'exit open':'exit'})[v]||'floor';}
+    function label(v,x,y){const n={P:'squad runner','#':'wall',C:'crate',K:'key',E:state.keys?'open hatch':'locked hatch',' ':'floor'}[v]||'floor';return `${n}, row ${y+1}, column ${x+1}`;}
+    function render(){boardEl.innerHTML='';for(let y=0;y<height;y++)for(let x=0;x<width;x++){const v=at(x,y),el=document.createElement('button');el.type='button';el.role='gridcell';el.className='bomb-cell '+cellClass(v,x,y);el.setAttribute('aria-label',label(state.player.x===x&&state.player.y===y?'P':v,x,y));el.addEventListener('click',()=>{const dx=x-state.player.x,dy=y-state.player.y;const d=Object.entries(vectors).find(([,q])=>q[0]===dx&&q[1]===dy);if(d)move(d[0]);});boardEl.append(el);}cratesEl.textContent=state.crates;keysEl.textContent=state.keys;livesEl.textContent=state.lives;messageEl.textContent=state.message;document.querySelector('#bombButton').disabled=!!state.bomb||state.phase!=='playing';}
+    document.querySelectorAll('[data-move]').forEach(b=>b.addEventListener('click',()=>move(b.dataset.move)));document.querySelector('#bombButton').addEventListener('click',plant);document.querySelector('#resetButton').addEventListener('click',reset);window.addEventListener('keydown',e=>{const d={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',W:'up',a:'left',A:'left',s:'down',S:'down',d:'right',D:'right'}[e.key];if(d){e.preventDefault();move(d);}if(e.code==='Space'){e.preventDefault();plant();}});
+    window.__bombSquadTest={reset,move,plant,detonate,state:()=>JSON.parse(JSON.stringify(state))};reset();
+  </script>
+</body>
+</html>

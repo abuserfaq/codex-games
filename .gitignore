@@ -1,3 +1,5 @@
 .chrome-smoke-profile/
 .edge-smoke-profile/
 _qa/
+.playwright-cli/
+output/playwright/

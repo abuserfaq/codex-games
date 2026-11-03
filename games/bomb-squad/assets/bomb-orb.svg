@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Bomb">
+  <defs><radialGradient id="b" cx="35%" cy="27%"><stop stop-color="#60746f"/><stop offset=".46" stop-color="#273b3a"/><stop offset="1" stop-color="#091919"/></radialGradient></defs>
+  <circle cx="50" cy="57" r="34" fill="url(#b)" stroke="#061111" stroke-width="5"/><path d="M52 24 64 9 78 13" fill="none" stroke="#c58b36" stroke-width="7" stroke-linecap="round"/><circle cx="80" cy="12" r="6" fill="#f6da76"/>
+</svg>
