@@ -12,6 +12,15 @@
   --shadow: 0 14px 34px rgba(20, 35, 28, 0.1);
 }
 
+/* Knight's Tour: ivory-on-teal chess puzzle, sized for one quiet screen. */
+.knight-wrap { width:min(100%,calc((100svh - 390px)*1),520px); aspect-ratio:1; margin:0 auto; overflow:hidden; border-color:#264f57; background:url("./games/knights-tour/assets/chess-cloth.svg") center/cover,#0d2c34; box-shadow:0 18px 35px rgba(8,41,48,.24),inset 0 0 0 1px rgba(255,235,176,.24); }
+.knight-board { display:grid; width:100%; height:100%; grid-template-columns:repeat(5,1fr); grid-template-rows:repeat(5,1fr); gap:5px; padding:clamp(12px,3svh,22px); }
+.knight-cell { position:relative; min-width:0; border:1px solid rgba(255,239,188,.28); border-radius:7px; cursor:pointer; overflow:hidden; transition:transform .16s ease,filter .16s ease,box-shadow .16s ease; }
+.knight-cell.light { background:linear-gradient(135deg,#f7dfa1,#c9994b); }.knight-cell.dark { background:linear-gradient(135deg,#39777a,#16464e); }.knight-cell.visited { filter:saturate(.78) brightness(.83); }.knight-cell.visited::before { content:""; position:absolute; inset:31%; border:2px solid rgba(255,246,205,.58); border-radius:50%; }.knight-cell.legal { box-shadow:inset 0 0 0 4px #fff2a5,0 0 19px rgba(255,220,110,.8); animation:knight-pulse .75s ease-in-out infinite alternate; }.knight-cell.knight::after { content:""; position:absolute; z-index:2; inset:3%; background:url("./games/knights-tour/assets/knight-ivory.svg") center/contain no-repeat; filter:drop-shadow(0 7px 5px rgba(29,35,28,.42)); animation:knight-arrive .25s ease-out; }.knight-cell.sealed::after { background-image:url("./games/knights-tour/assets/star-seal.svg"); opacity:.65; }.knight-cell.knight.sealed::after { background-image:url("./games/knights-tour/assets/knight-ivory.svg"); opacity:1; }.knight-cell:hover,.knight-cell:focus-visible { outline:2px solid #fff0a8; outline-offset:2px; transform:translateY(-2px); }
+@keyframes knight-pulse { to { filter:brightness(1.15); transform:scale(.97); } } @keyframes knight-arrive { from { transform:scale(.45) rotate(-10deg); opacity:0; } to { transform:scale(1); opacity:1; } }
+.knight-hud,.knight-controls { flex-wrap:wrap; flex-direction:row; justify-content:center; }.knight-controls .hint { flex:1 1 260px; text-align:center; }
+@media (max-width:560px) { .knight-wrap{width:min(100%,calc((100svh - 400px)*1),324px)}.knight-board{gap:3px;padding:10px}.knight-hud{gap:7px 10px}.knight-hud .button{margin-left:auto;padding:6px 10px}.knight-controls{gap:7px}.knight-controls .hint{font-size:12px} }
+
 /* Bomb Squad: compact copper-and-emerald demolition arena. */
 .bomb-wrap { width:min(100%,calc((100svh - 392px)*1.22),560px); aspect-ratio:1.22/1; margin:0 auto; overflow:hidden; border-color:#173a35; background:url("./games/bomb-squad/assets/arena-felt.svg") center/cover no-repeat,#0d4037; box-shadow:0 16px 34px rgba(6,38,35,.26),inset 0 0 0 1px rgba(255,223,142,.24); }
 .bomb-board { display:grid; width:100%; height:100%; grid-template-columns:repeat(11,minmax(0,1fr)); grid-template-rows:repeat(9,minmax(0,1fr)); gap:3px; padding:clamp(9px,2svh,15px); }

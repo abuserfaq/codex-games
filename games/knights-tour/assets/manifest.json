@@ -1,0 +1,4 @@
+{
+  "game": "Knight's Tour",
+  "assets": ["chess-cloth.svg", "knight-ivory.svg", "star-seal.svg"]
+}
