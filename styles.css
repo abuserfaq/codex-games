@@ -683,6 +683,94 @@ canvas.play-panel {
   }
 }
 
+/* Klotski Escape */
+.klotski-wrap {
+  width: min(100%, calc((100svh - 390px) * .8), 360px);
+  aspect-ratio: 4 / 5;
+  margin: 0 auto;
+  overflow: hidden;
+  border-color: #5a371f;
+  background: url("./games/klotski-escape/assets/jade-tray.svg") center / cover no-repeat, #113d3b;
+  box-shadow: 0 16px 34px rgba(20, 47, 43, .26), inset 0 0 0 1px rgba(255, 231, 164, .3);
+  touch-action: manipulation;
+}
+
+.klotski-board {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 5px;
+  padding: 30px 27px 39px;
+}
+
+.klotski-piece {
+  min-width: 0;
+  min-height: 0;
+  border: 2px solid #6d492b;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 130ms ease, filter 130ms ease, box-shadow 130ms ease;
+}
+
+.klotski-piece.tile {
+  background: url("./games/klotski-escape/assets/ivory-tile.svg") center / 100% 100% no-repeat;
+  box-shadow: 0 6px 7px rgba(0, 20, 18, .28);
+}
+
+.klotski-piece.seal {
+  border-color: #ffe4a3;
+  background: url("./games/klotski-escape/assets/emperor-seal.svg") center / 100% 100% no-repeat;
+  box-shadow: 0 7px 9px rgba(51, 9, 10, .38);
+}
+
+.klotski-piece:hover,
+.klotski-piece:focus-visible,
+.klotski-piece.selected {
+  outline: 3px solid #ffe19a;
+  outline-offset: 2px;
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+}
+
+.klotski-piece.escaped { animation: klotski-escape 720ms ease-out both; }
+
+@keyframes klotski-escape {
+  0% { transform: translateY(0); }
+  55% { transform: translateY(38%); }
+  100% { opacity: .18; transform: translateY(72%); }
+}
+
+.klotski-hud,
+.klotski-controls {
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.klotski-controls {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.klotski-controls .hint { grid-column: 1 / -1; text-align: center; }
+
+@media (max-width: 560px) {
+  .game-shell:has(.klotski-wrap) { padding-top: 12px; }
+  .game-shell:has(.klotski-wrap) .topbar { margin-bottom: 12px; }
+  .game-shell:has(.klotski-wrap) .game-header { margin-bottom: 5px; }
+  .game-shell:has(.klotski-wrap) .game-header h1 { margin-bottom: 2px; font-size: 25px; }
+  .game-shell:has(.klotski-wrap) .game-header p { font-size: 13px; }
+  .klotski-wrap { width: min(100%, calc((100svh - 350px) * .8), 286px); }
+  .klotski-board { gap: 3px; padding: 24px 21px 31px; }
+  .klotski-hud { gap: 5px 9px; padding: 6px 9px; }
+  .klotski-hud .button { margin-left: auto; padding: 5px 9px; }
+  .klotski-controls { gap: 5px; padding: 6px 8px; }
+  .klotski-controls .button { padding: 6px 4px; }
+  .klotski-controls .hint { display: none; }
+}
+
 
 
 .sokoban-wrap {
