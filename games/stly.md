@@ -10,8 +10,9 @@ The shared source of truth is `../stly.md`; this folder guide mirrors the requir
 
 ## Navigation style
 
-- The brand link always returns to the catalog `index.html` using the shortest relative path for the current folder. Klotski Escape is catalog game 67 and belongs last in the common game-link order.
-- Every game page uses the same game-link order as the catalog: Крестики-нолики, Змейка, Pong, Breakout, Сапер, Space Invaders, 15 Puzzle, Memory Match, Simon, Frogger, Hangman, Asteroids, Tetris, Whac-A-Mole, Lunar Lander, Connect Four, Centipede, Kaboom!, Pac-Man, Missile Command, Sokoban, Reversi, Qix Claim, Lights Out, Mastermind, Pipe Dream, Dots and Boxes, SameGame, Nim Sticks, Peg Solitaire, Battleship Radar, Tower of Hanoi, Mancala, Blackjack 21, Yahtzee, Nonogram, Word Search, Rush Hour, Gem Swap, Pocket Pinball, Marble Maze, Shut the Box, Checkers, Domino Trail, Cannon Duel, Royal Game of Ur, Klondike Solitaire, Mahjong Solitaire, Sea Wolf, Mini Golf, Color Flood, Nine Men's Morris, 2048, Pyramid Hopper, Fox and Geese, Boulder Dash Pocket, Hex, Light Cycles, Hunt the Wumpus, Sky Joust, Tapper Counter, Night Driver, Donkey Climb, Ski Slalom, Bomb Squad, Knight's Tour.
+- The brand link always returns to the catalog `index.html` using the shortest relative path for the current folder. Sudoku is catalog game 68 and belongs last in the common game-link order.
+- Every game page uses the same game-link order as the catalog, ending with Bomb Squad, Knight's Tour, Klotski Escape, and Sudoku. Mark only the page currently being played.
+- Menu reference: 2048, Boulder Dash Pocket, Cannon Duel, Color Flood, Domino Trail, Donkey Climb, Fox and Geese, Hex, Hunt the Wumpus, Light Cycles, Mahjong Solitaire, Mini Golf, Night Driver, Nine Men's Morris, Pyramid Hopper, Royal Game of Ur, Sea Wolf, Ski Slalom, Sky Joust, Klondike Solitaire, Tapper Counter, Bomb Squad, Knight's Tour, Klotski Escape, Sudoku.
 - Mark only the current game link with `aria-current="page"`.
 - Keep all URLs relative so local preview, repository hosting, and a later `.ru` domain use the same files.
 
@@ -53,6 +54,6 @@ The shared source of truth is `../stly.md`; this folder guide mirrors the requir
 
 ## Assets
 
-- Store game-specific assets under `games/<game>/assets` with clear names. Klotski Escape keeps its jade tray, seal, and ivory tile assets together with an asset manifest.
+- Store game-specific assets under `games/<game>/assets` with clear names. Klotski Escape keeps its jade tray, seal, and ivory tile assets together with an asset manifest; Sudoku keeps its paper grid, pencil, and rosette there too.
 - Use finished SVG or canvas art, not placeholders.
 - Keep asset references relative through `../styles.css` patterns already used by the catalog.

@@ -683,6 +683,15 @@ canvas.play-panel {
   }
 }
 
+/* Sudoku — warm paper, quiet ink, and a single precise accent. */
+.sudoku-wrap { width: min(100%, calc(100svh - 380px), 500px); aspect-ratio: 1; margin: 0 auto; padding: 9px; overflow: hidden; border-color: #4b3429; background: url("./games/sudoku/assets/paper-grid.svg") center / cover, #f2e5c9; box-shadow: 0 15px 30px rgba(66, 43, 28, .22), inset 0 0 0 1px rgba(255,255,255,.64); }
+.sudoku-board { display: grid; width: 100%; height: 100%; grid-template-columns: repeat(9, 1fr); grid-template-rows: repeat(9, 1fr); overflow: hidden; border: 3px solid #422f24; border-radius: 5px; background: rgba(255,253,245,.72); }
+.sudoku-cell { min-width: 0; border: 0; border-right: 1px solid rgba(66,47,36,.38); border-bottom: 1px solid rgba(66,47,36,.38); background: transparent; color: #b34f37; font: 700 clamp(15px, 3.4vmin, 26px) Georgia, serif; cursor: pointer; transition: background .12s ease, transform .12s ease; }
+.sudoku-cell:nth-child(3n) { border-right-width: 3px; border-right-color: #422f24; }.sudoku-cell:nth-child(9n) { border-right: 0; }.sudoku-cell:nth-child(n+19):nth-child(-n+27),.sudoku-cell:nth-child(n+46):nth-child(-n+54) { border-bottom-width: 3px; border-bottom-color: #422f24; }
+.sudoku-cell.given { color: #30231e; cursor: default; }.sudoku-cell.related { background: rgba(211,166,78,.15); }.sudoku-cell.selected { background: #f5d980; color: #8d3427; outline: 3px solid #b05a3e; outline-offset: -3px; transform: scale(.98); }.sudoku-cell:focus-visible { position: relative; z-index: 2; outline: 3px solid #1d7656; outline-offset: -3px; }
+.sudoku-hud,.sudoku-controls { flex-wrap: wrap; flex-direction: row; justify-content: center; }.sudoku-controls { display: grid; grid-template-columns: 1fr auto; }.sudoku-pad { display: grid; grid-template-columns: repeat(9, minmax(0,1fr)); gap: 5px; }.sudoku-pad .button { padding: 7px 3px; font-weight: 700; }.sudoku-controls .hint { grid-column: 1 / -1; text-align: center; }.sudoku-rosette { width: 20px; height: 20px; vertical-align: middle; }
+@media (max-width: 560px) { .game-shell:has(.sudoku-wrap) { padding-top: 12px; }.game-shell:has(.sudoku-wrap) .topbar { margin-bottom: 10px; }.game-shell:has(.sudoku-wrap) .game-header { margin-bottom: 5px; }.game-shell:has(.sudoku-wrap) .game-header h1 { margin-bottom: 2px; font-size: 25px; }.game-shell:has(.sudoku-wrap) .game-header p { font-size: 13px; }.sudoku-hud { padding: 6px 9px; gap: 5px 10px; }.sudoku-hud .button { margin-left: auto; padding: 5px 9px; }.sudoku-wrap { width: min(100%, calc(100svh - 330px), 330px); padding: 7px; }.sudoku-controls { gap: 6px; }.sudoku-pad { grid-template-columns: repeat(5, minmax(0,1fr)); }.sudoku-controls .hint { display: none; } }
+
 /* Klotski Escape */
 .klotski-wrap {
   width: min(100%, calc((100svh - 390px) * .8), 360px);

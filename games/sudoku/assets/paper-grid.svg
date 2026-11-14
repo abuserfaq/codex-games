@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <defs><radialGradient id="p" cx="28%" cy="18%"><stop stop-color="#fffdf5"/><stop offset="1" stop-color="#eee1c7"/></radialGradient><filter id="n"><feTurbulence baseFrequency=".85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0.42 0 0 0 0 .29 0 0 0 0 .15 0 0 0 .08 0"/></filter></defs>
+  <rect width="600" height="600" rx="22" fill="url(#p)"/><rect width="600" height="600" rx="22" filter="url(#n)" opacity=".12"/>
+  <path d="M200 0v600M400 0v600M0 200h600M0 400h600" fill="none" stroke="#422f24" stroke-width="7" opacity=".82"/>
+</svg>
