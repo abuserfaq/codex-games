@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 720" role="img" aria-label="Ludo board inlay">
+  <defs><linearGradient id="wood" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#5b3524"/><stop offset=".48" stop-color="#9d6336"/><stop offset="1" stop-color="#43251d"/></linearGradient><filter id="grain"><feTurbulence baseFrequency=".7" numOctaves="2" result="n"/><feColorMatrix in="n" type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .13"/></feComponentTransfer></filter></defs>
+  <rect width="720" height="720" rx="54" fill="url(#wood)"/><rect x="27" y="27" width="666" height="666" rx="35" fill="#f5e3b2" stroke="#d4a552" stroke-width="9"/><rect width="720" height="720" rx="54" filter="url(#grain)" opacity=".58"/>
+  <circle cx="360" cy="360" r="76" fill="#d79b3a" stroke="#5d3822" stroke-width="9"/><path d="M360 300l16 39 42 3-32 27 10 41-36-23-36 23 10-41-32-27 42-3z" fill="#fff3bd"/>
+</svg>

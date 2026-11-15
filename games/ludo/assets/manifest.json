@@ -1,0 +1,4 @@
+{
+  "game": "Ludo",
+  "assets": ["board-inlay.svg", "token-red.svg", "token-blue.svg"]
+}
