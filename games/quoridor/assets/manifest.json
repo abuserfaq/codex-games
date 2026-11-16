@@ -1,0 +1,5 @@
+{
+  "game": "Quoridor",
+  "assets": ["garden-board.svg", "pawn-ruby.svg", "pawn-sapphire.svg"],
+  "description": "Lacquer garden board and jewel pawn art for the compact Quoridor board."
+}

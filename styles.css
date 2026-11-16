@@ -12,6 +12,30 @@
   --shadow: 0 14px 34px rgba(20, 35, 28, 0.1);
 }
 
+.quoridor-wrap { width: min(100%, calc((100svh - 370px) * 1.04), 560px); aspect-ratio: 1; margin: 0 auto; padding: 12px; border-color: #6d5724; background: url("./games/quoridor/assets/garden-board.svg") center / cover; box-shadow: 0 18px 35px rgba(5, 28, 26, .32), inset 0 0 0 1px rgba(255, 238, 174, .5); }
+.quoridor-board { display: grid; grid-template: repeat(17, 1fr) / repeat(17, 1fr); width: 100%; height: 100%; padding: 3.4%; }
+.quoridor-board button { min-width: 0; min-height: 0; padding: 0; border: 0; background: transparent; }
+.quoridor-cell { position: relative; border-radius: 4px !important; background: rgba(227, 191, 95, .1) !important; cursor: default; }
+.quoridor-cell.legal { cursor: pointer; background: radial-gradient(circle, rgba(255, 240, 159, .88) 0 16%, rgba(225, 176, 71, .3) 18% 46%, transparent 50%) !important; animation: quoridor-pulse 1.2s ease-in-out infinite; }
+.quoridor-cell.legal:hover, .quoridor-cell.legal:focus-visible { outline: 2px solid #fff1aa; outline-offset: -2px; filter: brightness(1.25); }
+.quoridor-gap { pointer-events: none; }
+.quoridor-slot { position: relative; z-index: 2; border-radius: 3px !important; }
+.quoridor-slot.available { cursor: pointer; background: rgba(244, 211, 110, .14); }
+.quoridor-slot.available:hover, .quoridor-slot.available:focus-visible { background: rgba(255, 236, 153, .52); outline: 1px solid #fff4bd; }
+.quoridor-slot.placed::after { position: absolute; inset: -18%; border-radius: 4px; background: linear-gradient(90deg, #835b20, #f7d77a 28%, #a97625 54%, #ffe998 72%, #764c18); box-shadow: 0 2px 4px rgba(0,0,0,.42); content: ""; }
+.quoridor-slot.placed.v::after { transform: rotate(90deg); }
+.quoridor-pawn { position: absolute; z-index: 4; inset: -45% -20%; background-position: center; background-size: contain; background-repeat: no-repeat; filter: drop-shadow(0 5px 3px rgba(0,0,0,.35)); animation: quoridor-arrive .28s ease-out; }
+.quoridor-pawn.ruby { background-image: url("./games/quoridor/assets/pawn-ruby.svg"); }
+.quoridor-pawn.sapphire { background-image: url("./games/quoridor/assets/pawn-sapphire.svg"); }
+.quoridor-hud, .quoridor-controls { flex-wrap: wrap; flex-direction: row; justify-content: center; }
+.quoridor-hud #message { flex: 1 1 250px; text-align: center; }
+.quoridor-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.quoridor-controls .hint { grid-column: 1 / -1; text-align: center; }
+.quoridor-controls .button.active { color: #fff; border-color: #185a4d; background: #19715d; }
+@keyframes quoridor-pulse { 50% { opacity: .7; } }
+@keyframes quoridor-arrive { from { transform: translateY(-12%) scale(.72); opacity: .2; } }
+@media (max-width: 560px) { .game-shell:has(.quoridor-wrap) { padding-top: 12px; } .game-shell:has(.quoridor-wrap) .topbar { margin-bottom: 10px; } .game-shell:has(.quoridor-wrap) .game-header { margin-bottom: 5px; } .game-shell:has(.quoridor-wrap) .game-header h1 { margin-bottom: 2px; font-size: 25px; } .game-shell:has(.quoridor-wrap) .game-header p { font-size: 13px; } .quoridor-hud { gap: 5px 9px; padding: 6px 9px; } .quoridor-hud .button { margin-left: auto; padding: 5px 9px; } .quoridor-wrap { width: min(100%, calc((100svh - 324px) * 1.04), 300px); padding: 8px; } .quoridor-controls { gap: 7px; padding: 6px 8px; } .quoridor-controls .button { padding: 6px 8px; } .quoridor-controls .hint { display: none; } }
+
 /* Ludo: a compact lacquered race board with clear turn states. */
 .ludo-wrap { width:min(100%,calc((100svh - 398px)*1),540px); aspect-ratio:1; margin:0 auto; overflow:hidden; border-color:#4c2d21; background:url("./games/ludo/assets/board-inlay.svg") center/cover,#a16439; box-shadow:0 17px 36px rgba(65,36,21,.25),inset 0 0 0 1px rgba(255,232,173,.36); }
 .ludo-board,.ludo-grid { width:100%; height:100%; }.ludo-grid { display:grid; grid-template-columns:repeat(14,1fr); grid-template-rows:repeat(14,1fr); padding:8.1%; }.ludo-cell { position:relative; min-width:0; border:0; background:transparent; border-radius:4px; padding:0; }.ludo-cell.track,.ludo-cell.lane { border:1px solid rgba(91,55,34,.42); background:rgba(255,247,217,.82); }.ludo-cell.lane { background:rgba(216,159,56,.68); }.ludo-cell.red-base,.ludo-cell.blue-base { background:rgba(255,255,238,.22); }.ludo-cell.safe::after { position:absolute; inset:26%; border-radius:50%; background:#d59c2a; box-shadow:0 1px 0 #895621; content:""; }.ludo-token { position:absolute; z-index:2; inset:8%; border-radius:50%; background-position:center; background-size:contain; background-repeat:no-repeat; filter:drop-shadow(0 3px 2px rgba(57,27,17,.36)); transition:transform .16s ease,filter .16s ease; }.ludo-token.red { background-image:url("./games/ludo/assets/token-red.svg"); }.ludo-token.blue { background-image:url("./games/ludo/assets/token-blue.svg"); }.ludo-token.playable { filter:drop-shadow(0 0 7px #fff1a6) drop-shadow(0 3px 2px rgba(57,27,17,.36)); animation:ludo-pulse .75s ease-in-out infinite alternate; }.ludo-cell:not(:disabled):hover .ludo-token,.ludo-cell:not(:disabled):focus-visible .ludo-token { transform:translateY(-3px) scale(1.08); }.ludo-cell:focus-visible { outline:2px solid #fff0a5; outline-offset:2px; z-index:3; } @keyframes ludo-pulse { to { transform:scale(1.1); } }.ludo-hud,.ludo-controls { flex-wrap:wrap; flex-direction:row; justify-content:center; }.ludo-hud #message { flex:1 1 210px; text-align:center; }.ludo-controls .hint { flex:1 1 280px; text-align:center; }.ludo-roll { min-width:132px; background:#176a4a; color:#fff; }
