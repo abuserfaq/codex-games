@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 720" role="img" aria-label="Тёплая деревянная доска го">
+  <defs>
+    <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f7d88f"/><stop offset=".5" stop-color="#d69c43"/><stop offset="1" stop-color="#9c5d21"/></linearGradient>
+    <filter id="grain"><feTurbulence baseFrequency=".014" numOctaves="2" seed="9" type="fractalNoise"/><feColorMatrix values=".35 0 0 0 .45  0 .22 0 0 .27  0 0 .08 0 .08  0 0 0 .18 0"/><feBlend in="SourceGraphic" mode="multiply"/></filter>
+  </defs>
+  <rect width="720" height="720" rx="48" fill="url(#wood)"/>
+  <rect x="22" y="22" width="676" height="676" rx="34" fill="none" stroke="#5d3315" stroke-width="8" opacity=".75"/>
+  <rect width="720" height="720" rx="48" filter="url(#grain)" opacity=".35"/>
+</svg>

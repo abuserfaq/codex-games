@@ -1,0 +1,4 @@
+{
+  "game": "Go 9x9",
+  "assets": ["go-board.svg", "stone-black.svg", "stone-white.svg"]
+}

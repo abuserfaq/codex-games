@@ -10,8 +10,8 @@ The shared source of truth is `../stly.md`; this folder guide mirrors the requir
 
 ## Navigation style
 
-- The brand link always returns to the catalog `index.html` using the shortest relative path for the current folder. Quoridor is catalog game 70 and belongs last in the common game-link order.
-- Every game page uses the same game-link order as the catalog, ending with Klotski Escape, Sudoku, Ludo, and Quoridor. Mark only the page currently being played.
+- The brand link always returns to the catalog `index.html` using the shortest relative path for the current folder. Go 9x9 is catalog game 71 and belongs last in the common game-link order.
+- Every game page uses the same game-link order as the catalog, ending with Klotski Escape, Sudoku, Ludo, Quoridor, and Go 9x9. Mark only the page currently being played.
 - Menu reference: 2048, Boulder Dash Pocket, Cannon Duel, Color Flood, Domino Trail, Donkey Climb, Fox and Geese, Hex, Hunt the Wumpus, Light Cycles, Mahjong Solitaire, Mini Golf, Night Driver, Nine Men's Morris, Pyramid Hopper, Royal Game of Ur, Sea Wolf, Ski Slalom, Sky Joust, Klondike Solitaire, Tapper Counter, Bomb Squad, Knight's Tour, Klotski Escape, Sudoku.
 - Mark only the current game link with `aria-current="page"`.
 - Keep all URLs relative so local preview, repository hosting, and a later `.ru` domain use the same files.
@@ -54,6 +54,6 @@ The shared source of truth is `../stly.md`; this folder guide mirrors the requir
 
 ## Assets
 
-- Store game-specific assets under `games/<game>/assets` with clear names. Quoridor keeps its garden-board, ruby and sapphire pawn art, and asset manifest together; Ludo keeps its board inlay and token assets there too.
+- Store game-specific assets under `games/<game>/assets` with clear names. Go 9x9 keeps its wood-board and black/white stone art with an asset manifest; Quoridor keeps its garden-board, ruby and sapphire pawn art together too.
 - Use finished SVG or canvas art, not placeholders.
 - Keep asset references relative through `../styles.css` patterns already used by the catalog.
