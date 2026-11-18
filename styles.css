@@ -12,6 +12,18 @@
   --shadow: 0 14px 34px rgba(20, 35, 28, 0.1);
 }
 
+/* Pig Dice: a warm lacquered dice tray, intentionally compact for one screen. */
+.pig-wrap { width:min(100%,calc((100svh - 398px)*1.18),520px); aspect-ratio:1.18/1; margin:0 auto; overflow:hidden; border-color:#5d2635; background:url("./games/pig-dice/assets/dice-tray.svg") center/cover,#481d2b; box-shadow:0 19px 38px rgba(58,18,31,.3),inset 0 0 0 1px rgba(255,229,175,.3); }
+.pig-table { position:relative; display:grid; place-items:center; width:100%; height:100%; isolation:isolate; }
+.pig-table::before { position:absolute; inset:7% 9%; z-index:-1; border:1px solid rgba(255,230,170,.3); border-radius:50%; box-shadow:inset 0 0 44px rgba(14,4,10,.42); content:""; }
+.pig-die { width:35%; aspect-ratio:1; border:0; border-radius:18%; background:url("./games/pig-dice/assets/die-ruby.svg") center/contain no-repeat; box-shadow:none; cursor:default; transition:filter .2s ease; }
+.pig-die.rolling { animation:pig-roll .38s cubic-bezier(.18,.84,.36,1.28); }.pig-die.bust { filter:drop-shadow(0 0 14px #ffc85c) saturate(.72); }
+.pig-seal { position:absolute; right:8%; bottom:8%; width:24%; aspect-ratio:1; background:url("./games/pig-dice/assets/pig-seal.svg") center/contain no-repeat; filter:drop-shadow(0 7px 5px rgba(25,4,12,.34)); }
+.pig-score { position:absolute; top:11%; min-width:28%; padding:8px 11px; border:1px solid rgba(255,235,184,.45); border-radius:8px; background:rgba(47,11,26,.6); color:#fff6dd; font-weight:700; text-align:center; box-shadow:0 5px 13px rgba(28,3,14,.28); }.pig-score.you{left:8%;}.pig-score.cpu{right:8%;}.pig-score strong{display:block;color:#ffd36e;font-size:clamp(22px,5vw,34px);line-height:1;}
+.pig-hud,.pig-controls { flex-wrap:wrap; flex-direction:row; justify-content:center; }.pig-hud #message { flex:1 1 210px; text-align:center; }.pig-controls { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }.pig-controls .hint { grid-column:1/-1; text-align:center; }.pig-roll { background:#8b263f; border-color:#5d192c; color:#fff; }.pig-bank { background:#d7a13b; border-color:#946314; color:#2c1605; }
+@keyframes pig-roll { from{transform:rotate(-12deg) scale(.62);opacity:.2} 60%{transform:rotate(17deg) scale(1.13)} to{transform:rotate(0) scale(1);opacity:1} }
+@media (max-width:560px) { .game-shell:has(.pig-wrap){padding-top:12px}.game-shell:has(.pig-wrap) .topbar{margin-bottom:10px}.game-shell:has(.pig-wrap) .game-header{margin-bottom:5px}.game-shell:has(.pig-wrap) .game-header h1{margin-bottom:2px;font-size:25px}.game-shell:has(.pig-wrap) .game-header p{font-size:13px}.pig-wrap{width:min(100%,calc((100svh - 368px)*1.18),320px)}.pig-score{padding:5px 7px;font-size:11px}.pig-score strong{font-size:21px}.pig-hud{gap:6px 9px;padding:6px 9px}.pig-hud .button{margin-left:auto;padding:5px 9px}.pig-controls{gap:7px;padding:6px 8px}.pig-controls .button{padding:6px 8px}.pig-controls .hint{display:none} }
+
 .quoridor-wrap { width: min(100%, calc((100svh - 370px) * 1.04), 560px); aspect-ratio: 1; margin: 0 auto; padding: 12px; border-color: #6d5724; background: url("./games/quoridor/assets/garden-board.svg") center / cover; box-shadow: 0 18px 35px rgba(5, 28, 26, .32), inset 0 0 0 1px rgba(255, 238, 174, .5); }
 .quoridor-board { display: grid; grid-template: repeat(17, 1fr) / repeat(17, 1fr); width: 100%; height: 100%; padding: 3.4%; }
 .quoridor-board button { min-width: 0; min-height: 0; padding: 0; border: 0; background: transparent; }
