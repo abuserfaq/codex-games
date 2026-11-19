@@ -15,4 +15,3 @@ assert.equal(winning([6,6,6,6,6]),true);
 for(const asset of ['cocoa-square.svg','poison-seal.svg','manifest.json'])assert.ok(fs.existsSync('games/chomp/assets/'+asset));
 assert.ok(fs.readFileSync('index.html','utf8').includes('73 игра'));
 console.log('Chomp rules, poison terminal, minimax and catalog passed');
-
