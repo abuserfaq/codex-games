@@ -57,3 +57,7 @@ The shared source of truth is `../stly.md`; this folder guide mirrors the requir
 - Store game-specific assets under `games/<game>/assets` with clear names. Pig Dice keeps its lacquered dice tray, ruby die, and lucky pig seal with an asset manifest; Go 9x9 keeps its wood-board and black/white stone art too.
 - Use finished SVG or canvas art, not placeholders.
 - Keep asset references relative through `../styles.css` patterns already used by the catalog.
+
+## Chomp — catalog game 73
+
+Chomp follows Pig Dice last in every shared menu. Use the shared navigation, HUD and buttons; the play surface is cocoa with restrained gold foil and a red poison seal. Original SVG squares and seal are listed in its asset manifest. Preserve a viewport-sized 6 by 5 board and visible rules on mobile.

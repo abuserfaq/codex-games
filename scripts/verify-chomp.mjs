@@ -1,0 +1,18 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const page=fs.readFileSync('games/chomp/index.html','utf8');
+const code=page.match(/<script>([\s\S]*?)<\/script>/)[1];
+const el=()=>({dataset:{},innerHTML:'',textContent:'',classList:{toggle(){}},setAttribute(){},addEventListener(){},append(){},querySelectorAll(){return[];}});
+const context={document:{querySelector:el,createElement:el},window:{},setTimeout,clearTimeout};vm.createContext(context);vm.runInContext(code,context);
+const {bite,moves,winning}=context.window.__chompTest;
+assert.equal(JSON.stringify(bite([6,6,6,6,6],2,3)),'[6,6,3,3,3]');
+assert.equal(winning([1,0,0,0,0]),false);
+assert.equal(winning([2,0,0,0,0]),true);
+assert.equal(winning([2,1,0,0,0]),false);
+assert.equal(moves([1,0,0,0,0]).length,0);
+assert.equal(winning([6,6,6,6,6]),true);
+for(const asset of ['cocoa-square.svg','poison-seal.svg','manifest.json'])assert.ok(fs.existsSync('games/chomp/assets/'+asset));
+assert.ok(fs.readFileSync('index.html','utf8').includes('73 игра'));
+console.log('Chomp rules, poison terminal, minimax and catalog passed');
+

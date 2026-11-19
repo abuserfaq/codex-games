@@ -1,0 +1,8 @@
+{
+  "game": "Chomp",
+  "assets": [
+    "cocoa-square.svg",
+    "poison-seal.svg"
+  ],
+  "source": "Original vector artwork created for this game"
+}

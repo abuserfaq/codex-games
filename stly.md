@@ -50,3 +50,7 @@
 - Create real assets only when a game needs them; do not rely on placeholders.
 - Store game-specific assets under that game's `assets` folder with clear names.
 - Pac-Man, Missile Command, Sokoban, Reversi, Qix Claim, Lights Out, Mastermind, Pipe Dream, SameGame, Nim Sticks, Peg Solitaire, Battleship Radar, Tower of Hanoi, Mancala, Blackjack 21, Yahtzee, Nonogram, Word Search, Rush Hour, Gem Swap, Pocket Pinball, Marble Maze, Shut the Box, Checkers, Domino Trail, Cannon Duel, Royal Game of Ur, Klondike Solitaire, Mahjong Solitaire, Sea Wolf, Mini Golf, Color Flood, Nine Men's Morris, 2048, Pyramid Hopper, Fox and Geese, Boulder Dash Pocket, Hex, Light Cycles, Hunt the Wumpus, Sky Joust, Tapper Counter, Night Driver, Donkey Climb, Ski Slalom, Bomb Squad, Knight's Tour, Klotski Escape, Sudoku, Ludo, Quoridor, Go 9x9, and Pig Dice use generated SVG assets while keeping the same compact board/status/button pattern as the other catalog games.
+
+## Chomp — catalog game 73
+
+Chomp follows Pig Dice last in every shared menu. Use the shared navigation, HUD and buttons; the play surface is cocoa with restrained gold foil and a red poison seal. Original SVG squares and seal are listed in its asset manifest. Preserve a viewport-sized 6 by 5 board and visible rules on mobile.
